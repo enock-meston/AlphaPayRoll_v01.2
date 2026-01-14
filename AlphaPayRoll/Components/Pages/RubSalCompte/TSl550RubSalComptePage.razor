@@ -1,0 +1,57 @@
+﻿<h3>Salaires Compte Page</h3>
+
+@page "/RubSalCompte/TSl550RubSalComptePage"
+@inherits TSl550RubSalComptePageBase
+
+@if (isLoading == true)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+
+        </div>
+    </div>
+
+
+}
+@if (isLoading == false)
+{
+
+    <h3>@ErrorResult</h3>
+
+    <div class="row col-sm-12  pre-scrollable well" style=" max-height: 75vh;">
+        <table class="table  table-bAdversed  DataGrid table-light">
+            <thead>
+                <tr>
+                    <th>RI CODE</th>
+                    <th>Description</th>
+                    <th>Compte</th>
+                    <th>En vigueur</th>
+                  
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (oTSl550RubSalCompteList != null)
+                {
+                    @for (int i = 0; i < oTSl550RubSalCompteList.Count; i++)
+                    {
+                        var item = oTSl550RubSalCompteList[i];
+                        <tr class="@GetRowColor(i)">
+
+                            <td>@item.RICODE</td>
+                            <td>@item.Descript</td>
+                            <td>@item.Compte</td>
+                            <td>@item.Enab</td>
+                          
+
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+}

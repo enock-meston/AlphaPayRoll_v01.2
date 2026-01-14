@@ -1,0 +1,341 @@
+﻿
+@page "/DonBase/TCt550TpTransToutPage"
+@layout GcongLayout
+@inherits TCt550TpTransToutBase
+
+
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert" style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New"> Transaction Tout</h4>
+    </div>
+</div>
+@if (osessionService != null)
+{
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading)
+
+{
+    <div class="container">
+
+            <div class="row col-12">
+                <div class="col-sm-10">
+                </div>
+
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTCt550TpTransTout, 1))" style="width:100%;opacity:0.8">Add New</button>
+                </div>
+
+
+            </div>
+
+            <div class="row col-sm-12">
+                <table class="table  table-bordered  DataGrid table-light">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>RICode</th>
+                            <th>SensJournal</th>
+                            <th>OrdNum</th>
+                            <th>Enab</th>
+                            <th>PassPar</th>
+                            <th>CreatOn</th>
+                            <th>TpJournalID</th>
+                            <th>TxRetrait</th>
+                            <th>RoleValidation</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (oTCt550TpTransToutList != null)
+                        {
+                            @for (int i = 0; i < oTCt550TpTransToutList.Count; i++)
+                            {
+                                var item = oTCt550TpTransToutList[i];
+                                <tr class="@getRowColor(i)">
+                                    <td>@item.ID</td>
+                                    <td>@item.RICode</td>
+                                    <td>@item.SensJournal</td>
+                                    <td>@item.OrdNum</td>
+                                    <td>@item.Enab</td>
+                                    <td>@item.PassPar</td>
+                                    <td>@item.CreatOn</td>
+                                    <td>@item.TpJournalID</td>
+                                    <td>@item.TxRetrait</td>
+                                    <td>@item.RoleValidation</td>
+
+                                    <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                                    <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modifier</button>  </td>
+                                    <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Supprimer</button>  </td>
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+    </div>
+
+
+}
+}
+@if (popup)
+{
+    <div class="container-fluid">
+        <div class="modal" tabindex="-1" style="display: inline-block ">
+            <div class="modal-dialog modal-xl modalDialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <div class="row col-sm-12">
+                            <div class="col-sm-3">
+                            </div>
+
+                            <div class="col-sm-3">
+                                <h5 style="color:black"> @modalTitle</h5>
+                            </div>
+
+
+
+                            <div class="col-sm-2">
+                                @if (iTypeAction != 0)
+                                {
+                                    <button type="button" class=@StyleButton @onclick="(() => SaveDocVal(oOneTCt550TpTransTout))" style="width:100%">@ButtonCaption</button>
+                                }
+
+
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body ">
+
+                        <EditForm Model="oOneTCt550TpTransTout">
+                            <div class="well well-sm pre-scrollable modalBody">
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">RICode </label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputText class="form-control" @bind-Value="oOneTCt550TpTransTout.RICode" />
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <InputTextArea class="form-control" row="5" @bind-Value="oOneTCt550TpTransTout.Descript" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Descript</label>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PasPar</label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputText class="form-control" @bind-Value="oOneTCt550TpTransTout.PasPar" />
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <InputText @bind-Value="oOneTCt550TpTransTout.SensJournal" class="form-control" />
+
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">SensJournal</label>
+                                    </div>
+                                </div>
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">CpteDebit</label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOneTCt550TpTransTout.CpteDebit" />
+
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOneTCt550TpTransTout.CpteCredit" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">CpteCredit</label>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">OrdNum</label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOneTCt550TpTransTout.OrdNum" />
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-check form-switch">
+                                            <InputCheckbox class="form-check-input" @bind-Value="oOneTCt550TpTransTout.Enab" />
+                                            <label class="form-check-label">
+                                                @(oOneTCt550TpTransTout.Enab ? "On" : "Off")
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Enab</label>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PassPar</label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputText class="form-control" @bind-Value="oOneTCt550TpTransTout.PassPar" />
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOneTCt550TpTransTout.TpJournalID" />
+
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-right">TpJournalID</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">TxRetrait</label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOneTCt550TpTransTout.TxRetrait" />
+
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOneTCt550TpTransTout.RoleValidation" />
+
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">RoleValidation</label>
+                                    </div>
+                                </div>
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Créé par</label>
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <InputSelectNumber class="form-control " @bind-Value="oOneTCt550TpTransTout.CreatBy" Readonly=false>
+                                            <option value="0"> ----------------------- </option>
+                                            @if (oTCl550UserList != null)
+                                            {
+                                                @foreach (var item in oTCl550UserList)
+                                                {
+                                                    <option value="@item.ID"> @item.UserName </option>
+                                                }
+                                            }
+                                            }
+                                            }
+                                        </InputSelectNumber>
+
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <InputDate class="form-control" @bind-Value="oOneTCt550TpTransTout.CreatOn" Readonly=true />
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Date création</label>
+                                    </div>
+                                </div>
+
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Modifié par</label>
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <InputSelectNumber class="form-control " @bind-Value="oOneTCt550TpTransTout.LModifBy" Readonly=false>
+                                            <option value="0"> ----------------------- </option>
+                                            @if (oTCl550UserList != null)
+                                            {
+                                                @foreach (var item in oTCl550UserList)
+                                                {
+                                                    <option value="@item.ID"> @item.UserName </option>
+                                                }
+                                            }
+                                            }
+                                            }
+                                        </InputSelectNumber>
+
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputDate class="form-control" @bind-Value="oOneTCt550TpTransTout.LModifOn" Readonly=true />
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Date modification</label>
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+                        </EditForm>
+                    </div>
+                    <div class="modal-footer" style="height:1px">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+}

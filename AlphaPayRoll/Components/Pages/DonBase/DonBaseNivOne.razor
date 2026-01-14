@@ -1,0 +1,247 @@
+﻿@page "/DonBase/DonBaseNivOne/{id}"
+@inherits DonBaseNivOneBase
+
+
+<div class="alert alert-dark mt-0 col-sm-12" role="alert" style="text-align:center;width:110%">
+    <div class="row">
+        <div class="col-sm-8">
+            <h5>Données de base : @osessionService.MenuSecName </h5>
+        </div>
+        <div class="col-sm-2">
+
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary btn-sm " @onclick="(()=>ShowPopUp(1))" style="width:100%">Ajouter</button>
+        </div>
+    </div>
+</div>
+
+@if (popup)
+{
+
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+
+                        </div>
+
+                        <div class="col-sm-5">
+                            <h5 style="color:black">@modalTitle</h5>
+                        </div>
+
+                        <div class="col-sm-3">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(()=>TableNivOneSave(oTabPrmNivOneInsert))" style="width:180px">@ButtonCaption</button>
+                            }
+                        </div>
+
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%">Fermer</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="modal-body ">
+
+                    <EditForm Model="oTabPrmNivOneInsert">
+
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                            <br />
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">ID</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputNumber class="form-control" @bind-Value="oTabPrmNivOneInsert.ID" Readonly=true />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Code</label>
+                                </div>
+                                <div class="col-sm-9">
+                                        <InputText class="form-control" @bind-Value="oTabPrmNivOneInsert.RICode" maxlength="10" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Nom</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputText class="form-control" @bind-Value="oTabPrmNivOneInsert.Descript" maxlength="50" />
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">N° Ordre</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputNumber class="form-control" @bind-Value="oTabPrmNivOneInsert.OrdNum" />
+                                </div>
+
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Utilisable</label>
+                                </div>
+                                <div class="col-sm-1">
+                                    <InputCheckbox class="form-control UICheckbox" @bind-Value="oTabPrmNivOneInsert.Enab" />
+                                </div>
+
+                            </div>
+
+                            <br />
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputSelectNumber class="form-control" @bind-Value="oTabPrmNivOneInsert.CreatBy" disabled="true">
+                                        <option value="0"> ----------------------- </option>
+
+                                        @if (oTSc551UserList != null)
+                                            {
+                                            @foreach (var item in oTSc551UserList)
+                                                {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                                }
+                                            }
+
+                                    </InputSelectNumber>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">créé le</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputDate class="form-control" @bind-Value="oTabPrmNivOneInsert.CreatOn" Readonly=true />
+                                </div>
+
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Modifié par </label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputSelectNumber class="form-control" @bind-Value="oTabPrmNivOneInsert.LModifBy" disabled="true">
+                                        <option value="0"> ----------------------- </option>
+
+                                        @if (oTSc551UserList != null)
+                                            {
+                                            @foreach (var item in oTSc551UserList)
+                                                {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                                }
+                                            }
+
+                                    </InputSelectNumber>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Modifié le</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <InputDate class="form-control" @bind-Value="oTabPrmNivOneInsert.LModifOn" Readonly=true />
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                    </EditForm>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+@if (oTabPrmNivOneList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+
+
+    <div class="row col-sm-12  pre-scrollable well" style=" max-height: 65vh;">
+        <table class="table  table-bordered  DataGrid table-light">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Nom</th>
+                    <th>Actif</th>
+                    <th>Créé le</th>
+                    <th>Modifié le</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < oTabPrmNivOneList.Count; i++)
+                {
+                    var item = oTabPrmNivOneList[i];
+                    <tr class="@getRowColor(i)">
+                        <td>@item.ID</td>
+                        <td>@item.RICode</td>
+                        <td>@item.Descript</td>
+                        <td>@item.Enab</td>
+                        <td>@item.CreatOn.ToShortDateString()  </td>
+                        <td>@item.LModifOn.ToShortDateString() </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(()=>EditTableNivOne(item,0))" class="btn btn-sm btn-outline-secondary" style="width:100%">Détails</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(()=>EditTableNivOne(item,2))" class="btn btn-sm btn-outline-secondary" style="width:100%">Edit</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(()=>EditTableNivOne(item,3))" class="btn btn-sm btn-outline-danger" style="width:100%">Supprimer</button>  </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+

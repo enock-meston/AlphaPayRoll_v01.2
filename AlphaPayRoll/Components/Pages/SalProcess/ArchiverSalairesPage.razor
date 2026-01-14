@@ -1,0 +1,166 @@
+﻿
+@page "/SalProcess/ArchiverSalairesPage/{id}"
+@inherits ArchiverSalairesPageBase
+
+<br />
+@if (osessionService != null)
+{
+@if (isLoading)
+{
+	<p><em>Loading...</em></p>
+	<div class="d-flex justify-content-center">
+		<div class="spinner-border text-danger" role="status">
+			<span class="sr-only">Loading ...</span>
+		</div>
+	</div>
+}
+
+
+<br/>
+
+
+
+<EditForm Model="oOneTSL00Process" style="max-height:15vh;">
+	<div class="well well-sm pre-scrollable modalBody">
+
+		<div class="row col-sm-12">
+
+			<div class="col-sm-4">
+				<label class="form-text text-right">Exercice</label>
+			</div>
+			<div class="col-sm-4">
+				<InputSelectNumber class="form-control" ValueChanged="@((int value) => ExerciceHasChanged(value))" ValueExpression="@(() => @Exercice)" Value="@Exercice">
+
+
+
+					@if (oTSL00ProcessList != null)
+					{
+						@foreach (var item in oTSL00ProcessList)
+						{
+							@if (@item.ID == Exercice)
+							{
+								<option Selected value="@item.Exercice"> @item.Exercice </option>
+							}
+							else
+							{
+								<option value="@item.Exercice"> @item.Exercice </option>
+							}
+						}
+					}
+
+				</InputSelectNumber>
+			</div>
+
+
+		</div>
+
+
+		<div class="row col-sm-12">
+
+			<div class="col-sm-4">
+				<label class="form-text text-right">Mois</label>
+			</div>
+
+			<div class="col-sm-4">
+				<InputSelectNumber class="form-control" ValueChanged="@((int value) => MoisHasChanged(value))" ValueExpression="@(() => @Mois)" Value="@Mois">
+
+
+
+					@if (oTSL00ProcessList != null)
+					{
+						@foreach (var item in oTSL00ProcessList)
+						{
+							@if (@item.ID == Mois)
+							{
+								<option Selected value="@item.Mois"> @item.Mois </option>
+							}
+							else
+							{
+								<option value="@item.Mois"> @item.Mois </option>
+							}
+						}
+					}
+
+
+				</InputSelectNumber>
+			</div>
+
+
+		</div>
+		<div class="row col-sm-12">
+			<label class="form-text text-right"></label>
+		</div>
+
+		<div class="row col-sm-12">
+
+
+			<div class="col-sm-4">
+			</div>
+
+			<div class="col-sm-4">
+				<button type="button" class="btn btn-sm btn-success" style="width:100%;" @onclick="ArcvhiverSalaires">Archiver Salaires</button>
+			</div>
+
+		
+		</div>
+
+
+	</div>
+
+</EditForm>
+
+
+
+<br />
+
+<div class="row col-sm-12  pre-scrollable well" style="max-height:60vh;">
+	<table class="table  table-bordered  table-light DataGrid">
+		<thead>
+			<tr>
+				<th>Matricule</th>
+				<th>SB Banque</th>
+				<th>Client ID</th>
+				<th>Nom</th>
+				<th>Prénom</th>
+				<th>Montant</th>
+
+			</tr>
+		</thead>
+		<tbody>
+
+			@if (oTRH02AgentList != null)
+			{
+				@for (int i = 0; i < oTRH02AgentList.Count; i++)
+				{
+
+					var item = oTRH02AgentList[i];
+					<tr class="@getRowColor(i)">
+
+						<td>@item.Matricule</td>
+						<td>@item.SBranchCpteID</td>
+						<td>@item.ClientId</td>
+						<td>@item.Nom</td>
+						<td>@item.Prenom</td>
+						<td>@item.NetAPayer.ToString("###,##0")</td>
+
+
+
+
+					</tr>
+				}
+			}
+		</tbody>
+
+
+	</table>
+</div>
+<div class="row col-sm-12">
+	<div class="col-sm-10">
+		<label class="form-text text-right" style="color:crimson;font-size:20px">Total net à payer</label>
+	</div>
+
+	<div class="col-sm-2">
+		<BlazorNumericTextBox.DecimalTextBox Style="text-align:left;font-size:18px" Format="@CurrencyFormat" Value="@TotalNetAPayer" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+	</div>
+</div>
+}

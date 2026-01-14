@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="AgentComPrime" targetNamespace="http://tempuri.org/AgentComPrime.xsd" xmlns:mstns="http://tempuri.org/AgentComPrime.xsd" xmlns="http://tempuri.org/AgentComPrime.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="1" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="ALPHAPAIEConnectionString1" IsAppSettingsProperty="true" Modifier="Assembly" Name="ALPHAPAIEConnectionString1 (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.WindowsFormsApp1.Properties.Settings.GlobalReference.Default.ALPHAPAIEConnectionString1" Provider="System.Data.SqlClient" />
+          <Connection ConnectionStringObject="Data Source=192.168.1.221;Initial Catalog=ALPHAPAIE;User ID=ApplicCon;Password=p@ssw0rd;Encrypt=False" IsAppSettingsProperty="false" Modifier="Assembly" Name="ALPHAPAIEConnectionString" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VuePrimeTableAdapter" GeneratorDataComponentClassName="VuePrimeTableAdapter" Name="VuePrime" UserDataComponentName="VuePrimeTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="ALPHAPAIEConnectionString" DbObjectName="ALPHAPAIE.dbo.VuePrime" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT Guichet, Numero, ID, TpGestinnaire, NOM, ResultatGuichet, ResultCumGuichet, IntGuichet, InteretCredit, NbrClientCredit, NbrClientApport, TpStructure, PARStructure, PAR, Eligible, PrimPerfo, NomPeriode FROM dbo.VuePrime</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Guichet" DataSetColumn="Guichet" />
+              <Mapping SourceColumn="Numero" DataSetColumn="Numero" />
+              <Mapping SourceColumn="ID" DataSetColumn="ID" />
+              <Mapping SourceColumn="TpGestinnaire" DataSetColumn="TpGestinnaire" />
+              <Mapping SourceColumn="NOM" DataSetColumn="NOM" />
+              <Mapping SourceColumn="ResultatGuichet" DataSetColumn="ResultatGuichet" />
+              <Mapping SourceColumn="ResultCumGuichet" DataSetColumn="ResultCumGuichet" />
+              <Mapping SourceColumn="IntGuichet" DataSetColumn="IntGuichet" />
+              <Mapping SourceColumn="InteretCredit" DataSetColumn="InteretCredit" />
+              <Mapping SourceColumn="NbrClientCredit" DataSetColumn="NbrClientCredit" />
+              <Mapping SourceColumn="NbrClientApport" DataSetColumn="NbrClientApport" />
+              <Mapping SourceColumn="TpStructure" DataSetColumn="TpStructure" />
+              <Mapping SourceColumn="PARStructure" DataSetColumn="PARStructure" />
+              <Mapping SourceColumn="PAR" DataSetColumn="PAR" />
+              <Mapping SourceColumn="Eligible" DataSetColumn="Eligible" />
+              <Mapping SourceColumn="PrimPerfo" DataSetColumn="PrimPerfo" />
+              <Mapping SourceColumn="NomPeriode" DataSetColumn="NomPeriode" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="AgentComPrime" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="AgentComPrime" msprop:Generator_UserDSName="AgentComPrime">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="VuePrime" msprop:Generator_TableClassName="VuePrimeDataTable" msprop:Generator_TableVarName="tableVuePrime" msprop:Generator_TablePropName="VuePrime" msprop:Generator_RowDeletingName="VuePrimeRowDeleting" msprop:Generator_RowChangingName="VuePrimeRowChanging" msprop:Generator_RowEvHandlerName="VuePrimeRowChangeEventHandler" msprop:Generator_RowDeletedName="VuePrimeRowDeleted" msprop:Generator_UserTableName="VuePrime" msprop:Generator_RowChangedName="VuePrimeRowChanged" msprop:Generator_RowEvArgName="VuePrimeRowChangeEvent" msprop:Generator_RowClassName="VuePrimeRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Guichet" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnGuichet" msprop:Generator_ColumnPropNameInRow="Guichet" msprop:Generator_ColumnPropNameInTable="GuichetColumn" msprop:Generator_UserColumnName="Guichet" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="123" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Numero" msprop:Generator_ColumnVarNameInTable="columnNumero" msprop:Generator_ColumnPropNameInRow="Numero" msprop:Generator_ColumnPropNameInTable="NumeroColumn" msprop:Generator_UserColumnName="Numero" type="xs:int" />
+              <xs:element name="ID" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
+              <xs:element name="TpGestinnaire" msprop:Generator_ColumnVarNameInTable="columnTpGestinnaire" msprop:Generator_ColumnPropNameInRow="TpGestinnaire" msprop:Generator_ColumnPropNameInTable="TpGestinnaireColumn" msprop:Generator_UserColumnName="TpGestinnaire" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="NOM" msprop:Generator_ColumnVarNameInTable="columnNOM" msprop:Generator_ColumnPropNameInRow="NOM" msprop:Generator_ColumnPropNameInTable="NOMColumn" msprop:Generator_UserColumnName="NOM" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="60" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ResultatGuichet" msprop:Generator_ColumnVarNameInTable="columnResultatGuichet" msprop:Generator_ColumnPropNameInRow="ResultatGuichet" msprop:Generator_ColumnPropNameInTable="ResultatGuichetColumn" msprop:Generator_UserColumnName="ResultatGuichet" type="xs:decimal" />
+              <xs:element name="ResultCumGuichet" msprop:Generator_ColumnVarNameInTable="columnResultCumGuichet" msprop:Generator_ColumnPropNameInRow="ResultCumGuichet" msprop:Generator_ColumnPropNameInTable="ResultCumGuichetColumn" msprop:Generator_UserColumnName="ResultCumGuichet" type="xs:decimal" />
+              <xs:element name="IntGuichet" msprop:Generator_ColumnVarNameInTable="columnIntGuichet" msprop:Generator_ColumnPropNameInRow="IntGuichet" msprop:Generator_ColumnPropNameInTable="IntGuichetColumn" msprop:Generator_UserColumnName="IntGuichet" type="xs:decimal" />
+              <xs:element name="InteretCredit" msprop:Generator_ColumnVarNameInTable="columnInteretCredit" msprop:Generator_ColumnPropNameInRow="InteretCredit" msprop:Generator_ColumnPropNameInTable="InteretCreditColumn" msprop:Generator_UserColumnName="InteretCredit" type="xs:decimal" />
+              <xs:element name="NbrClientCredit" msprop:Generator_ColumnVarNameInTable="columnNbrClientCredit" msprop:Generator_ColumnPropNameInRow="NbrClientCredit" msprop:Generator_ColumnPropNameInTable="NbrClientCreditColumn" msprop:Generator_UserColumnName="NbrClientCredit" type="xs:decimal" />
+              <xs:element name="NbrClientApport" msprop:Generator_ColumnVarNameInTable="columnNbrClientApport" msprop:Generator_ColumnPropNameInRow="NbrClientApport" msprop:Generator_ColumnPropNameInTable="NbrClientApportColumn" msprop:Generator_UserColumnName="NbrClientApport" type="xs:decimal" />
+              <xs:element name="TpStructure" msprop:Generator_ColumnVarNameInTable="columnTpStructure" msprop:Generator_ColumnPropNameInRow="TpStructure" msprop:Generator_ColumnPropNameInTable="TpStructureColumn" msprop:Generator_UserColumnName="TpStructure">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="20" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="PARStructure" msprop:Generator_ColumnVarNameInTable="columnPARStructure" msprop:Generator_ColumnPropNameInRow="PARStructure" msprop:Generator_ColumnPropNameInTable="PARStructureColumn" msprop:Generator_UserColumnName="PARStructure" type="xs:decimal" />
+              <xs:element name="PAR" msprop:Generator_ColumnVarNameInTable="columnPAR" msprop:Generator_ColumnPropNameInRow="PAR" msprop:Generator_ColumnPropNameInTable="PARColumn" msprop:Generator_UserColumnName="PAR" type="xs:decimal" />
+              <xs:element name="Eligible" msprop:Generator_ColumnVarNameInTable="columnEligible" msprop:Generator_ColumnPropNameInRow="Eligible" msprop:Generator_ColumnPropNameInTable="EligibleColumn" msprop:Generator_UserColumnName="Eligible" type="xs:boolean" />
+              <xs:element name="PrimPerfo" msprop:Generator_ColumnVarNameInTable="columnPrimPerfo" msprop:Generator_ColumnPropNameInRow="PrimPerfo" msprop:Generator_ColumnPropNameInTable="PrimPerfoColumn" msprop:Generator_UserColumnName="PrimPerfo" type="xs:long" />
+              <xs:element name="NomPeriode" msprop:Generator_ColumnVarNameInTable="columnNomPeriode" msprop:Generator_ColumnPropNameInRow="NomPeriode" msprop:Generator_ColumnPropNameInTable="NomPeriodeColumn" msprop:Generator_UserColumnName="NomPeriode" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

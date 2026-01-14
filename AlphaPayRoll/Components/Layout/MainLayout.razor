@@ -1,0 +1,72 @@
+﻿@using AlphaPayRoll.Data
+@using MudBlazor
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+@inject Blazored.SessionStorage.ISessionStorageService osessionStorage;
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+@* added *@
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+@* /end added *@
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@((e) => DrawerToggle())" />
+        PAIE &nbsp;&nbsp;&nbsp;&nbsp;
+        Agence: @osessionService?.Branch
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        User: @osessionService?.UserName
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        Profil: @osessionService?.UserProfile
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent>
+        <AutoLogout />
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+<style>
+    body {
+        background-color: #d5d5d8;
+    }
+</style>
+
+@code {
+    private ClasSessionStorage? osessionService;
+    private bool _drawerOpen = true;
+    private bool _loaded = false;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                // Safe: JSInterop is now enabled
+                osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+                _loaded = true;
+
+                StateHasChanged(); // very important to update the UI
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+    }
+}

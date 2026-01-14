@@ -1,0 +1,108 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+	<TargetFramework>net10.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+	 
+  </PropertyGroup>
+
+  <ItemGroup>
+	<Compile Remove="Components\Pages\AgRegAugmBaseType\**" />
+	<Compile Remove="Components\Pages\AgRetCotisation\**" />
+	<Compile Remove="Components\Pages\AgRetPaymentMois\**" />
+	<Compile Remove="Components\Pages\TCl550Deplom\**" />
+	<Compile Remove="Components\Pages\TCl550MaritStatus\**" />
+	<Compile Remove="Components\Pages\TSL02AgDimAugmSal\**" />
+	<Compile Remove="Components\Pages\TSL02AgentRet\**" />
+	<Compile Remove="Components\Pages\TSL02AgHSup\**" />
+	<Compile Remove="Components\Pages\TSL02TracEvSal\**" />
+	<Compile Remove="Components\Pages\TSL03TraitemAv\**" />
+	<Compile Remove="Components\Pages\TSL03Traitem\**" />
+	<Compile Remove="Components\Pages\TSL04ArchivINSS\**" />
+	<Compile Remove="Components\Pages\TSL04ArchivIPR\**" />
+	<Compile Remove="Components\Pages\TSL550TpDimAugSal\**" />
+	<Compile Remove="Components\Pages\TSL550TPHSupqq\**" />
+	<Compile Remove="Components\Pages\TSL550TPHSup\**" />
+	<Compile Remove="DataServices\ReportSalaire\**" />
+	<Content Remove="Components\Pages\AgRegAugmBaseType\**" />
+	<Content Remove="Components\Pages\AgRetCotisation\**" />
+	<Content Remove="Components\Pages\AgRetPaymentMois\**" />
+	<Content Remove="Components\Pages\TCl550Deplom\**" />
+	<Content Remove="Components\Pages\TCl550MaritStatus\**" />
+	<Content Remove="Components\Pages\TSL02AgDimAugmSal\**" />
+	<Content Remove="Components\Pages\TSL02AgentRet\**" />
+	<Content Remove="Components\Pages\TSL02AgHSup\**" />
+	<Content Remove="Components\Pages\TSL02TracEvSal\**" />
+	<Content Remove="Components\Pages\TSL03TraitemAv\**" />
+	<Content Remove="Components\Pages\TSL03Traitem\**" />
+	<Content Remove="Components\Pages\TSL04ArchivINSS\**" />
+	<Content Remove="Components\Pages\TSL04ArchivIPR\**" />
+	<Content Remove="Components\Pages\TSL550TpDimAugSal\**" />
+	<Content Remove="Components\Pages\TSL550TPHSupqq\**" />
+	<Content Remove="Components\Pages\TSL550TPHSup\**" />
+	<Content Remove="DataServices\ReportSalaire\**" />
+	<EmbeddedResource Remove="Components\Pages\AgRegAugmBaseType\**" />
+	<EmbeddedResource Remove="Components\Pages\AgRetCotisation\**" />
+	<EmbeddedResource Remove="Components\Pages\AgRetPaymentMois\**" />
+	<EmbeddedResource Remove="Components\Pages\TCl550Deplom\**" />
+	<EmbeddedResource Remove="Components\Pages\TCl550MaritStatus\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL02AgDimAugmSal\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL02AgentRet\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL02AgHSup\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL02TracEvSal\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL03TraitemAv\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL03Traitem\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL04ArchivINSS\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL04ArchivIPR\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL550TpDimAugSal\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL550TPHSupqq\**" />
+	<EmbeddedResource Remove="Components\Pages\TSL550TPHSup\**" />
+	<EmbeddedResource Remove="DataServices\ReportSalaire\**" />
+	<None Remove="Components\Pages\AgRegAugmBaseType\**" />
+	<None Remove="Components\Pages\AgRetCotisation\**" />
+	<None Remove="Components\Pages\AgRetPaymentMois\**" />
+	<None Remove="Components\Pages\TCl550Deplom\**" />
+	<None Remove="Components\Pages\TCl550MaritStatus\**" />
+	<None Remove="Components\Pages\TSL02AgDimAugmSal\**" />
+	<None Remove="Components\Pages\TSL02AgentRet\**" />
+	<None Remove="Components\Pages\TSL02AgHSup\**" />
+	<None Remove="Components\Pages\TSL02TracEvSal\**" />
+	<None Remove="Components\Pages\TSL03TraitemAv\**" />
+	<None Remove="Components\Pages\TSL03Traitem\**" />
+	<None Remove="Components\Pages\TSL04ArchivINSS\**" />
+	<None Remove="Components\Pages\TSL04ArchivIPR\**" />
+	<None Remove="Components\Pages\TSL550TpDimAugSal\**" />
+	<None Remove="Components\Pages\TSL550TPHSupqq\**" />
+	<None Remove="Components\Pages\TSL550TPHSup\**" />
+	<None Remove="DataServices\ReportSalaire\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Compile Remove="Components\Pages\TSL550TPHSupBasePage.cs" />
+	<Compile Remove="Controllers\ListedePaieController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Content Remove="Components\Pages\TRH02Agent\TRH02AgentPage.razor" />
+	<Content Remove="Components\Pages\TSL550TPHSupPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
+	<PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
+	<PackageReference Include="BlazorNumericTextBox" Version="4.0.1" />
+	<PackageReference Include="Dapper" Version="2.1.66" />
+	<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
+	<PackageReference Include="MudBlazor" Version="8.15.0" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
+	<PackageReference Include="System.Security.Permissions" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\PayAPI\PayAPI.csproj" />
+	<ProjectReference Include="..\PayLibrary\PayLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

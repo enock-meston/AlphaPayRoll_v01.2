@@ -1,0 +1,201 @@
+﻿@layout GcongLayout
+@page "/DonBase/TxDAT/TCpt050TxDATPage"
+@inherits TCpt050TxDATBase
+
+<div class="container">
+    <div class="row col-12">
+        <div class="col-sm-10">
+        </div>
+
+
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTCpt050TxDAT, 1))" style="width:100%;opacity:0.8">Add New</button>
+        </div>
+
+    </div>
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  DataGrid table-light">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>MontantLimInf</th>
+                    <th>MontantLimSup</th>
+                    <th>Tx4Mois</th>
+                    <th>Txt8Mois</th>
+                    <th>Tx12Mois</th>
+                    <th>Tx24Mois</th>
+                    <th>Tx36Mois</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTCpt050TxDATList != null)
+                {
+                    @for (int i = 0; i < oTCpt050TxDATList.Count; i++)
+                    {
+                        var item = oTCpt050TxDATList[i];
+                        <tr class="@getRowColor(i)">
+                            <td>@item.ID</td>
+                            <td>@item.MontantLimInf</td>
+                            <td>@item.MontantLimSup</td>
+                            <td>@item.Tx4Mois</td>
+                            <td>@item.Txt8Mois</td>
+                            <td>@item.Tx12Mois</td>
+                            <td>@item.Tx24Mois</td>
+                            <td>@item.Tx36Mois</td>
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modifier</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Supprimer</button>  </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+@if (popup)
+{
+
+    <div class="modal" tabindex="-1" style="display: inline-block ">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+                        </div>
+
+                        <div class="col-sm-5">
+                            <h5 style="color:black"> @modalTitle</h5>
+                        </div>
+
+
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveDocVal(oOneTCpt050TxDAT))" style="width:100%">@ButtonCaption</button>
+                            }
+
+
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Close</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneTCpt050TxDAT">
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                          
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">MontantLimInf </label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTCpt050TxDAT.MontantLimInf" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">MontantLimSup</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTCpt050TxDAT.MontantLimSup" />
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Tx4Mois</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTCpt050TxDAT.Tx4Mois" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Txt8Mois</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber @bind-Value="oOneTCpt050TxDAT.Txt8Mois" class="form-control" />
+
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Tx12Mois</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTCpt050TxDAT.Tx12Mois" />
+
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Tx24Mois</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTCpt050TxDAT.Tx24Mois" />
+                                </div>
+
+                            </div>
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-3">
+                                    <label class="form-text text-right">Tx36Mois</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTCpt050TxDAT.Tx36Mois" />
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </EditForm>
+                </div>
+                <div class="modal-footer" style="height:1px">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

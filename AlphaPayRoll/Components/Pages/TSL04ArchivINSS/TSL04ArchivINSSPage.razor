@@ -1,0 +1,315 @@
+﻿@page "/TSL04ArchivINSS/TSL04ArchivINSSPage"
+@inherits TSL04ArchivINSSPageBase
+
+<div class="row col-12">
+    <div class="col-sm-10">
+        <h3>ArchivINSS Page</h3>
+    </div>
+
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL04ArchivINSS, 1))" style="width:100%;opacity:0.8">Ajouter ArchivINSS</button>
+    </div>
+
+</div>
+
+
+@if (oTSL04ArchivINSSList == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Mois</th>
+                    <th>Matricule</th>
+                    <th>INSS</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTSL04ArchivINSSList != null)
+                {
+                    @for (int i = 0; i < oTSL04ArchivINSSList.Count; i++)
+                    {
+                        var item = oTSL04ArchivINSSList[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.ID</td>
+
+                            <td>@item.Exercice</td>
+
+                            <td>@item.Mois</td>
+
+                            <td>@item.Matricule</td>
+
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (popup)
+    {
+
+
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog modal-xl modalDialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <div class="row col-sm-12">
+                            <div class="col-sm-1">
+
+                            </div>
+
+                            <div class="col-sm-7">
+                                <h5 style="color:black">@modalTitle </h5>
+                            </div>
+
+                            <div class="col-sm-2">
+                                @if (iTypeAction != 0)
+                                {
+                                    <button type="button" class=@StyleButton @onclick="(() => SaveTSL04ArchivINSS(oOneTSL04ArchivINSS))" style="width:100%">@ButtonCaption</button>
+                                }
+
+
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-body ">
+
+                        <EditForm Model="oOneTSL04ArchivINSS">
+
+
+                            <div class="well well-sm pre-scrollable modalBody">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+
+                                <div class="row col-sm-12">
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">ID</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivINSS.ID" Readonly="true" />
+
+                                    </div>
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Exercice</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivINSS.Exercice" />
+
+                                    </div>    
+
+                                </div>
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Mois</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivINSS.Mois" />
+
+                                    </div>
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Matricule</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivINSS.Matricule" />
+
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+
+
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Trimèstre</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputText class="form-control" @bind-Value="oOneTSL04ArchivINSS.Trim" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">INSS</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputText class="form-control" @bind-Value="oOneTSL04ArchivINSS.INSS" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+                                @*<div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PlfPension</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL04ArchivINSS.PlfPension" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PlfRisque</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL04ArchivINSS.PlfRisque" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />*@
+
+
+                              
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Créé par</label>
+                                    </div>
+                                    <div class="col-sm-4">
+
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivINSS.CreatBy" Readonly=true />
+
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Date création</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL04ArchivINSS.CreatOn" Readonly=true />
+                                    </div>
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Modifié par</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivINSS.LModifBy" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Date modification</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL04ArchivINSS.LModifOn" Readonly=true />
+                                    </div>
+                                </div>
+
+                                <br />
+
+
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+
+                                </div>
+
+
+
+                            </div>
+
+                        </EditForm>
+
+
+                    </div>
+
+
+                    <div class="modal-footer" style="height:1px">
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    }
+}
+
+
+
+

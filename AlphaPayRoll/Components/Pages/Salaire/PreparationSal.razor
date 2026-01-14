@@ -1,0 +1,659 @@
+﻿
+@layout MainLayout
+@page "/Salaire/PreparationSalPage/{id}"
+@inherits PreparationSalPageBase
+
+
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert" style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New">Preparation Salaires</h4>
+    </div>
+</div>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+{
+    @* ========== SEARCH SECTION - COMPACT ========== *@
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+        <div class="row g-2 align-items-center">
+            <div class="col-sm-2">
+                <label class="form-label">MATRICULE</label>
+            </div>
+
+            <div class="col-md-2">
+                <input class="form-control "
+                       @bind="@sMatricule"
+                       placeholder="Enter matricule" />
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="searchByMatricule" style="width:100%">
+                    Search
+                </button>
+            </div>
+
+            <div class="col-md-4">
+                <input class="form-control "
+                       @bind="@sNomPrenom" style="width:100%">
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button" class="btn  btn-dark"
+                        @onclick="GoBack" style="width:100%">
+                    ← Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col-sm-12">
+        <!-- Content here if needed -->
+    </div>
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>Matricule</th>
+                    <th>Client </th>
+                    <th>Date début</th>
+                    <th>Note</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (oTSL02SalaireList != null)
+                {
+                    @for (int i = 0; i < oTSL02SalaireList.Count; i++)
+                    {
+                        var item = oTSL02SalaireList[i];
+                        <tr class="@getRowColor(i)">
+                            <td>@item.Matricule</td>
+                            <td>@item.ClientId </td>
+                            <td>@item.CreatOn</td>
+                            <td style="text-align:center;width:7%">
+                                <button @onclick="() => EditData(item, 0)" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>
+                            </td>
+                            <td style="text-align:center;width:7%">
+                                <button @onclick="() => EditData(item, 2)" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>
+                            </td>
+                            <td style="text-align:center;width:7%">
+                                <button @onclick="() => EditData(item, 3)" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row col-sm-12">
+                        <div class="col-sm-3">
+                        </div>
+
+                        <div class="col-sm-5">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveSalaire(oOneSalaire))" style="width:100%">@ButtonCaption</button>
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body ">
+                    <EditForm Model="oOneSalaire">
+                        <div class="well well-sm pre-scrollable modalBody">
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Employé</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <InputText class="form-control" @bind-Value="oOneSalaire.Matricule" Readonly=true />
+                                </div>
+                                <div class="col-sm-4">
+                                    <input class="form-control" @bind="@sNomPrenom" disabled />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Nom</label>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence Localisation</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control"
+                                                 Value="oOneSalaire.BranchCpteID"
+                                                 ValueChanged="@((string value) => BranchChanged(value))"
+                                                 ValueExpression="@(() => pBranchID)">
+                                        <option value="0">-----------------------</option>
+                                        @if (oTCl550BranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550BranchList)
+                                            {
+                                                <option value="@item.ID">@item.Descript</option>
+                                            }
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control"
+                                                 Value="oOneSalaire.SBranchCpteID"
+                                                 ValueChanged="@((string value) => SubBranchChanged(value))"
+                                                 ValueExpression="@(() => pSubBranchID)">
+                                        <option value="0">-----------------------</option>
+                                        @if (oTCl550SubBranchList != null && oTCl550SubBranchList.Any())
+                                        {
+                                            @foreach (var item in oTCl550SubBranchList)
+                                            {
+                                                <option value="@item.ID">@item.Descript</option>
+                                            }
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Guichet Localisation</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence Compte</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control"
+                                                 Value="@pBranchIDTo"
+                                                 ValueChanged="@((string value) => BranchChangedTo(value))"
+                                                 ValueExpression="@(() => pBranchIDTo)">
+                                        <option value="0">-----------------------</option>
+
+                                        @if (oTCl550BranchListTwo != null)
+                                        {
+                                            @foreach (var item in oTCl550BranchListTwo)
+                                            {
+                                                <option value="@item.ID">@item.Descript</option>
+                                            }
+                                        }
+
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-3">
+
+
+                                    <InputSelect class="form-control"
+                                                 Value="@pSubBranchIDTo"
+                                                 ValueChanged="@((string value) => SubBranchChangedTo(value))"
+                                                 ValueExpression="@(() => pSubBranchIDTo)">
+                                        <option value="0">-----------------------</option>
+                                        @if (oTCl550SubBranchListTwo != null && oTCl550SubBranchListTwo.Any())
+                                        {
+                                            @foreach (var item in oTCl550SubBranchListTwo)
+                                            {
+                                                <option value="@item.ID">@item.Descript</option>
+                                            }
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Guichet Compte</label>
+                                </div>
+                            </div>
+                            @* ================ *@
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Code Guichet</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneSalaire.SBranchCpteID" disabled="true" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.ClientId" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Compte Client</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Cpte Autre banque</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneSalaire.CpteAutreBanq" />
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-text text-left" style="font-size:22px">Payment information</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Jours travaillés</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.PayDay" />
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputNumber Format="@CurrencyFormat" @bind-Value="oOneSalaire.SalBase" class="form-control"></InputNumber>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Salaire base</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Indemnités déplacement</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Format="@CurrencyFormat" @bind-Value="oOneSalaire.IndemDeplac" class="form-control"></InputNumber>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputNumber Format="@CurrencyFormat" @bind-Value="oOneSalaire.IndemLog" class="form-control"></InputNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Indemnités logement</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Prime</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;" Format="@CurrencyFormat" @bind-Value="oOneSalaire.Primes" class="form-control"></InputNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneSalaire.IndemFct" class="form-control"></InputNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Indemnités fonction</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Autres Indemnités </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneSalaire.TotalRetenue" class="form-control"></InputNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;" Format="@CurrencyFormat" @bind-Value="oOneSalaire.Gratifications" class="form-control"></InputNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Gratification</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Autres Avantage </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Format="@CurrencyFormat" class="form-control" @bind-Value="oOneSalaire.AutresAvantage" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.SALAIRE_IMPOSABLE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">SALAIRE IMPOSABLE</label>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">SALAIRE BRUT </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.SALAIRE_BRUT" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.TPR" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">TPR </label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RSSB EMPLOYEUR </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RSSB_EMPLOYEUR" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RSSB_EMPLOYEE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RSSB EMPLOYEE</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Cotisation Patronale</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.Cotisation_Patronale" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.Cotisation_Caisse_Social" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Cotisation Caisse Social </label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RSSBPens </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RSSBPens" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.MedInsur" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">MedInsur</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">MutSante </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.MutSante" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RembCredit" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RembCredit</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RembBourse </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RembBourse" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RetSanLam" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RetSanLam</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RetPrimeLife</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RetPrimeLife" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RetCaisseSolid" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RetCaisseSolid</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RetCaisEp</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RetCaisEp" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.RetEjoHeza" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RetEjoHeza</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">AutRetenues</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.AutRetenues" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber Style="text-align:left;pointer-events:none" class="form-control" Format="@CurrencyFormat" @bind-Value="oOneSalaire.TotalRetenue" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">TotalRetenue</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">NetAPayer </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputNumber Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneSalaire.NetAPayer" class="form-control" />
+                                </div>
+
+
+                            </div>
+
+                            @* ============ *@
+                            <!-- TotalIndem -->
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">TotalIndem</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.TotalIndem" />
+                                </div>
+                                <!-- REGULARISATION -->
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.REGULARISATION" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">REGULARISATION</label>
+                                </div>
+                            </div>
+
+                            <!-- TotalReteNonStat -->
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">TotalReteNonStat</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.TotalReteNonStat" />
+                                </div>
+                                <!-- RIPPSPAYMENT -->
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.RIPPSPAYMENT" />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RIPPSPAYMENT</label>
+                                </div>
+                            </div>
+
+
+
+                            <!-- BourseRipps -->
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">BourseRipps</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.BourseRipps" />
+                                </div>
+                                <!-- EjoHezaRipps -->
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.EjoHezaRipps" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">EjoHezaRipps</label>
+                                </div>
+                            </div>
+
+
+
+                            <!-- AutreRetRipps -->
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">AutreRetRipps</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.AutreRetRipps" />
+                                </div>
+
+                                <!-- ViremRIPPS -->
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.ViremRIPPS" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">ViremRIPPS</label>
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- IndemAutre -->
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">IndemAutre</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneSalaire.IndemAutre" />
+                                </div>
+
+
+                            </div>
+
+
+                            @* ================ *@
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control" @bind-Value="oOneSalaire.CreatBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneSalaire.CreatOn" Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date création</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneSalaire.LModifBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneSalaire.LModifOn" Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                        </div>
+                    </EditForm>
+                </div>
+
+                <div class="modal-footer" style="height:1px">
+                </div>
+            </div>
+        </div>
+    </div>
+}

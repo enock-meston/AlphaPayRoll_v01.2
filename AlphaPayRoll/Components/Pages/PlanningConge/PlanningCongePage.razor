@@ -1,0 +1,669 @@
+﻿@layout GcongLayout
+@page "/PlanningConge/PlanningCongePages/{id}"
+@inherits PlanningCongePageBase
+
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert"
+     style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New">Planifier Congé</h4>
+    </div>
+
+</div>
+@if (osessionService != null)
+{
+
+<div class="row col-sm-12">
+    <div class="col-sm-6">
+        @*<h5>@osessionService.MenuName</h5>*@
+    </div>
+    <div class="col-sm-4">
+        @if (isLoading)
+        {
+            <p><em>Loading...</em></p>
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="sr-only">Loading ...</span>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-sm-2">
+        @*<button class="btn btn-outline-primary btn-sm " @onclick="(()=>ShowPopUp(1))" style="width:130%">Ajouter</button>*@
+    </div>
+</div>
+
+@if (!isLoading && !AgentSelected)
+
+{
+
+        <div style="text-align:center; display:flex; justify-content:center; gap:40px;">
+
+
+            <p style="color:blue; font-weight:bold; margin:0;">
+                Congé Current Year: @Day_CongCurrentYear
+            </p>
+
+            <p style="color:black; font-weight:bold; margin:0;">
+                Conges Plannifies: @TotalCongeTranche
+            </p>
+
+            <p style="color:green; font-weight:bold; margin:0;">
+                Reste a plannifier: @ResteCongeTranche
+            </p>
+
+        </div>
+
+        <br />
+
+
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+           
+        @if (osessionService.RoleID !=1)
+            {
+                <!-- Branch Selection -->
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-sm-2">
+                    <label class="form-label">Agence/Guichet</label>
+                </div>
+                <div class="col-sm-2">
+                    <InputSelect class="form-control"
+                                 Value="@pBranchID"
+                                 ValueChanged="@((string value) => BranchRechercherPersonal(value))"
+                                 ValueExpression="@(() => pBranchID)">
+                      
+                        @if (oTCl550BranchList != null)
+                        {
+                            @foreach (var item in oTCl550BranchList)
+                            {
+                                <option value="@item.ID">@item.Descript</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+
+ 
+                <div class="col-sm-2">
+                    <InputSelect class="form-control"
+                                 Value="@pSubBranchID"
+                                 ValueChanged="@((string value) => SubBranchRechercherPersonal(value))"
+                                 ValueExpression="@(() => pSubBranchID)"
+                                 disabled="@(string.IsNullOrEmpty(pBranchID))">
+                       
+                        @if (oTCl550SubBranchList != null)
+                        {
+                            @foreach (var item in oTCl550SubBranchList)
+                            {
+                                <option value="@item.ID">@item.Descript</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+
+                <!-- Agent Selection -->
+                <div class="col-sm-5">
+                    <InputSelect class="form-control"
+                                 Value="@sSelectedPerson"
+                                 ValueChanged="@((string value) => SelectedPersonal(value))"
+                                 ValueExpression="@(() => sSelectedPerson)"
+                                 disabled="@(string.IsNullOrEmpty(pSubBranchID))">
+                        <option value="">Sélectionner Agent</option>
+                        @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
+                        {
+                            @foreach (var item in oTRH02SelectAgentList)
+                            {
+                                <option value="@item.AgentId.ToString()">
+                                    @item.Nom @item.Prenom - @item.Matricule
+                                </option>
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(pSubBranchID))
+                        {
+                            <option value="" disabled>Aucun agent disponible</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+             }
+      
+            
+            <div class="row g-2 align-items-center">
+
+            <div class="col-sm-2">
+                <label class="form-label">MATRICULE</label>
+            </div>
+
+            <div class="col-md-2">
+                <input class="form-control "
+                       @bind="@sMatricule" disabled="@bEmployee" />
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="searchByMatricule" style="width:100%">
+                    Rechercher
+                </button>
+            </div>
+
+
+            <div class="col-md-4">
+                <input class="form-control "
+                       @bind="@sNomPrenom" style="width:100%">
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button" class="btn  btn-dark"
+                        @onclick="GoBack" style="width:100%">
+                    ← Retour
+                </button>
+            </div>
+
+        </div>
+        @* </EditForm> *@
+    </div>
+
+
+
+    <div class="row col-sm-12">
+
+        <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-success" @onclick="(() => EditData(oOneActiveCongeRequest, 1))" style="width:100%;opacity:0.8" disabled="@bAddDisabled">Ajouter</button>
+        </div>
+
+            @* @if (osessionService.RoleID == 3)
+                {
+                    <div class="col-sm-2">
+                        <a href="http://enockn_pc/ReportServer/Pages/ReportViewer.aspx?%2fReport_HR_RIM%2fReport001&rs:Command=Render"
+                           target="_blank"
+                           class="btn btn-sm btn-primary "
+                           style="width:100%;opacity:0.8;">
+                            View Report
+                        </a>
+                    </div>
+                    } *@
+    </div>
+
+<div class="row">
+    <div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
+        <table class="table  table-bordered  DataGrid table-light" style="font-family: Arial">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>SBranch</th>
+                <th>Matricule</th>
+                <th>Exercice</th>
+                <th>Propos Mois</th>
+                <th>Num Tranche</th>
+                            <th>Propos Nbre Jour</th>
+                            <th>Chef Status</th>
+
+                   <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+                        @if (oPlanningCongeList != null)
+            {
+                    int count = 1;
+                            @for (int i = 0; i < oPlanningCongeList.Count; i++)
+                {
+                                var item = oPlanningCongeList[i];
+                      <tr class="@getRowColor(i)">
+
+                            <td>@(i + 1)</td>
+                            <td>@item.SBranchID</td>
+                             <td>@item.Matricule</td>
+                             <td>@item.Exercice</td>
+                            <td>@item.ProposMois</td>
+                            <td>@item.NumTranche</td>
+                                    <td>@item.ProposNbreJour</td>
+                                    <td>@item.StatusChefD</td>
+                        <td>
+                                        <button class="btn btn-sm btn-danger" @onclick="(() => EditData(item, 0))">Detail</button>
+                                        <button class="btn btn-sm btn-primary" @onclick="(() => EditData(item, 2))">Modifier </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-sm-5">
+        <h5>@TestMes</h5>
+    </div>
+</div>
+
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable modalDialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header" >
+                    <div class="row col-sm-12">
+                       
+                        <div class="col-sm-5">
+                            <h5 style="color:gray">Planifier Congé </h5>
+                        </div>
+
+                        <div class="col-sm-3">
+                            @if (iTypeAction != 0){
+                             <button type="button" class="btn btn-primary" @onclick="(() => SaveData(oOneActiveCongeRequest))" style="width:180px">Ajouter</button>
+
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                           <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:200px">Fermer</button>
+                        </div>    
+                    </div>
+                </div>
+
+
+                        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+
+
+                    <EditForm Model="oOneActiveCongeRequest">
+
+
+
+                        <div class="well well-sm " style="min-height: 50%;max-height:50%;">
+                            <div class="row col-sm-12">
+
+                                @* <div class="col-sm-4">
+                                    <label class="form-text text-right">Message</label>
+                                </div> *@
+
+                                <div class="col-sm-8">
+
+                                    @if (oResult != null)
+                                    {
+                                        <h3 style="color:white">@oResult.Result</h3>
+                                    }
+
+                                </div>
+                            </div>
+
+                                    @* === *@
+                                    <div style="text-align:center; display:flex; justify-content:center; gap:40px;">
+
+
+                                        <p style="color:blue; font-weight:bold; margin:0;">
+                                            Congé Current Year: @Day_CongCurrentYear
+                                        </p>
+
+                                        <p style="color:black; font-weight:bold; margin:0;">
+                                            Conges Plannifies: @TotalCongeTranche
+                                        </p>
+
+                                        <p style="color:green; font-weight:bold; margin:0;">
+                                            Reste a plannifier: @ResteCongeTranche
+                                        </p>
+
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Agence</label>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <InputSelect class="form-control " ValueChanged="@((string value) => BranchChanged(value))" ValueExpression="@(() => @pBranchID)" Value="@pBranchID" readonly="true">
+
+                                                @*   <option value="0"> ----------------------- </option> *@
+                                                @if (oTCl550BranchList != null)
+                                                {
+                                                    @foreach (var item in oTCl550BranchList)
+                                                    {
+
+                                                        @if (@item.ID == pBranchID)
+                                                        {
+                                                            <option Selected value="@item.ID"> @item.Descript </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.ID"> @item.Descript </option>
+                                                        }
+
+
+                                                    }
+                                                }
+
+                                            </InputSelect>
+
+
+                                        </div>
+
+
+                                        <div class="col-sm-3">
+                                            <InputSelect class="form-control " ValueChanged="@((string value) => SubBranchChanged(value))" ValueExpression="@(() => @pSubBranchID)" Value="@pSubBranchID" readonly="true">
+                                                @*   <option value="0"> ----------------------- </option> *@
+                                                @if (oTCl550SubBranchList != null)
+                                                {
+                                                    @foreach (var item in oTCl550SubBranchList)
+                                                    {
+                                                        @if (@item.ID == pSubBranchID)
+                                                        {
+                                                            <option Selected value="@item.ID"> @item.Descript </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.ID"> @item.Descript </option>
+                                                        }
+
+                                                    }
+                                                }
+
+                                            </InputSelect>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-text text-left">Guichet</label>
+                                        </div>
+
+
+                                    </div>
+
+                             <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Matricule</label>
+                                </div>
+                                <div class="col-sm-6">
+
+                                       <InputText class="form-control" @bind-Value="@sMatricule" readonly="true"/>
+                                    </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Exercise</label>
+                                </div>
+
+                                <div class="col-sm-6">
+
+
+
+                                            <InputSelect class="form-control " @bind-Value="oOneActiveCongeRequest.Exercice" readonly="true">
+                                       
+                                        @if (oTPR550Exercice != null)
+                                        {
+                                            @foreach (var item in oTPR550Exercice)
+                                            {
+                                                <option value="@item.RICode"> @item.Descript </option>
+                                            }                  
+                                        }
+
+                                       
+                                    </InputSelect>
+
+                                </div>
+
+                            </div>
+
+
+                                    <div class="row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Num Tranche</label>
+                                        </div>
+                                        <div class="col-sm-6">
+
+                                            <InputNumber class="form-control" @bind-Value="oOneActiveCongeRequest.NumTranche" readonly="true" />
+                                        </div>
+
+                                    </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Propos Mois</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control" @bind-Value="oOneActiveCongeRequest.ProposMois">
+
+                                        <option value="0"> ------------------- </option>
+
+                                        <option value="1">01</option>
+                                        <option value="2">02</option>
+                                        <option value="3">03</option>
+                                        <option value="4">04</option>
+                                        <option value="5">05</option>
+                                        <option value="6">06</option>
+                                        <option value="7">07</option>
+                                        <option value="8">08</option>
+                                        <option value="9">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </InputSelect>
+                                </div>
+
+                                        
+                                        <div class="col-sm-3">
+
+                                            <InputNumber class="form-control" @bind-Value="oOneActiveCongeRequest.ProposNbreJour" />
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label class="form-text text-left">Propos Nbre Jour</label>
+                                        </div>
+                            </div>
+
+
+                           @* ====================== *@
+                                    @* <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <h4 class="form-text text-right"> Chef Part </h4>
+                                        </div>
+                                    </div> *@
+
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Avis Chef</label>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <InputSelect class="form-control" @bind-Value="oOneActiveCongeRequest.StatusChefD" disabled="@bChefApprov">
+                                                <option value="Attente">Attente</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </InputSelect>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                            <InputTextArea rows="5" class="form-control" @bind-Value="oOneActiveCongeRequest.RemChefD" disabled="@bChefApprov" />
+                                            </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-text text-left"> Chef Remarque</label>
+                                        </div>
+                                    </div>
+
+                           @* ============================= *@
+
+                            
+                                    <hr class="col-sm-6 mx-auto" />
+                            
+                                    <div class="row col-sm-12">
+                                       
+                                        <div class="col-sm-4">
+                                            <h6 class="form-text text-right"> Partie RH </h6>
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Approv Mois</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <InputSelect class="form-control" @bind-Value="oOneActiveCongeRequest.ApprovMois" disabled="@bHRApprovMois">
+
+                                            <option value="0"> ------------------- </option>
+
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5">05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+
+
+                                        </InputSelect>
+                                    </div>
+
+                                        <div class="col-sm-3">
+
+                                            <InputNumber class="form-control" @bind-Value="oOneActiveCongeRequest.ApprovNbreJour" disabled="@bHRApprovMois" />
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label class="form-text text-left">Approv NbreJour</label>
+                                        </div>
+
+                                </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                            <label class="form-text text-right"> Remarque </label>
+                                </div>
+                                <div class="col-sm-6">
+                                   <InputTextArea class="form-control" @bind-Value="oOneActiveCongeRequest.Remark" disabled="@bHRApprovMois" rows="6"> </InputTextArea>
+                                </div>
+                            </div>
+
+                                    <hr class="col-sm-6 mx-auto" />
+
+                                   @*  <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <h4 class="form-text text-right"> DG Part </h4>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Avis DG</label>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <InputSelect class="form-control" @bind-Value="oOneActiveCongeRequest.StatusDGID" disabled="@bDgApprov">
+                                                <option value="Attente">Attente</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </InputSelect>
+                                        </div>
+
+                                        <div class="col-sm-4">
+
+                                            <InputTextArea rows="5" class="form-control" @bind-Value="oOneActiveCongeRequest.RemDG" disabled="@bDgApprov" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-text">DG's Remark  </label>
+                                        </div>
+
+                                    </div> *@
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                            <InputSelectNumber class="form-control" @bind-Value="oOneActiveCongeRequest.CreatBy" Readonly="false">
+                                                <option value="0"> ----------------------- </option>
+                                                @if (oTCl550UserList != null)
+                                                {
+                                                    foreach (var item in oTCl550UserList)
+                                                    {
+                                                        <option value="@item.ID">@item.UserName</option>
+                                                    }
+                                                }
+                                            </InputSelectNumber>
+
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneActiveCongeRequest.CreatOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date création</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneActiveCongeRequest.LModifBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneActiveCongeRequest.LModifOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+
+
+                        </div>
+
+
+                    </EditForm>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+}}

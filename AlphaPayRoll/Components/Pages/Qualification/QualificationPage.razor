@@ -1,0 +1,498 @@
+﻿@page "/Qualification/QualificationPage/{id}"
+@inherits QualificationPageBase
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+
+{
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+        <EditForm Model="oOneQualification">
+            <div class="row col-12">
+
+                <div class="col-sm-2">
+                    <label class="form-text text-right">Search by First name /Last Name /Matricule</label>
+                </div>
+                <div class="col-sm-2">
+                    <InputText class="form-control" @bind-Value="sNomRecherche" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-success" @onclick="Rechercher" style="width:100%;opacity:0.8">Rechercher</button>
+                </div>
+
+                <div class="col-sm-3">
+
+                </div>
+
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-success" style="width:100%;opacity:0.8">Download</button>
+                </div>
+
+
+
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneQualification, 1))" style="width:100%;opacity:0.8">Ajouter Personnel</button>
+                </div>
+
+            </div>
+        </EditForm>
+    </div>
+
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>MATRICULE</th>
+                    <th>NOM</th>
+                    <th>PRENOMS</th>
+                    <th>CONTACT</th>
+                    <th>DIPLOME</th>
+                    <th colspan="3">OPTIONS</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oQualificationList != null)
+                {
+                    @for (int i = 0; i < oQualificationList.Count; i++)
+                    {
+
+                        var item = oQualificationList[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.ID</td>
+                            <td>@item.NUM_MATRICULE</td>
+                            <td>@item.NOM</td>
+                            <td>@item.PRENOMS</td>
+                            <td>@item.CONTACT</td>
+                            <td>@item.LIBELLE</td>
+
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+                            @if (id != "1")
+                            {
+                                <td style="text-align:center;width:7%"> <button @onclick="(() => DonAgentSuite(item))" class="btn btn-sm btn-outline-danger" style="width:100%">Suite</button>  </td>
+                            }
+
+                        </tr>
+                    }
+                }
+            </tbody>
+
+
+        </table>
+    </div>
+
+}
+
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+                        </div>
+                        <div class="col-sm-7">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveQualification(oOneQualification))" style="width:100%">@ButtonCaption</button>
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+                    <EditForm Model="oOneQualification">
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Personnel ID</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneQualification.ID" />
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">NUM MATRICULE</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneQualification.NUM_MATRICULE" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Nom</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneQualification.NOM" />
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Prénom</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneQualification.PRENOMS" />
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">ANNEE</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneQualification.ANNEE" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">DIPLOME</label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneQualification.LIBELLE">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550NivEtudIdList != null)
+                                        {
+                                            @foreach (var item in oTCl550NivEtudIdList)
+                                            {
+                                                <option value="@item.Descript"> @item.Descript </option>
+                                            }
+                                        }
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                @*
+                                    <div class="col-sm-6">
+                                        <InputText class="form-control" @bind-Value="oOneQualification.LIBELLE" />
+                                    </div>
+                                *@
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">CONTACT</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneQualification.CONTACT" />
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+
+                                    <label class="form-text text-right">Create by</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneQualification.CreatBy" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneQualification.CreatOn" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date Creation</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneQualification.LModifBy" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneQualification.LModifOn" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+            <div class="modal-footer" style="height:1px">
+            </div>
+        </div>
+    </div>
+ }
+@if (!isLoading && AgentSelected)
+{
+
+    @if (id != "1")
+    {
+        <AlphaPayRoll.Pages.Tabs.GFTabContainer>
+
+
+            @if (id == "2")
+            {
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Remboursements">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRegAugmBase.TSL02AgDimAugmBasePage paramAgentId="@AgentID"
+                                                                                     paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRegAugmBase.TSL02AgDimAugmBasePage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Cotisations">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetCotisation.TSL02AgRetCotisPage paramAgentId="@AgentID"
+                                                                                    paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetCotisation.TSL02AgRetCotisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+
+            }
+
+
+            @if (id == "3")
+            {
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Heures supplémentaires">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.TSL02AgHSup.TSL02AgHSupPage paramAgentId="@AgentID"
+                                                                            paramSalaireBase="@SalaireBase">
+
+                            </AlphaPayRoll.Pages.TSL02AgHSup.TSL02AgHSupPage>
+                        </div>
+
+                    </TabContent>
+
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Occasionnelles">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetOccasMoisPage paramAgentId="@AgentID"
+                                                                                         paramNomAgent="@sNomAgent">
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetOccasMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Remboursements">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetPaymentMoisPage paramAgentId="@AgentID"
+                                                                                           paramNomAgent="@sNomAgent">
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetPaymentMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Cotisations">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetCotisMoisPage paramAgentId="@AgentID"
+                                                                                         paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetCotisMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Régularisation en augmentation">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRegAugmMoisPage paramAgentId="@AgentID"
+                                                                                        paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRegAugmMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+            @if (id == "4")
+            {
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Traitement Salaire">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.TSL03Traitem.TSL03TraitemPage paramAgentId="@AgentID">
+
+                            </AlphaPayRoll.Pages.TSL03Traitem.TSL03TraitemPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+        </AlphaPayRoll.Pages.Tabs.GFTabContainer>
+    }
+}
+@if (!isLoading && AgentSelected)
+{
+    @if (id != "1")
+    {
+        <AlphaPayRoll.Pages.Tabs.GFTabContainer>
+            @if (id == "2")
+            {
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Remboursements">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRegAugmBase.TSL02AgDimAugmBasePage paramAgentId="@AgentID"
+                                                                                     paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRegAugmBase.TSL02AgDimAugmBasePage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Cotisations">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetCotisation.TSL02AgRetCotisPage paramAgentId="@AgentID"
+                                                                                    paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetCotisation.TSL02AgRetCotisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+            @if (id == "3")
+            {
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Heures supplémentaires">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.TSL02AgHSup.TSL02AgHSupPage paramAgentId="@AgentID"
+                                                                            paramSalaireBase="@SalaireBase">
+
+                            </AlphaPayRoll.Pages.TSL02AgHSup.TSL02AgHSupPage>
+                        </div>
+
+                    </TabContent>
+
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Occasionnelles">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetOccasMoisPage paramAgentId="@AgentID"
+                                                                                         paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetOccasMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Remboursements">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetPaymentMoisPage paramAgentId="@AgentID"
+                                                                                           paramNomAgent="@sNomAgent">
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetPaymentMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Cotisations">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetCotisMoisPage paramAgentId="@AgentID"
+                                                                                         paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetCotisMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Régularisation en augmentation">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRegAugmMoisPage paramAgentId="@AgentID"
+                                                                                        paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRegAugmMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+            @if (id == "4")
+            {
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Traitement Salaire">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.TSL03Traitem.TSL03TraitemPage paramAgentId="@AgentID">
+
+                            </AlphaPayRoll.Pages.TSL03Traitem.TSL03TraitemPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+
+
+        </AlphaPayRoll.Pages.Tabs.GFTabContainer>
+    }
+}
+

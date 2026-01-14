@@ -1,0 +1,268 @@
+﻿@page "/TSL02AgentRet/TSL02AgentRetPage"
+@inherits TSL02AgentRetPageBase
+
+
+<div class="row col-12">
+    <div class="col-sm-10">
+        <h3>Retenues</h3>
+    </div>
+
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL02AgentRet, 1))" style="width:100%;opacity:0.8">Ajouter AgentRet</button>
+    </div>
+
+</div>
+
+
+@if (oTSL02AgentRetList == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Compte agent</th>
+                    <th>Type retenue</th>
+                    <th>Description</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTSL02AgentRetList != null)
+                {
+                    @for (int i = 0; i < oTSL02AgentRetList.Count; i++)
+                    {
+                        var item = oTSL02AgentRetList[i];
+                <tr class="@getRowColor(i)">
+
+                    <td>@item.ID</td>
+
+                    <td>@item.AgentId</td>
+
+                    <td>@item.TpRetId</td>
+
+                    <td>@item.Descript</td>
+
+
+                    <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                    <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                    <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (popup)
+    {
+
+
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog modal-xl modalDialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <div class="row col-sm-12">
+                            <div class="col-sm-1">
+
+                            </div>
+
+                            <div class="col-sm-7">
+                                <h5 style="color:black">@modalTitle </h5>
+                            </div>
+
+                            <div class="col-sm-2">
+                                @if (iTypeAction != 0)
+                                {
+                                    <button type="button" class=@StyleButton @onclick="(() => SaveTSL02AgentRet(oOneTSL02AgentRet))" style="width:100%">@ButtonCaption</button>
+                                }
+
+
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-body ">
+
+                        <EditForm Model="oOneTSL02AgentRet">
+
+
+                            <div class="well well-sm pre-scrollable modalBody">
+
+           
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">ID</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.ID" Readonly="true" />
+
+                                    </div>
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Compte Agent</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.AgentId" />
+
+                                    </div>
+
+                                </div>
+
+                              
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Type retenue</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.TpRetId" />
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Description</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputText class="form-control" @bind-Value="oOneTSL02AgentRet.Descript" />
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Exercice</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.ExercDeb" />
+                                    </div>
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Mois</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.MoisDeb" />
+                                    </div>
+
+                                </div>
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Permanent</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputCheckbox class="form-control" @bind-Value="oOneTSL02AgentRet.Perman" />
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">En vigueur</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputCheckbox class="form-control" @bind-Value="oOneTSL02AgentRet.Enab" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Crée par</label>
+                                    </div>
+                                    <div class="col-sm-4">
+
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.CreatBy" Readonly=true />
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Date création</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL02AgentRet.CreatOn" Readonly=true />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Modifié par</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL02AgentRet.LModifBy" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Date modification</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL02AgentRet.LModifOn" Readonly=true />
+                                    </div>
+                                </div>
+
+ 
+
+                            </div>
+
+                        </EditForm>
+
+
+                    </div>
+
+
+                    <div class="modal-footer" style="height:1px">
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    }
+}
+

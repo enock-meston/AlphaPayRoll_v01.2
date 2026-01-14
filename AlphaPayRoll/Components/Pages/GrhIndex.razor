@@ -1,0 +1,102 @@
+﻿@layout GrhLayout
+@page "/GrhIndex"
+@using AlphaPayRoll.DataServices.GetHRCounts
+@using PayLibrary.GetHRCounts
+
+
+<PageTitle>GRH</PageTitle>
+<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Font Awesome Free -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="container">
+    <h3 class="mb-4">Tableau de bord du système RH</h3>
+
+    <!-- DASHBOARD CARDS -->
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-person"></i>
+                       Total des Agent
+                    </h5>
+
+
+                    <h3>@HRCounts.FirstOrDefault(x => x.TableName == "TRH02Agent")?.TotalRows</h3>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"> 
+                        <i class="fa-solid fa-book"></i>
+                       Total des Contrat 
+                    </h5>
+                    
+                 
+                    <h3>@HRCounts.FirstOrDefault(x => x.TableName == "TRH03Contrat")?.TotalRows</h3>
+                
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"> <i class="fa fa-book"></i> Total des Affectation  </h5>
+                    <h3>@HRCounts.FirstOrDefault(x => x.TableName == "TRH04Affectation")?.TotalRows</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-leaf"></i>Total des Congé </h5>
+                    <h3>@HRCounts.FirstOrDefault(x => x.TableName == "THRCongRequest")?.TotalRows</h3>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-leaf"></i> Planification Congé</h5>
+                    <h3>@HRCounts.FirstOrDefault(x => x.TableName == "THRPlanningConge")?.TotalRows</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-hashtag"></i> Faute</h5>
+                    <h3>@HRCounts.FirstOrDefault(x => x.TableName == "TRH04FAUTE")?.TotalRows</h3>
+
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+@code {
+    [Inject]
+    protected IClassGetHRCounts ClassGetHRCountsService { get; set; }
+    
+    List<ClassGetHRCounts> HRCounts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        HRCounts = await ClassGetHRCountsService.GetHRCountsAsync();
+    }
+
+   
+}

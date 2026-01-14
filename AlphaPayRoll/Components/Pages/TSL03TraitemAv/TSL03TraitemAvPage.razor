@@ -1,0 +1,818 @@
+﻿@page "/TSL03TraitemAv/TSL03TraitemAvPage"
+@inherits TSL03TraitemAvPageBase
+
+<div class="row col-12">
+    <div class="col-sm-10">
+        <h3>TraitemAv Page</h3>
+    </div>
+
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL03TraitemAv, 1))" style="width:100%;opacity:0.8">Ajouter TraitemAv</button>
+    </div>
+
+</div>
+
+
+@if (oTSL03TraitemAvList == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>An</th>
+                    <th>Mois</th>
+                    <th>AgentId</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTSL03TraitemAvList != null)
+                {
+                    @for (int i = 0; i < oTSL03TraitemAvList.Count; i++)
+                    {
+                        var item = oTSL03TraitemAvList[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.ID</td>
+
+                            <td>@item.An</td>
+
+                            <td>@item.Mois</td>
+
+                            <td>@item.AgentId</td>
+
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (popup)
+    {
+
+
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog modal-xl modalDialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <div class="row col-sm-12">
+                            <div class="col-sm-1">
+
+                            </div>
+
+                            <div class="col-sm-7">
+                                <h5 style="color:black">@modalTitle </h5>
+                            </div>
+
+                            <div class="col-sm-2">
+                                @if (iTypeAction != 0)
+                                {
+                                    <button type="button" class=@StyleButton @onclick="(() => SaveTSL03TraitemAv(oOneTSL03TraitemAv))" style="width:100%">@ButtonCaption</button>
+                                }
+
+
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-body ">
+
+                        <EditForm Model="oOneTSL03TraitemAv">
+
+
+                            <div class="well well-sm pre-scrollable modalBody">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+
+                                <div class="row col-sm-12">
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">ID</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.ID" Readonly="true" />
+
+                                    </div>
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">An</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.An" />
+
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Mois</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.Mois" />
+
+                                    </div>
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AgentId</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.AgentId" />
+
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+
+
+
+
+
+
+
+                                @*<div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">SalBase</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.SalBase" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Logem</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.Logem" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Deplacem</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.Deplacem" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">HeureSup</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.HeureSup" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Alloc</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.Alloc" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Indemnit</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.Indemnit" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">IndemRep</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.IndemRep" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AutresIndmt</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AutresIndmt" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Brut</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.Brut" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">BaseIPR</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.BaseIPR" />
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <br />
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AvancQuinz</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AvancQuinz" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Unif</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.Unif" />
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AssAcc</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AssAcc" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AssInc</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AssInc" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AssVeh</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AssVeh" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PensionCompl</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.PensionCompl" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AssEducEnf</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AssEducEnf" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AssPensCom</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AssPensCom" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">CotisEdEnf</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.CotisEdEnf" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AssSRD</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AssSRD" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">CredVeh</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.CredVeh" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">CredFPHU</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.CredFPHU" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">CredBICOR</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.CredBICOR" />
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AvancAnnuel</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AvancAnnuel" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AvancPonct</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AvancPonct" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AvancEduc</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AvancEduc" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">AvanceMatSco</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.AvanceMatSco" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">CaisseSoc</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.CaisseSoc" />
+                                    </div>
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">ContriElec</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.ContriElec" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">ContriCaisSport</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.ContriCaisSport" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">FraisMedic</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.FraisMedic" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">INSS</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.INSS" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">IPR</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.IPR" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">TotRetenus</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.TotRetenus" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">NETS</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL03TraitemAv.NETS" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">NbreHS</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.NbreHS" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />*@
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">NbreJTrav</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.NbreJTrav" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PPINSS6</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.PPINSS6" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PPINSS3</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.PPINSS3" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">PPPens</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.PPPens" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">TempDec</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.TempDec" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">NonVie</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.NonVie" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Created By</label>
+                                    </div>
+                                    <div class="col-sm-4">
+
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.CreatBy" Readonly=true />
+
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Created On</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL03TraitemAv.CreatOn" Readonly=true />
+                                    </div>
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Last Modified By</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL03TraitemAv.LModifBy" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Last Modified On</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL03TraitemAv.LModifOn" Readonly=true />
+                                    </div>
+                                </div>
+
+                                <br />
+
+
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+
+                                </div>
+
+
+
+                            </div>
+
+                        </EditForm>
+
+
+                    </div>
+
+
+                    <div class="modal-footer" style="height:1px">
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    }
+}
+
+

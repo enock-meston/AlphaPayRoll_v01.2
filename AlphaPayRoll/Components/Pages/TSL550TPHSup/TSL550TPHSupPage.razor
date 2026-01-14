@@ -1,0 +1,195 @@
+﻿
+@page "/TSL550TPHSup/TSL550TPHSupPage"
+@inherits TSL550TPHSupBasePage
+
+<br/>
+
+<div class="row col-12">
+	<div class="col-sm-10">
+		<h5>Type heures supplémentaires</h5>
+	</div>
+
+	<div class="col-sm-2">
+		<button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL550TPHSup, 1))" style="width:100%;opacity:0.8">Ajouter</button>
+	</div>
+
+</div>
+
+<div class="row col-sm-12">
+	<table class="table  table-bordered  table-light DataGrid">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>RIcode</th>
+				<th>Description</th>
+				<th>Enabled</th>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+
+			@if (oTSL550TPHSupList != null)
+			{
+				@for (int i = 0; i < oTSL550TPHSupList.Count; i++)
+				{
+					var item = oTSL550TPHSupList[i];
+					<tr class="@getRowColor(i)">
+
+						<td>@item.ID</td>
+						<td>@item.RICode</td>
+						<td>@item.Descript</td>
+						<td>@item.Enab</td>
+
+						<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+						<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+						<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+					</tr>
+				}}
+		</tbody>
+	</table>
+</div>
+@if (popup)
+{
+
+	<div class="modal" tabindex="-1" style="display: inline-block ">
+		<div class="modal-dialog modal-xl modalDialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<div class="row col-sm-12">
+						<div class="col-sm-1">
+						</div>
+
+						<div class="col-sm-7">
+							<h5 style="color:black">@modalTitle </h5>
+						</div>
+
+						<div class="col-sm-2">
+							@if (iTypeAction != 0)
+							{
+								<button type="button" class=@StyleButton @onclick="(() => SaveTSL550TPHSup(oOneTSL550TPHSup))" style="width:100%">@ButtonCaption</button>
+							}
+
+
+						</div>
+						<div class="col-sm-2">
+							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body ">
+
+					<EditForm Model="oOneTSL550TPHSup">
+						<div class="well well-sm pre-scrollable modalBody">
+							
+							<div class="row col-sm-12">
+								<div class="col-sm-4">
+									<label class="form-text text-right">ID</label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TPHSup.ID" Readonly="true" />
+								</div>
+
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">RIcode</label>
+								</div>
+								<div class="col-sm-6">
+									<InputText class="form-control" @bind-Value="oOneTSL550TPHSup.RICode" />
+
+								</div>
+
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Description</label>
+								</div>
+								<div class="col-sm-6">
+									<InputText class="form-control" @bind-Value="oOneTSL550TPHSup.Descript" />
+								</div>
+
+							</div>
+
+							<div class="row col-sm-12">
+								<div class="col-sm-4">
+									<label class="form-text text-right"> Enabled  </label>
+								</div>
+								<div class="col-sm-6">
+									<InputCheckbox class="form-control UICheckbox" @bind-Value="oOneTSL550TPHSup.Enab" />
+								</div>
+							</div>
+
+							<div class="row col-sm-12">
+							<div class="col-sm-4">
+								<label class="form-text text-right">Orderder number</label>
+							</div>
+							<div class="col-sm-6">
+
+								<InputNumber class="form-control" @bind-Value="oOneTSL550TPHSup.Ordnum" />
+
+							</div>
+							</div>
+
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Created By</label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TPHSup.CreatBy" Readonly="true" />
+								</div>
+
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Created On</label>
+								</div>
+								<div class="col-sm-6">
+									<InputDate class="form-control" @bind-Value="oOneTSL550TPHSup.CreatOn" Readonly="true" />
+								</div>
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Last Modifed By</label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TPHSup.UserID" Readonly="true" />
+								</div>
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Last Modifed On</label>
+								</div>
+								<div class="col-sm-6">
+									<InputDate class="form-control" @bind-Value="oOneTSL550TPHSup.LModifOn" Readonly="true" />
+								</div>
+							</div>
+
+
+
+
+
+						</div>
+					</EditForm>
+				</div>
+				<div class="modal-footer" style="height:1px">
+				</div>
+			</div>
+		</div>
+	</div>
+}

@@ -1,0 +1,19 @@
+﻿<h3>NewID</h3>
+@page "/AutoIncrementID/NewID/{NewID}"
+@inherits Personnel_RIM2PageBase
+
+@code {
+    AutoIncrementID idGenerator;
+
+    protected override void OnInitialized()
+    {
+        idGenerator = new AutoIncrementID("RIM", 4889);
+    }
+
+    void GenerateNewID()
+    {
+        string newID = idGenerator.GenerateID();
+        Console.WriteLine(newID); // This will output RIM04890
+                                  // You can use the newID as required in your Blazor component
+    }
+}

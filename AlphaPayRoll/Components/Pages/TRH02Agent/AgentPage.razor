@@ -1,0 +1,860 @@
+﻿
+@layout GrhLayout
+@page "/TRH02Agent/AgentPage/{id}"
+@inherits AgentPageBase
+
+
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert" style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New">Nouveau recu/Employé</h4>
+    </div>
+</div>
+
+@if (osessionService != null)
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+
+{
+
+
+    
+<EditForm Model="oOneTRH02Agent">
+
+        <div class="row col-12 alert " role="alert" style="background-color: cadetblue; border-block-color: cadetblue ">
+
+            <div class="col-sm-1">
+                <label class="form-text text-right" style="color:white">Agence</label>
+            </div>
+            <div class="col-sm-2">
+
+                <InputSelect class="form-control " ValueChanged="@((string value) => BranchChanged(value))" ValueExpression="@(() => @pBranchID)" Value="@pBranchID">
+                    <option> ----------------------- </option>
+                    @if (oTCl550BranchList != null)
+                    {
+                        @foreach (var item in oTCl550BranchList)
+                        {
+                            @if (@item.ID == pBranchID)
+                            {
+                                <option Selected value="@item.ID"> @item.Descript </option>
+                            }
+                            else
+                            {
+                                <option value="@item.ID"> @item.Descript </option>
+                            }
+                        }
+                    }
+
+                </InputSelect>
+            </div>
+            <div class="col-sm-2">
+                <label class="form-text text-right" style="color:white">Rechercher par nom</label>
+            </div>
+            <div class="col-sm-2">
+                <InputText class="form-control" @bind-Value="sNomRecherche" />
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-warning" @onclick="Rechercher" style="width:100%;">Rechercher</button>
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-danger" @onclick="(() => EditData(oOneTRH02Agent, 1))" style="width:100%;">Ajouter Agent</button>
+            </div>
+
+        </div>
+</EditForm>
+
+
+
+
+    <div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    
+                    <th>Matricule</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTRH02AgentList != null)
+                {
+                    @for (int i = 0; i < oTRH02AgentList.Count; i++)
+                    {
+
+                        var item = oTRH02AgentList[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.Matricule</td>
+                            <td>@item.Nom</td>
+                            <td>@item.Prenom</td>
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            @* <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td> *@
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => AfficherContrat(item.Matricule))" class="btn btn-sm btn-outline-primary" style="width:100%">Contrat</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => AfficherAffectation(item.Matricule))" class="btn btn-sm btn-outline-primary" style="width:100%">Affectation</button>  </td>
+                            <td style="text-align:center;width:12%"> <button @onclick="(() => PlanningConge(item.Matricule))" class="btn btn-sm btn-outline-primary" style="width:100%">Planning congé</button>  </td>
+                            @* <td style="text-align:center;width:7%"> <button @onclick="(() => Depart(item.Matricule))" class="btn btn-sm btn-outline-primary" style="width:100%">Départ</button>  </td> *@
+                            
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+   @*      <div class="row col-12 alert " role="alert" style="background-color: cadetblue; border-block-color: cadetblue ">
+
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-warning" @onclick="AfficherContrat" style="width:100%;">Contrat</button>
+            </div>
+
+    
+            <div class="col-sm-2">
+            <button type="button" class="btn btn-sm btn-warning" @onclick="AfficherAffectation" style="width:100%;">Affectation</button>
+            </div>
+        </div>
+   *@
+
+
+
+}
+
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+
+                        </div>
+
+                        <div class="col-sm-7">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveTRH02Agent(oOneTRH02Agent))" style="width:100%">@ButtonCaption</button>}
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneTRH02Agent">
+
+
+                        <div class="well well-sm pre-scrollable modalBody">
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    @* <InputSelect class="form-control " @bind-Value="oOneTRH02Agent.BranchLocID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550BranchList != null)
+                                            {
+                                            @foreach (var item in oTCl550BranchList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>
+                                                }}
+                                        }
+                                        }
+                                    </InputSelect> *@
+
+                                    <InputSelect class="form-control " ValueChanged="@((string value) => BranchChanged(value))" ValueExpression="@(() => @pBranchID)" Value="@pBranchID">
+
+                                        @*   <option value="0"> ----------------------- </option> *@
+                                        @if (oTCl550BranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550BranchList)
+                                            {
+
+                                                @if (@item.ID == pBranchID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }
+                                        }
+
+                                    </InputSelect>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    @* <InputSelect class="form-control " @bind-Value="oOneTRH02Agent.SBranchLocID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SubBranchList != null)
+                                            {
+                                            @foreach (var item in oTCl550SubBranchList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>
+                                                }}
+                                        }
+                                        }
+                                    </InputSelect> *@
+
+                                    <InputSelect class="form-control " ValueChanged="@((string value) => BranchChanged(value))" ValueExpression="@(() => @pSubBranchID)" Value="@pSubBranchID">
+                                        @*   <option value="0"> ----------------------- </option> *@
+                                        @if (oTCl550SubBranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550SubBranchList)
+                                            {
+                                                @if (@item.ID == pSubBranchID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+
+                                            }
+                                        }
+
+                                    </InputSelect>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-left">Guichet</label>
+                                </div>
+
+
+                            </div>
+
+
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Code Guichet</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.SBranchLocID" disabled="true" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.ClientId" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Compte Client</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Code Client</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Code" disabled="true" />
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.AgentId" disabled="true" />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">No Agent </label>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Nom</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Nom" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Prenom" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Prénom</label>
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Sexe</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.Sexe">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SexeList != null)
+                                            {
+                                            @foreach (var item in oTCl550SexeList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.DateNais" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date Naissance</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Etat civil</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.EtatCivId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550MaritStatusList != null)
+                                            {
+                                            @foreach (var item in oTCl550MaritStatusList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    @* <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.BranchLocID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550BranchList != null)
+                                            {
+                                            @foreach (var item in oTCl550BranchList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber> *@
+
+                                    <InputSelect class="form-control " ValueExpression="@(() => @pSubBranchIDCont)" Value="@pSubBranchIDCont">
+                                        @*   <option value="0"> ----------------------- </option> *@
+                                        @if (oTCl550SubBranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550SubBranchList)
+                                            {
+                                                @if (@item.ID == pSubBranchIDCont)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+
+                                            }
+                                        }
+
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Agence</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Département</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.DepartementId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550DepartementList != null)
+                                            {
+                                            @foreach (var item in oTCl550DepartementList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.FonctionId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550FonctionList != null)
+                                            {
+                                            @foreach (var item in oTCl550FonctionList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Fonction</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date recrutement</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.DateRecrutment" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.DateDepart" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date Depart</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">LIEU_NAISSNACE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.LIEU_NAISSNACE" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.NUM_SECURITE_SOCIALE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NUM_SECURITE_SOCIALE</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">NOM_CONJOINT</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.NOM_CONJOINT" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.NUM_ALLOCATION" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NUM_ALLOCATION</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">NUMERO_PIECE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.NUMERO_PIECE" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.LIBELLE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">LIBELLE</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">ANCIENNETE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.ANCIENNETE" Readonly=true />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.NATIONALITE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NATIONALITE</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Téléphone</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Telephone" />
+                                </div>
+
+                            </div>
+
+
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Numéro Carte ID</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.IdNum" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Email" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Adresse Email</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Numéro RSSB</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.NumCSR" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.NivEtudId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550NivEtudIdList != null)
+                                            {
+                                            @foreach (var item in oTCl550NivEtudIdList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Niveau études</label>
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Domaine Etudes</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.DomEtudId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550DomEtudList != null)
+                                            {
+                                            @foreach (var item in oTCl550DomEtudList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control" @bind-Value="oOneTRH02Agent.DiplomId">
+                                        <option value="0"> ----------------------- </option>
+
+                                        @if (oTCl550DeplomList != null)
+                                            {
+
+                                            @foreach (var item in oTCl550DeplomList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Diplôme</label>
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Université</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.UniverId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UniversiteList != null)
+                                            {
+                                            @foreach (var item in oTCl550UniversiteList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.StatusId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550StatusList != null)
+                                            {
+                                            @foreach (var item in oTCl550StatusList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Statut</label>
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Numéro ordre</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.NumOrdre" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.NbrepCharge" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Nombre Enfants</label>
+                                </div>
+                            </div>
+
+                            @* ===days allowed to leave= *@
+
+                            <hr class="col-sm-6 mx-auto" />
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <h4 class="form-text text-right"> Congé </h4>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Congé Retard</label>
+                                </div>
+                                <div class="col-sm-1">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.CongRetard" />
+                                </div>
+                                <div class="col-sm-1">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.CongCurrentYear" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Congé année en cours</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.CongPris" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Congé Pris</label>
+                                </div>
+                            </div>
+
+  
+                            <hr class="col-sm-6 mx-auto" />
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.CreatBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                            {
+                                            @foreach (var item in oTCl550UserList)
+                                                {
+                                                <option value="@item.ID"> @item.UserName </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.CreatOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date création</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.LModifBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                            {
+                                            @foreach (var item in oTCl550UserList)
+                                                {
+                                                <option value="@item.ID"> @item.UserName </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.LModifOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+
+                        </div>
+                    </EditForm>
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer" style="height:1px">
+
+
+            </div>
+
+        </div>
+    </div>
+}
+
+@if (popupSubMenu)
+{
+
+
+       <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+
+                        <div class="col-sm-1">
+                          
+                        </div>
+
+                        <div class="col-sm-3">
+                            <h4 style="color:black">Sous-menu </h4>
+                        </div>
+
+       
+                        <div class="col-sm-5">
+                            <h4 style="color:black">@sMatNomPrenom</h4>
+                        </div>
+
+   
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUpMenu" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-body ">
+
+
+                    <div class="row col-sm-12  pre-scrollable well" style=" max-height: 80vh;">
+
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-4">
+                            <table class="table  table-bordered  DataGrid table-light" style="font-family: Arial">
+                                <thead>
+                                    <tr>
+                                        <th>Sub Menus</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < oSubMenuList.Count; i++)
+                                    {
+                                        var item = oSubMenuList[i];
+                                        <tr class="@getRowColor(i)">
+
+                                            <td>@item.Descript</td>
+
+                                            <td style="text-align:center;width:5%"> <a href="@(item.PageRoute.Trim()+$"/{sMatricule}")"  class="btn btn-sm btn-outline-secondary">Display</a>  </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                    </div>
+
+
+                </div>
+
+
+                <div class="modal-footer" style="height:1px">
+                </div>
+
+            </div>
+        </div>
+    </div>
+     
+}
+
+
+
+
+

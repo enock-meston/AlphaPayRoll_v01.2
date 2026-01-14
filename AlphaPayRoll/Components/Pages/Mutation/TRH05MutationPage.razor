@@ -1,0 +1,426 @@
+﻿@layout GrhLayout
+@page "/HumanResource/TRH05MutationPage"
+@inherits TRH05MutationBase
+
+
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert" style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New">Mutation</h4>
+    </div>
+</div>
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+
+{
+
+
+
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+        @*  <EditForm Model="@oOneTRH02Agent"> *@
+        <div class="row g-2 align-items-center">
+
+            <div class="col-sm-2">
+                <label class="form-label ">MATRICULE</label>
+            </div>
+
+            <div class="col-md-2">
+                <input class="form-control "
+                       @bind="@sMatricule"
+                       placeholder="Enter matricule" />
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="searchByMatricule" style="width:100%">
+                    Rechercher
+                </button>
+            </div>
+
+
+            <div class="col-md-4">
+                <input class="form-control "
+                       @bind="@sNomPrenom" style="width:100%">
+            </div>
+
+            <div class="col-sm-2">
+                <button type="button" class="btn  btn-dark"
+                        @onclick="GoBack" style="width:100%">
+                    ← Retour
+                </button>
+            </div>
+
+        </div>
+        @* </EditForm> *@
+    </div>
+
+
+
+    <div class="row col-sm-12">
+
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-sm btn-success" @onclick="(() => EditData(oOneMutation, 1))" style="width:100%;opacity:0.8" disabled="@bAddDisabled">Ajouter</button>
+        </div>
+
+    </div>
+
+
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+
+                    <th>Matricule</th>
+                    <th>Fonction</th>
+                    <th>Date Mutation</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTRH05MutationList != null)
+                {
+                    @for (int i = 0; i < oTRH05MutationList.Count; i++)
+                    {
+
+                        var item = oTRH05MutationList[i];
+                        <tr class="@getRowColor(i)">
+                            <td>@item.Matricule</td>
+                            <td>@item.FunctionID </td>
+                            <td>@item.DateMut</td>
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modifier</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Supprimer</button>  </td>
+
+                            @if (item.StatusID == 2)
+                            {
+                                <td class="text-success" style="text-align:center;width:7%">
+                                    Validé
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="text-align:center;width:7%">
+                                    <button @onclick="() => ValidateData(item.ID)"
+                                            class="btn btn-sm btn-outline-success"
+                                            style="width:100%">
+                                        Validation
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+
+
+        </table>
+    </div>
+
+}
+
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row col-sm-12">
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-4">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveMutation(oOneMutation))" style="width:100%">@ButtonCaption</button>
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="oOneMutation">
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Employé</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <InputText class="form-control" @bind-Value="@sMatricule" Readonly=true />
+                                </div>
+                                <div class="col-sm-4">
+                                    <input class="form-control" @bind="@sNomPrenom" disabled />
+                                </div>
+                            
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Nom Employé</label>
+                                </div>
+
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Fonction</label>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneMutation.FunctionID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550FonctionList != null)
+                                        {
+                                            @foreach (var item in oTCl550FonctionList)
+                                            {
+                                                <option value="@item.RICode"> @item.Descript </option>
+                                            }
+                                        }
+                                        
+                                    
+                                        
+                                    </InputSelectNumber>
+
+                                </div>
+
+                            </div>
+
+                            <!-- ==================== TRANSFER FROM SECTION ==================== -->
+                            
+                            <div class="row col-sm-12 mt-2">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence d’origine</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control"
+                                                 ValueChanged="@((string value) => BranchChanged(value))"
+                                                 ValueExpression="@(() => pBranchID)"
+                                                 Value="@pBranchID">
+                                        @if (oTCl550BranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550BranchList)
+                                            {
+
+                                                @if (@item.ID == pBranchID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control"
+                                                 ValueChanged="@((string value) => SubBranchChanged(value))"
+                                                 ValueExpression="@(() => pSubBranchID)"
+                                                 Value="@pSubBranchID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SubBranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550SubBranchList)
+                                            {
+                                                @if (@item.ID == pSubBranchID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+
+                                            }
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Guichet d’origine</label>
+                                </div>
+                            </div>
+
+
+                            <!-- ==================== TRANSFER TO SECTION ==================== -->
+                           
+                            <div class="row col-sm-12 mt-2">
+                            <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence de destination</label>
+                            </div>
+                            <div class="col-sm-3">
+                                <InputSelect class="form-control"
+                                             ValueChanged="@((string value) => BranchChangedTo(value))"
+                                             ValueExpression="@(() => pBranchIDTo)"
+                                             Value="@pBranchIDTo">
+                                    <option value="0"> ----------------------- </option>
+                                        @if (oTCl550BranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550BranchList)
+                                            {
+
+                                                @if (@item.ID == pBranchIDTo)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }
+                                        }
+                                </InputSelect>
+                            </div>
+                            <div class="col-sm-3">
+                                <InputSelect class="form-control"
+                                             ValueChanged="@((string value) => SubBranchChangedTo(value))"
+                                             ValueExpression="@(() => pSubBranchIDTo)"
+                                                 Value="@pSubBranchIDTo">
+                                    <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SubBranchList != null)
+                                        {
+                                            @foreach (var item in oTCl550SubBranchList)
+                                            {
+                                                @if (@item.ID == pSubBranchIDTo)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+
+                                            }
+                                        }
+                                </InputSelect>
+                            </div>
+                            <div class="col-sm-2">
+                                    <label class="form-text">Guichet de destination</label>
+                            </div>
+                        </div>
+                            
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Raison Mutation </label>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <InputTextArea rows="5" class="form-control" @bind-Value="oOneMutation.RaisonMut" placeholder="" />
+                                </div>
+
+                            </div>
+                          
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date Mutation</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputDate class="form-control" @bind-Value="oOneMutation.DateMut" />
+                                </div>
+                            </div>
+
+
+                        
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                <InputSelectNumber class="form-control " @bind-Value="oOneMutation.CreatBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }
+                                        }
+                                       
+                                    </InputSelectNumber>
+
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                <InputDate class="form-control" @bind-Value="oOneMutation.CreatOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date création</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                <InputSelectNumber class="form-control " @bind-Value="oOneMutation.LModifBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }
+                                        }
+                                        
+                                    </InputSelectNumber>
+
+                                </div>
+
+                                <div class="col-sm-3">
+                                <InputDate class="form-control" @bind-Value="oOneMutation.LModifOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                       </div>
+                    </EditForm>
+                </div>
+            </div>
+            <div class="modal-footer" style="height:1px">
+            </div>
+        </div>
+    </div>
+}
+

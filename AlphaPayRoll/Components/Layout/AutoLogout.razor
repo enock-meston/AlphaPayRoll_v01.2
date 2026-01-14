@@ -1,0 +1,45 @@
+﻿@* @inject NavigationManager Navigation
+@inject IJSRuntime JS
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("inactivityTime", DotNetObjectReference.Create(this), 5); // 5 min
+        }
+    }
+
+    [JSInvokable]
+    public Task LogoutUser()
+    {
+        Navigation.NavigateTo("/logout", forceLoad: true);
+        return Task.CompletedTask;
+    }
+} *@
+
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@code {
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_initialized)
+        {
+            _initialized = true;
+            // await JS.InvokeVoidAsync("inactivityTime", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable("Logout")]  // <-- THIS IS CRUCIAL
+    public Task Logout()
+    {
+        Navigation.NavigateTo("/", forceLoad: true);
+        return Task.CompletedTask;
+    }
+}
+
+
+

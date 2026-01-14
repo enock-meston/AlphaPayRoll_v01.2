@@ -1,0 +1,165 @@
+﻿@page "/TSL09ImputPay/ConstatSalairePage/{id}"
+@inherits ConstatSalairePageBase
+
+<br />
+<br />
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+
+
+
+
+@if (osessionService != null)
+{
+
+@if (!isLoading)
+{
+
+    <br />
+
+    <div class="row col-12">
+
+        <div class="col-sm-3">
+        </div>
+
+        <div class="col-sm-6">
+            <h3>Constatation des salaires du mois</h3>
+        </div>
+
+        <div class="col-sm-3">
+        </div>
+
+    </div>
+
+
+    <div class="row col-12">
+        <div class="col-sm-3">
+        </div>
+
+        <div class="col-sm-5" >
+            <table class="table  table-bordered  table-light DataGrid">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item</th>
+                        <th>Cpte Débit</th>
+                        <th>Cpte Crédit</th>
+                        <th>Montant</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (oConstSalaireList != null)
+                    {
+                        @for (int i = 0; i < oConstSalaireList.Count; i++)
+                        {
+                            var item = oConstSalaireList[i];
+                            <tr class="@getRowColor(i)">
+
+                                <td>@item.ID</td>
+                                <td>@item.Item</td>
+                                <td>@item.CpteDebit</td>
+                                <td>@item.CpteCredit</td>
+                                <td>@item.Montant.ToString("###,##0")</td>
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-4">
+        </div>
+
+    </div>
+
+
+
+
+    <br />
+    <br />
+
+    @*     <div class="row col-12">
+
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm-3">
+            <button type="button" class="btn  btn-primary" @onclick="VerifConstationSalaire" style="width:100%;opacity:0.8">Verification Consatation salaires</button>
+        </div>
+    </div>
+ *@
+
+
+    <p></p>
+    <div class="row col-12">
+
+        <div class="col-sm-3">
+        </div>
+
+        <div class="col-sm-5">
+            <button type="button" class="btn  btn-success" @onclick="PasserConstationSalaire" style="width:100%;opacity:0.8">Passer Consatation salaires</button>
+        </div>
+
+        <div class="col-sm-2">
+        </div>
+
+    </div>
+
+    <p></p>
+@*     <div class="row col-12">
+
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm-4">
+            <button type="button" class="btn  btn-success" @onclick="PasserSalaireLocal" style="width:100%;opacity:0.8">Passer Salaires sur comptes locaux</button>
+        </div>
+
+        <div class="col-sm-2">
+        </div>
+
+    </div>
+
+
+    <p></p>
+    <div class="row col-12">
+
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm-4">
+            <button type="button" class="btn  btn-success" @onclick="PasserSalaireAutreBank" style="width:100%;opacity:0.8">Passer Remboursement crédit</button>
+        </div>
+
+        <div class="col-sm-2">
+        </div>
+
+    </div>
+
+    <p></p>
+    <div class="row col-12">
+
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm-4">
+            <button type="button" class="btn  btn-success" @onclick="PasserConstationSalaire" style="width:100%;opacity:0.8">Passer Salaires dans autres banques</button>
+        </div>
+
+        <div class="col-sm-2">
+        </div>
+
+    </div> *@
+
+
+}}

@@ -1,0 +1,782 @@
+﻿@page "/TRH02Agent/AgentMajSalPage/{id}"
+@inherits AgentMajSalPageBase
+
+<br />
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+
+{
+    <div class="row col-12">
+        
+        <div class="col-sm-3">
+            <h3>Ficher personnel</h3>
+        </div>
+
+ @*        <div class="col-sm-6">
+           
+        </div>
+
+        <div class="col-sm-3">
+            <button type="button" class="btn btn-sm btn-primary" @onclick="CalculerSalaire" style="width:100%;opacity:0.8">Calucler Salaires</button>
+        </div> *@
+
+    </div>
+   
+
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+        <EditForm Model="oOneTRH02Agent">
+
+
+ @*            <div class="row col-12">
+                <div class="col-sm-2">
+                    <label class="form-text text-right">Agence Localisation</label>
+                </div>
+                <div class="col-sm-4">
+
+                    <InputSelect class="form-control " ValueChanged="@((string value) => BranchLocChanged(value))" ValueExpression="@(() => @pBranchLocID)" Value="@pBranchLocID">
+                        <option value="0"> ----------------------- </option>
+                        @if (oTCl550BranchLocList != null)
+                        {
+                            @foreach (var item in oTCl550BranchLocList)
+                            {
+
+                                @if (@item.ID == pBranchLocID)
+                                {
+                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                }
+                                else
+                                {
+                                    <option value="@item.ID"> @item.Descript </option>
+                                }
+
+                            }
+
+                        }
+
+                    </InputSelect>
+
+                </div>
+            </div> *@
+
+            <br/>
+
+            <div class="row col-12">
+
+                <div class="col-sm-2">
+                    <label class="form-text text-right">Rechercher par nom</label>
+                </div>
+                <div class="col-sm-2">
+                    <InputText class="form-control" @bind-Value="sNomRecherche" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-success" @onclick="Rechercher" style="width:100%;opacity:0.8">Rechercher</button>
+                </div>
+
+                <div class="col-sm-3">
+
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="PrintDocument" style="width:100%;opacity:0.8">Print</button>
+                </div>
+
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTRH02Agent, 1))" style="width:100%;opacity:0.8">Ajouter Agent</button>
+                </div>
+
+            </div>
+        </EditForm>
+    </div>
+
+    <div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Matricule</th>
+                    <th>Compte</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Salaire Base</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTRH02AgentList != null)
+                {
+                    @for (int i = 0; i < oTRH02AgentList.Count; i++)
+                    {
+
+                        var item = oTRH02AgentList[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.AgentId</td>
+                            <td>@item.Matricule</td>
+                            <td>@item.ClientId</td>
+                            <td>@item.Nom</td>
+                            <td>@item.Prenom</td>
+                            <td>@item.SalBase</td>
+
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+                            @if (id != "1")
+                            {
+                                <td style="text-align:center;width:7%"> <button @onclick="(() => DonAgentSuite(item))" class="btn btn-sm btn-outline-danger" style="width:100%">Suite</button>  </td>
+                            }
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+                        </div>
+
+                        <div class="col-sm-7">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveTRH02Agent(oOneTRH02Agent))" style="width:100%">@ButtonCaption</button>
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneTRH02Agent">
+
+
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence Localisation</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control " ValueChanged="@((string value) => BranchLocChanged(value))" ValueExpression="@(() => @pBranchLocID)" Value="@pBranchLocID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550BranchLocList != null)
+                                        {
+
+                                            @foreach (var item in oTCl550BranchLocList)
+                                            {
+
+                                                @if (@item.ID == pBranchLocID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                                
+                                            }                  
+                                        }
+                                      
+                                    </InputSelect>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control " ValueChanged="@((string value) => SubBranchLocChanged(value))" ValueExpression="@(() => @pSubBranchLocID)" Value="@pSubBranchLocID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SubBranchLocList != null)
+                                        {
+                                            @foreach (var item in oTCl550SubBranchLocList)
+                                            {
+                                                @if (@item.ID == pSubBranchLocID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }                  
+
+                                        }
+                                        
+
+                                    </InputSelect>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Guichet Localisation</label>
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agence Compte</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control " ValueChanged="@((string value) => BranchCpteChanged(value))" ValueExpression="@(() => @pBranchCpteID)" Value="@pBranchCpteID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550BranchCpteList != null)
+                                        {
+                                            @foreach (var item in oTCl550BranchCpteList)
+                                            {
+                                                @if (@item.ID == @pBranchCpteID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }                  
+                                        }
+                                       
+                                    </InputSelect>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputSelect class="form-control " ValueChanged="@((string value) => SubBranchCpteChanged(value))" ValueExpression="@(() => @pSubBranchCpteID)" Value="@pSubBranchCpteID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SubBranchCpteList != null)
+                                        {
+                                            @foreach (var item in oTCl550SubBranchCpteList)
+                                            {
+                                                @if (@item.ID == @pSubBranchCpteID)
+                                                {
+                                                    <option Selected value="@item.ID"> @item.Descript </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }                   
+                                        }
+                                       
+                                    </InputSelect>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Guichet Compte</label>
+                                </div>
+
+
+                            </div>
+
+                           
+
+
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Code Guichet</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.SBranchCpteID" disabled="true" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.ClientId" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Compte Client</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Code Client</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Code" disabled="true" />
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.AgentId" disabled="true" />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Agent Id</label>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Statut</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.StatusId">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550StatusList != null)
+                                        {
+                                            @foreach (var item in oTCl550StatusList)
+                                            {
+                                                <option value="@item.ID"> @item.Descript </option>
+                                            }                   
+                                        }
+                                      
+                                    </InputSelectNumber>
+                                </div>
+
+
+                                <div class="col-sm-4">
+                                    <InputCheckbox class="form-control UICheckbox" @bind-Value="oOneTRH02Agent.ViremRIPPS" style="margin-right:10px" />
+                                    <label class="form-text text-left">&ensp; Virement RIPPS</label>
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Matricule</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Matricule" disabled />
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Nom</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Nom" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.Prenom" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Prénom</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Banque virement Salaire</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.BanqPaySalaire" />
+                                </div>
+
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Cpte Autre banque</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneTRH02Agent.CpteAutreBanq" />
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-left" style="font-size:22px">Payment information</label>
+                                </div>
+                               
+                            </div>
+
+                            <div class="row col-sm-12">
+                            
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Jours travaillés</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOneTRH02Agent.PayDay"  />
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Salaire base</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.SalBase" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.IndemLog" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Indemnités logement</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Indemnités déplacement</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.IndemDeplac" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Prime</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.Primes" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.IndemFct" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Indemnités fonction</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">Autres Indemnités </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.TotalRetenue" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.Gratifications" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left" style="color:crimson">Gratification</label>
+                                </div>
+
+
+                            </div>
+  
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Autres Avantage </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" class="form-control" @bind-Value="oOneTRH02Agent.AutresAvantage " />
+                                </div>
+ 
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">SALAIRE BRUT </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.SALAIRE_BRUT " Readonly=true />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.SALAIRE_IMPOSABLE" Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">SALAIRE IMPOSABLE</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RSSB EMPLOYEUR </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RSSB_EMPLOYEUR " Readonly=true />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RSSB_EMPLOYEE" Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RSSB EMPLOYEE</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">TPR </label>
+                                </div>
+ 
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.TPR" Readonly=true />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Cotisation Patronale</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.Cotisation_Patronale" Readonly=true />
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.Cotisation_Caisse_Social " Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Cotisation Caisse Social </label>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RSSBPens </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RSSBPens " Readonly=true />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.MedInsur" Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">MedInsur</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">MutSante </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.MutSante " Readonly=true />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RembCredit" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RembCredit</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RembBourse </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RembBourse " />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RetSanLam" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RetSanLam</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RetPrimeLife</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RetPrimeLife " />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RetCaisseSolid" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RetCaisseSolid</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">RetCaisEp</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RetCaisEp " />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.RetEjoHeza" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">RetEjoHeza</label>
+                                </div>
+                            </div>
+
+
+ 
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">AutRetenues</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.AutRetenues "  />
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.TotalRetenue" Readonly=true />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">TotalRetenue</label>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right" style="color:crimson">NetAPayer </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat" @bind-Value="oOneTRH02Agent.NetAPayer" class="form-control" Readonly=true></BlazorNumericTextBox.DecimalTextBox>
+                                </div>
+ 
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.CreatBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }                   }
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.CreatOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date création</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOneTRH02Agent.LModifBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                        {
+                                            @foreach (var item in oTCl550UserList)
+                                            {
+                                                <option value="@item.ID"> @item.UserName </option>
+                                            }                   }
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneTRH02Agent.LModifOn" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+
+                        </div>
+                    </EditForm>
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer" style="height:1px">
+            </div>
+
+        </div>
+    </div>
+}
+
+

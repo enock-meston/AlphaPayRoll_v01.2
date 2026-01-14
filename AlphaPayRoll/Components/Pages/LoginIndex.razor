@@ -1,0 +1,648 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@layout LoginLayout
+
+@inject IJSRuntime JSRuntime;
+@* @inject SessionService osessionService *@
+@using AlphaPayRoll
+@using AlphaPayRoll.Data
+@* @using AlphaPayRoll.Components.Layout *@
+@using AlphaPayRoll.Shared
+@using AlphaPayRoll.FAuthentication
+@using Microsoft.Extensions.Configuration
+@using PayLibrary.General
+@using PayLibrary.InterfParamSec
+@using PayLibrary.ParamSec
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims;
+@using System.Security.Principal;
+@* @inject AuthenticationStateProvider authenticStatProvider *@
+
+@inject ClasAuthenticationStatProv authenticStatProvider
+
+@inject UserAccountService userAccountService;
+@inject Blazored.SessionStorage.ISessionStorageService osessionStorage;
+
+
+
+
+@inject NavigationManager NavManager;
+@* @inject Microsoft.AspNetCore.Http.IHttpContextAccessor contextAccessor*@
+@inject IUserLogin oUserLoginService
+@* @rendermode InteractiveServer *@
+@inject IConfiguration oconfiguration;
+
+<PageTitle>Login</PageTitle>
+
+<section class="">
+    <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color:#c5c5c8 ;margin-top:0%">
+        <div class="container">
+            <div class="row gx-lg-6 align-items-center">
+                @* <div class="col-lg-5 mb-5 mb-lg-0">
+                    <h3 class="my-5 display-6 fw-normal ls-tight">
+                        ALPHABANK 2025 <br />
+                        <span class="text-primary">RIM MICROFINANCE</span>
+                    </h3>
+                    <p style="color: hsl(217, 10%, 50.8%)">
+                        Entrer uniquement votre mot de passe et ensuite cliquer
+                        sur le bouton correspondant au module das lequel vous voulez
+                        travailler.
+                    </p>
+                </div> *@
+
+
+                <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
+
+                    <!-- Logo -->
+                    <img src="Images/RIMICON1.png"
+                         alt="AlphaBank Logo"
+                         class="mb-4"
+                         style="max-height: 90px;" />
+
+                    <h3 class="my-5 display-6 fw-normal ls-tight">
+                        ALPHABANK @DateTime.Now.Year <br />
+                        <span class="text-primary">RIM MICROFINANCE</span>
+                    </h3>
+
+                    <p style="color: hsl(217, 10%, 50.8%)">
+                        Entrer uniquement votre mot de passe et ensuite cliquer
+                        sur le bouton correspondant au module dans lequel vous voulez
+                        travailler.
+                    </p>
+                    <br>
+                    <br>
+                    <br>
+                    Leave App for android phone here:
+                    <a href="apk/rim.apk" download>
+                        Download
+                    </a>
+                </div>
+
+
+                <div class="col-lg-7 mb-5 mb-lg-0">
+                    <div class="card" style="background-color:cadetblue">
+                        <div class="card-body py-5 px-md-5">
+
+
+                            <h3 class="mb-3 text-center" style="color:yellow">Sign in</h3>
+
+                            <div class="form-outline mb-2">
+                                <input type="text" class="form-control form-control-lg" placeholder="User Name" @bind-value="model.Username" />
+                            </div>
+
+                            <div class="form-outline mb-2">
+                                <input type="password" class="form-control form-control-lg" placeholder="Password" @bind-value="model.PassWord" />
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <button class="btn btn-warning btn-lg" style=" height:50px;  width:100%;color:black;font-weight:bold" @onclick="(() => Authenticate())">Login</button>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control form-control-lg" placeholder="OTP" @bind-value="model.OTP" style=" height:50px;  width:100%;color:black;font-weight:bold" />
+                                </div>
+
+                                @*   <div class="col-sm-4">
+                                    <button class="btn btn-warning btn-lg" style=" height:50px;  width:100%;color:black;font-weight:bold" @onclick="(() => OTPVerification())" disabled="@bVerrouillerVerifOTP">Validation</button>
+                                </div> *@
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <br />
+                    @if (LoginTrace.Logged == "Yes")
+                    {
+                        <div class="card shadow-2-strong" style="border:none;background-color: #c5c5c8;">
+                            <div class="card-body p-1 text-center">
+
+
+                                @if (LoginTrace.bRHVisible == true)
+                                {
+                                    <div class="form-outline mb-2">
+                                        <button @onclick="(() => ShowMenuPaie())" class="btn btn-outline-success btn-lg" style="width:100%">Paie</button>
+                                    </div>
+                                    <div class="form-outline mb-2">
+                                        <button @onclick="(() => ShowMenuGRH())" class="btn btn-outline-success btn-lg" style="width:100%">Gestion ressources humaines</button>
+                                    </div>
+                                }
+
+                                <div class="form-outline mb-2">
+                                    <button @onclick="(() => ShowMenuGConge())" class="btn btn-outline-success btn-lg" style="width:100%">Gestion congés</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+@* <div class="row">
+    <div class="col-sm-12">
+        <h1 class="text-center">@sMessage</h1>
+    </div>
+
+</div> *@
+
+
+@code {
+
+    public string id { set; get; }
+    private bool isLogged { set; get; }
+
+    private bool bVerouilleBtMenu { set; get; } = true;
+
+    public bool bVerrouillerVerifOTP { set; get; } = true;
+
+    private string sMessage { set; get; } = "";
+
+    private UserLoginDon oUserLogin { set; get; }
+    public ClasSessionStorage osessionService { set; get; }
+
+
+    public string sSiteUrl { set; get; }
+
+
+
+
+    IConfiguration configuration;
+
+    private class Model
+    {
+
+        public string Username { get; set; } = string.Empty;
+
+        public string PassWord { get; set; } = "123456";
+        public string OTP { get; set; } = string.Empty;
+    }
+
+    private Model model;
+
+    private async Task Authenticate()
+    {
+
+
+        try
+        {
+            sMessage = "Connection en cours";
+
+            if (model.Username == null)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Username is required");
+                return;
+            }
+
+            if (model.Username.Trim().Length < 2)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Enter a correct Username");
+                return;
+            }
+
+            if (model.PassWord == null)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Password is required");
+                return;
+            }
+
+            if (model.PassWord == string.Empty)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Password is required");
+                return;
+            }
+
+
+            UserAccount userAccount = new UserAccount();
+
+
+            UserLoginParam oUserLoginParam = new UserLoginParam();
+            oUserLoginParam.UserName = model.Username;
+            oUserLoginParam.PassWord = model.PassWord;
+
+            // await JSRuntime.InvokeVoidAsync("alert", model.Username);
+            // await JSRuntime.InvokeVoidAsync("alert", model.PassWord);
+
+
+            oUserLogin = await oUserLoginService.GetAuthentication(oUserLoginParam);
+
+
+
+            if (oUserLogin != null)
+            {
+                sMessage = oUserLogin.Reponse;
+
+                // await JSRuntime.InvokeVoidAsync("alert", oUserLogin.Reponse);
+                if (oUserLogin.Reponse != "Vous êtes connectés à la base de données")
+                {
+
+                    await JSRuntime.InvokeVoidAsync("alert", oUserLogin.Reponse);
+
+                    if (oUserLogin.Reponse == "Votre mot de passe a expiré")
+                    {
+                        
+                    
+                           osessionService = new ClasSessionStorage();
+
+                        // osessionService = new SessionService();
+                        isLogged = oUserLogin.IsLogged;
+
+                        osessionService.UserId = oUserLogin.UserId.ToString();
+                        osessionService.UserName = oUserLogin.UserName;
+                        osessionService.BranchID = oUserLogin.BranchID;
+                        osessionService.Branch = oUserLogin.Branch;
+                        // osessionService.SubBranch = oUserLogin.SubBranch;
+                        osessionService.RoleID = oUserLogin.RoleID;
+                        osessionService.UserProfile = oUserLogin.Profile;
+                        osessionService.CashAcctID = oUserLogin.CashAcctID;
+                        osessionService.JournalName = oUserLogin.JournalName;
+                        osessionService.ClientID = oUserLogin.ClientID;
+                        osessionService.DateJour = DateTime.Parse(oUserLogin.DateJour);
+                        osessionService.Reponse = oUserLogin.Reponse;
+                        osessionService.IsLogged = oUserLogin.IsLogged;
+                        osessionService.VraiID = oUserLogin.VraiID;
+                        osessionService.UserId = oUserLogin.UserId.ToString();
+                        osessionService.UserName = oUserLogin.UserName;
+
+                        osessionService.Branch = oUserLogin.Branch;
+                        osessionService.RoleID = oUserLogin.RoleID;
+                        osessionService.UserProfile = oUserLogin.Profile;
+                        osessionService.CashAcctID = oUserLogin.CashAcctID;
+                        osessionService.JournalName = oUserLogin.JournalName;
+                        osessionService.ClientID = oUserLogin.ClientID;
+                        osessionService.DateJour = DateTime.Parse(oUserLogin.DateJour);
+                        osessionService.Reponse = oUserLogin.Reponse;
+   
+                        osessionService.UserName = oUserLogin.UserName;
+                        osessionService.RoleID = oUserLogin.RoleID;
+                        osessionService.Matricule = oUserLogin.Matricule;
+                        osessionService.sApp = "http://localhost:19143";
+                        //osessionService.sApp = "/rimpayroll";
+
+                        sSiteUrl = osessionService.sApp;
+
+                        bVerrouillerVerifOTP = false;
+
+
+                        await osessionStorage.SetItemAsync("LogedUser", osessionService);
+
+
+                        NavManager.NavigateTo(osessionService.sApp + $"/Login/ChangePswPage");
+
+                    }
+
+
+                  
+                    return;
+                }
+                else
+                {
+                    osessionService = new ClasSessionStorage();
+
+                    // osessionService = new SessionService();
+                    isLogged = oUserLogin.IsLogged;
+
+                    osessionService.UserId = oUserLogin.UserId.ToString();
+                    osessionService.UserName = oUserLogin.UserName;
+                    osessionService.BranchID = oUserLogin.BranchID;
+                    osessionService.Branch = oUserLogin.Branch;
+                    // osessionService.SubBranch = oUserLogin.SubBranch;
+                    osessionService.RoleID = oUserLogin.RoleID;
+                    osessionService.UserProfile = oUserLogin.Profile;
+                    osessionService.CashAcctID = oUserLogin.CashAcctID;
+                    osessionService.JournalName = oUserLogin.JournalName;
+                    osessionService.ClientID = oUserLogin.ClientID;
+                    osessionService.DateJour = DateTime.Parse(oUserLogin.DateJour);
+                    osessionService.Reponse = oUserLogin.Reponse;
+                    osessionService.IsLogged = oUserLogin.IsLogged;
+                    osessionService.VraiID = oUserLogin.VraiID;
+                    osessionService.UserId = oUserLogin.UserId.ToString();
+                    osessionService.UserName = oUserLogin.UserName;
+
+                    osessionService.Branch = oUserLogin.Branch;
+                    osessionService.RoleID = oUserLogin.RoleID;
+                    osessionService.UserProfile = oUserLogin.Profile;
+                    osessionService.CashAcctID = oUserLogin.CashAcctID;
+                    osessionService.JournalName = oUserLogin.JournalName;
+                    osessionService.ClientID = oUserLogin.ClientID;
+                    osessionService.DateJour = DateTime.Parse(oUserLogin.DateJour);
+                    osessionService.Reponse = oUserLogin.Reponse;
+                    // osessionService.LevelID = oUserLogin.LevelID;
+                    // osessionService.NvFenet = oUserLogin.NvFenet;
+                    // osessionService.CountOpen = oUserLogin.CountOpen;
+                    // osessionService.FullNames = oUserLogin.FullNames;
+                    osessionService.UserName = oUserLogin.UserName;
+                    osessionService.RoleID = oUserLogin.RoleID;
+                    osessionService.Matricule = oUserLogin.Matricule;
+
+                    // osessionService.sApp = "/alphabank";
+                    //osessionService.sApp = "/clecamtest";
+                   osessionService.sApp = "http://localhost:19143";
+                    //osessionService.sApp = "/rimpayroll";
+                    // osessionService.sApp = "/hrtest";
+                    sSiteUrl = osessionService.sApp;
+
+                    bVerrouillerVerifOTP = false;
+
+
+                    if (osessionService.RoleID != 1)
+                    {
+                       LoginTrace.bRHVisible = true;
+                    }
+                    else
+                    {
+                       
+                        LoginTrace.bRHVisible = false;
+                    }
+
+
+                    await osessionStorage.SetItemAsync("LogedUser", osessionService);
+
+
+                    //NavManager.NavigateTo("http://localhost:19143/Budgethome", true);
+
+                    UserSession oUserSession = new UserSession();
+                    oUserSession.UserName = oUserLogin.UserName;
+                    oUserSession.UserRole = oUserLogin.RoleID.ToString();
+
+
+                }
+
+            }
+
+            var customAuthStateProvicer = (ClasAuthenticationStatProv)authenticStatProvider;
+            await customAuthStateProvicer.UpdateAuthenticationState(new UserSession
+            {
+                UserName = oUserLogin.UserName,
+                UserRole = oUserLogin.RoleID.ToString()
+
+
+            });
+
+
+            if (oUserLogin.Reponse.Trim() == "Vous êtes connectés à la base de données")
+            {
+
+                if (osessionService.RoleID >2)
+                {
+
+                    NavManager.NavigateTo(osessionService.sApp + $"/GrhIndex", true);
+                //     //NavManager.NavigateTo("http:localhost:19143/GrhIndex", true);
+                }
+                else
+                {
+                    //NavManager.NavigateTo("http://localhost:19143/GcongeIndex", true);
+                    NavManager.NavigateTo(osessionService.sApp + $"/GcongeIndex", true);
+
+                }
+
+                // await JSRuntime.InvokeVoidAsync("alert", $"Beivenu Encore!");
+
+                LoginTrace.Logged = "Yes";
+                // if (oUserLogin.RoleID == 1 || oUserLogin.RoleID == 2 || oUserLogin.RoleID == 3)
+                // {
+
+                //     NavManager.NavigateTo(oClasLocalStorage.sApp + "/Caissehome", true);
+                // }
+                // else if (oUserLogin.RoleID == 5 || oUserLogin.RoleID == 55 || oUserLogin.RoleID == 30)
+                // {
+
+                //     NavManager.NavigateTo(oClasLocalStorage.sApp + "/Credithome", true);
+                // }
+                // else if (oUserLogin.RoleID == 7)
+                // {
+
+                //     NavManager.NavigateTo(oClasLocalStorage.sApp + "/Comptabhome", true);
+                // }
+
+                // else if (oUserLogin.RoleID == 10)
+                // {
+
+                //     NavManager.NavigateTo(oClasLocalStorage.sApp + "/Adminhome", true);
+                // }
+
+
+
+            }
+
+            // NavManager.NavigateTo("/Caissehome", true);
+            // if (osessionService.RoleID == 1)
+            // {
+
+            //     NavManager.NavigateTo("/Caissehome", true);
+            // }
+            // else if (osessionService.RoleID == 5)
+            // {
+
+            //     NavManager.NavigateTo("/Credithome", true);
+            // }
+            // else if (osessionService.RoleID == 7)
+            // {
+
+            //     NavManager.NavigateTo("/Comptabhome", true);
+            // }
+
+
+
+        }
+        catch (InvalidOperationException)
+        {
+
+            //sErrorMessage=$"An error occurred: {ex.Message}";
+            await JSRuntime.InvokeVoidAsync("alert", $"An error occurred: {"Erreur message"}");
+        }
+        // finally
+        // {
+
+        //     await JSRuntime.InvokeVoidAsync("alert", "asdfsdfasdfasdf");
+        // }
+
+
+    }
+
+
+    // public async Task OTPVerification()
+    // {
+    //     Resultat oResult = new Resultat();
+
+    //     UserLoginParam oUserLoginParam = new UserLoginParam();
+    //     oUserLoginParam.UserName = model.Username;
+    //     oUserLoginParam.PassWord = model.OTP;
+
+    //     try
+    //     {
+    //         oResult = await oUserLoginService.GetOTPValidationResult(oUserLoginParam);
+
+    //         if (oResult.Result == "Connexion validée")
+    //         {
+    //             NavManager.NavigateTo("/Caissehome", true);
+    //         }
+
+    //         await JSRuntime.InvokeVoidAsync("alert", oResult.Result);
+    //     }
+    //     catch (InvalidOperationException)
+    //     {
+    //         await JSRuntime.InvokeVoidAsync("alert", $"An error occurred: {"Erreur message"}");
+    //     }
+
+
+    // }
+
+
+    public async Task ShowMenuPaie()
+    {
+        osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        string sChemin = osessionService.sApp + $"/Index";
+
+        NavManager.NavigateTo(sChemin, true);
+    }
+
+    public async Task ShowMenuGConge()
+    {
+
+        osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        string sChemin = osessionService.sApp + $"/GcongeIndex";
+
+        NavManager.NavigateTo(sChemin, true);
+        // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        // string sChemin = oClasLocalStorage.sApp + "/Credithome";
+
+        // NavManager.NavigateTo(sChemin, true);
+
+
+    }
+
+    public async Task ShowMenuGRH()
+    {
+        osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        string sChemin = osessionService.sApp + $"/GrhIndex";
+
+        NavManager.NavigateTo(sChemin, true);
+        // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        // string sChemin = oClasLocalStorage.sApp + "/Comptabhome";
+
+        // NavManager.NavigateTo(sChemin, true);
+
+    }
+
+    public async Task ShowMenuAdministration()
+    {
+        // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+        // string sChemin = oClasLocalStorage.sApp + "/Adminhome";
+
+        // NavManager.NavigateTo(sChemin, true);
+
+    }
+
+
+
+
+    private bool bAfficher { get; set; } = false;
+
+
+    private string sErrorMes { set; get; }
+
+    // private IJSObjectReference? module;
+
+    // protected async override Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         module = await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+    //             "./Components/Pages/Loginhome.razor.js");
+
+    //         await module.InvokeVoidAsync("addHandlers");
+    //     }
+    // }
+
+
+
+    public string sDomaineName { set; get; } = "";
+
+    public bool bRHVisible { set; get; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+
+
+
+            // osessionService = new ClasSessionStorage();
+
+            // osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+            string sARemplacer = "DESKTOP-C3NOFHH\\";
+
+
+            model = new Model();
+            // string WinUserName = System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity";
+            // WinUserName = WinUserName.Replace(sARemplacer, "");
+
+
+            model.Username = "Peggy"
+            /*  model.Username = WinUserName */
+            ;//(System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity");
+
+
+            // model = new Model();
+            // string WinUserName = System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity";
+            // WinUserName = WinUserName.Replace(sARemplacer, "");
+            // model.Username = WinUserName;//(System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity");
+
+
+            // UserLoginParam oUserLoginParam = new UserLoginParam();
+            // oUserLoginParam.UserName = model.Username;
+            // oUserLoginParam.PassWord = "123456";
+
+
+            // oUserLogin = await oUserLoginService.GetAuthentication(oUserLoginParam);
+
+            //model.Username = (System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity");
+
+
+
+
+
+            // @page "/about"
+
+            // @inject Microsoft.AspNetCore.Http.IHttpContextAccessor contextAccessor
+
+            // <h3>About</h3>
+
+            // <div>
+            //     HttpContext: @(contextAccessor.HttpContext?.User?.Identity?.Name ?? "No HttpContext name")
+            // </div>
+            // <div>
+            //     WindowsIdentity: @(System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity")
+            // </div>
+            // <div>
+            //     ClaimsPrincipal: @(System.Security.Claims.ClaimsPrincipal.Current?.Identity?.Name ?? "No claims principal")
+            // </div>
+
+
+        }
+        catch (Exception ex)
+        {
+            sErrorMes = ex.Message;
+        }
+
+    }
+
+}

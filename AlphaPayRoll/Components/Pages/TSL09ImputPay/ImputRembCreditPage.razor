@@ -1,0 +1,64 @@
+﻿@page "/TSL09ImputPay/ImputRembCreditPage/{id}"
+@inherits ImputRembCreditPageBase
+
+<br/>
+<br/>
+@if (osessionService != null)
+{
+<div class="row col-sm-12">
+    <div class="col-sm-4">
+        <label class="form-text text-right" style="color:crimson">Total remboursements</label>
+    </div>
+
+    <div class="col-sm-2">
+        <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;font-size:18px" Format="@CurrencyFormat" Value="@TotRemb" class="form-control"  ></BlazorNumericTextBox.DecimalTextBox>
+    </div>
+    <div class="col-sm-3">
+        <button type="button" class="btn  btn-success" @onclick="PasserRembCredit" style="width:100%;opacity:0.8">Passer Remboursement</button>
+    </div>
+</div>
+
+<br />
+
+<div class="row col-sm-12  pre-scrollable well" style="max-height:70vh;">
+    <table class="table  table-bordered  table-light DataGrid">
+        <thead>
+            <tr>
+                <th>Matricule</th>
+                <th>SB Banque</th>
+                <th>Client ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Montant</th>
+ 
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (oTRH02AgentList != null)
+            {
+                @for (int i = 0; i < oTRH02AgentList.Count; i++)
+                {
+
+                    var item = oTRH02AgentList[i];
+                    <tr class="@getRowColor(i)">
+
+                        <td>@item.Matricule</td>
+                        <td>@item.SBranchCpteID</td>
+                        <td>@item.ClientId</td>
+                        <td>@item.Nom</td>
+                        <td>@item.Prenom</td>
+                        <td>@item.RembCredit.ToString("###,##0")</td> 
+                      
+
+
+
+                    </tr>
+                }
+            }
+        </tbody>
+
+
+    </table>
+</div>
+}

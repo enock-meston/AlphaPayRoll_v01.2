@@ -1,0 +1,354 @@
+﻿@layout LoginLayout
+@page "/xxxx"
+@inject SessionService osessionService
+@inject IUserLogin oUserLoginService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@using PayLibrary.InterfParamSec
+@using PayLibrary.ParamSec
+@using AlphaPayRoll.Data
+
+
+<style>
+
+    body {
+    background-color: #d5d5d8;
+    }
+</style>
+
+
+@if (isLoading)
+{
+
+    <br/>
+    <br/>
+    <br />
+    <br/>
+    <br />
+
+
+    <div class="row col-sm-12">
+
+
+
+        <h2 style="font-size:30px;margin-left:880px">Loading...</h2>
+
+    </div>
+
+    <div class="row col-sm-12">
+        <div class="col-sm-6">
+        </div>
+        <div class="d-flex justify-content-center" style="margin-left:700px">
+            <div class="spinner-border text-danger text-center" role="status">
+
+                <span class="sr-only" >Loading ...</span>
+
+            </div>
+
+        </div>
+    </div>
+
+
+}
+else
+{
+
+
+    @if (osessionService.AfficherLogin)
+    {
+        <div class="modal modalCon" tabindex="-1" style="display:block" id="LoginModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modalheaderCon">
+
+                        <div class="col-sm-12">
+                            <label class="form-text text-center" style="font-size:150%">Login</label>
+                        </div>
+                    </div>
+                    <div>
+
+                        <EditForm Model="oUserLogin">
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-12">
+                                    <label class="form-text text-left">User Name</label>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-12">
+                                    <InputText  class="form-control" @bind-Value="sUserName" />
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-12">
+                                    <label class="form-text text-left">Password</label>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-12">
+                                    <InputText type="password" class="form-control" @bind-Value="sPassword" />
+                                </div>
+                            </div>
+
+                        </EditForm>
+                    </div>
+                    <div class="modal-footer" style="height:50px">
+
+
+                        <div class="row col-sm-12">
+
+                            <div class="col-sm-2">
+                                <label class="form-text text-left"></label>
+                            </div>
+                            <div class="col-sm-4">
+                                <button class="btn btn-sm btn-primary" style="width:100%" data-dismiss="modal" @onclick="Login">Login</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button class="btn btn-sm btn-danger" data-dismiss="modal" style="width:100%" @onclick="Close">Fermer</button>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label class="form-text text-left"></label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+
+@code
+{
+
+
+    //public List<ClasModule> ModuleList { set; get; }
+
+    public UserLoginDon oUserLogin { set; get; }
+    public bool AfficherLogin { set; get; } = true;
+    public bool AfficherModule { set; get; } = false;
+    public string user { set; get; }
+
+    public int UserID { set; get; }
+    public string sUserName { set; get; }
+    public string sPassword { set; get; }
+
+
+    public bool popUpModal = true;
+    public bool popUpUserInfo = false;
+    public bool AfficherMenu = false;
+
+
+    public string sUserProfile = "-100";
+
+    public void ShowPopUpModal()
+    {
+        popUpModal = true;
+    }
+
+    public void Close()
+    {
+        isLogged = true;
+        osessionService.AfficherLogin = false;
+    }
+
+    //public async Task FermerFenetre()
+    //{
+
+    //    isLogged = true;
+    //    AfficherLogin = false;
+    //    await JSRuntime.InvokeVoidAsync("ModuleModalClose");
+    //}
+
+    public bool isLogged { set; get; }
+
+    public string getRowColor(int i)
+    {
+        return (i % 2 == 0) ? "table-info" : "table-light";
+    }
+
+
+    public async Task Login()
+    {
+
+        
+
+        if (osessionService.IsLogged == false)
+        {
+
+            if (sUserName == null || sUserName.Trim() == "")
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Enter a correct UserName ");
+                return;
+            }
+
+            UserLoginParam oUserLoginParam = new UserLoginParam();
+
+            oUserLoginParam.UserName = sUserName;
+            oUserLoginParam.PassWord = sPassword;
+
+            try
+            {
+
+                oUserLogin = await oUserLoginService.GetAuthentication(oUserLoginParam);
+
+                osessionService.UserId = oUserLogin.UserId;
+                osessionService.IsLogged = oUserLogin.IsLogged;
+                osessionService.Reponse = oUserLogin.Reponse;
+
+                if (oUserLogin.IsLogged)
+                {
+                    
+                    osessionService.IsLogged = oUserLogin.IsLogged;
+                    isLogged = oUserLogin.IsLogged;
+                    osessionService.VraiID = oUserLogin.VraiID;
+                    osessionService.UserId = oUserLogin.UserId;
+                    osessionService.UserName = oUserLogin.UserName;
+                    // osessionService.BranchID = oUserLogin.BranchID; 
+                    osessionService.Branch = oUserLogin.Branch;
+                    osessionService.RoleID = oUserLogin.RoleID;
+                    osessionService.UserProfile = oUserLogin.Profile;
+                    osessionService.CashAcctID = oUserLogin.CashAcctID;
+                    osessionService.JournalName = oUserLogin.JournalName;
+                    osessionService.ClientID = oUserLogin.ClientID;
+                    osessionService.DateJour = DateTime.Parse(oUserLogin.DateJour);
+                    osessionService.Reponse = oUserLogin.Reponse;
+
+                   
+                    //osessionService.sApp = "192.168.1.221/rimpayroll";
+                }
+
+
+                if (osessionService.IsLogged)
+                {
+
+                    //await JSRuntime.InvokeVoidAsync("alert", "OK Login");
+
+                    // osessionService.sApp = "/rimpayroll";
+                    popUpModal = false;
+                    isLogged = true;
+                    AfficherLogin = false;
+                    AfficherModule = true;
+                    //NavManager.NavigateTo("/rimpayroll/home");
+                    //await JSRuntime.InvokeVoidAsync("alert", osessionService.sApp);
+
+
+                    //NavManager.NavigateTo("/home");
+
+                    NavManager.NavigateTo(osessionService.sApp);
+
+                }
+                else
+                {
+                    popUpModal = true;
+                    isLogged = false;
+                    sMessage = "Login failed";
+                    await JSRuntime.InvokeVoidAsync("alert", osessionService.Reponse);
+                }
+
+                //if (osessionService.IsLogged)
+                //{
+                //isLogged = true;
+                //osessionService.AfficherLogin = false;
+                //NavManager.NavigateTo("/rimpayroll/home");
+                //NavManager.NavigateTo("http://localhost:19143/home");
+                //AfficherModule = true;
+
+                // sMessage = "Login succeded";
+                //popUpModal = false;
+
+                // await JSRuntime.InvokeVoidAsync("OKLogin");
+                //}
+                //else
+                //{
+                //popUpModal = true;
+                //isLogged = false;
+                //sMessage = "Login failed";
+                //await JSRuntime.InvokeVoidAsync("alert", oUserLogin.Reponse);
+                //osessionService.AfficherLogin = true;
+                //}
+
+
+
+            }
+            catch (Exception ex)
+            {
+                isLoading = false;
+
+                // oUserLogin.Reponse = ex.Message;
+                // await JSRuntime.InvokeVoidAsync("alert", oUserLogin.Reponse);
+            }
+
+            finally
+            {
+                isLoading = false;
+                // await JSRuntime.InvokeVoidAsync("alert", oUserLogin.Reponse);
+
+            }
+
+        }
+
+
+    }
+
+    public string sMessage { set; get; }
+    public bool isLoading { set; get; } = false;
+    protected override void OnInitialized()
+    {
+
+        osessionService.sApp = "http://localhost:19143/home";
+        osessionService.sAppMenu = "http://localhost:19143";
+
+
+        // osessionService.sApp = "/rimpayroll/home";  
+        // osessionService.sAppMenu = "/rimpayroll";
+
+
+
+        //osessionService.sApp = "http://localhost:19143";
+        //osessionService.sApp = "192.168.1.221/rimpayroll";
+
+
+        oUserLogin = new UserLoginDon();
+
+        //await JSRuntime.InvokeVoidAsync("alert", "OK");
+
+
+
+        sMessage = "Cliquer sur le bouton Login";
+        //await JSRuntime.InvokeVoidAsync("alert", "Connection");
+
+        isLogged = false;
+
+        osessionService.IsLogged = false;
+
+
+        osessionService.AfficherLogin = true;
+        AfficherModule = false;
+
+        sMessage = "Login succeded";
+
+
+        // sUserName = "";
+        // sPassword = "";
+
+
+        sUserName = "System";
+        sPassword = "123456";
+
+
+
+
+    }
+
+}

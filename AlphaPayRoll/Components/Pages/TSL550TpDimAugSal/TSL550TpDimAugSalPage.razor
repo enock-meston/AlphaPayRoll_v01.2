@@ -1,0 +1,199 @@
+﻿@page "/TSL550TpDimAugSal/TSL550TpDimAugSalPage"
+@inherits TSL550TpDimAugSalPageBase
+
+<br />
+
+<div class="row col-12">
+	<div class="col-sm-10">
+		<h5>Type retenue/Augm.</h5>
+	</div>
+
+	<div class="col-sm-2">
+		<button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL550TpDimAugSal, 1))" style="width:100%;opacity:0.8">Ajouter </button>
+	</div>
+
+</div>
+
+<div class="row col-sm-12">
+	<table class="table  table-bordered  table-light DataGrid">
+		<thead>
+			<tr>
+				<th>Code</th>
+				<th>Dénomination</th>
+				<th>Permanent</th>
+				<th>Sens</th>
+				<th>Occasionnel</th>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+
+			@if (oTSL550TpDimAugSalList != null)
+			{
+				@for (int i = 0; i < oTSL550TpDimAugSalList.Count; i++)
+				{
+					var item = oTSL550TpDimAugSalList[i];
+					<tr class="@getRowColor(i)">
+
+						<td>@item.ID</td>
+						<td>@item.Denom</td>
+						<td>@item.Perman</td>
+						<td>@item.Sens</td>
+						<td>@item.Occasionnel</td>
+
+						<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+						<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+						<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+					</tr>
+				}}
+		</tbody>
+	</table>
+</div>
+@if (popup)
+{
+
+	<div class="modal" tabindex="-1" style="display: inline-block ">
+		<div class="modal-dialog modal-xl modalDialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<div class="row col-sm-12">
+						<div class="col-sm-1">
+						</div>
+
+						<div class="col-sm-7">
+							<h5 style="color:black">@modalTitle </h5>
+						</div>
+
+						<div class="col-sm-2">
+							@if (iTypeAction != 0)
+							{
+								<button type="button" class=@StyleButton @onclick="(() => SaveTSL550TpDimAugSal(oOneTSL550TpDimAugSal))" style="width:100%">@ButtonCaption</button>
+							}
+
+
+						</div>
+						<div class="col-sm-2">
+							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-body ">
+
+					<EditForm Model="oOneTSL550TpDimAugSal">
+
+						<div class="well well-sm pre-scrollable modalBody">
+							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+							<div class="row col-sm-12">
+								<div class="col-sm-4">
+									<label class="form-text text-right">Code</label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TpDimAugSal.ID" Readonly="true" />
+								</div>
+
+							</div>
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Dénomination</label>
+								</div>
+								<div class="col-sm-6">
+									<InputText class="form-control" @bind-Value="oOneTSL550TpDimAugSal.Denom" />
+
+								</div>
+
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Permanent</label>
+								</div>
+								<div class="col-sm-6">
+									<InputCheckbox class="form-control UICheckbox" @bind-Value="oOneTSL550TpDimAugSal.Perman" />
+								</div>
+
+							</div>
+
+
+							<div class="row col-sm-12">
+								<div class="col-sm-4">
+									<label class="form-text text-right"> Sens (-1=Retenue ou 1=Augmentation ) </label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TpDimAugSal.Sens" />
+								</div>
+							</div>
+
+
+
+							<div class="row col-sm-12">
+								<div class="col-sm-4">
+									<label class="form-text text-right">Occasionnel</label>
+								</div>
+								<div class="col-sm-6">
+
+									<InputCheckbox class="form-control UICheckbox" @bind-Value="oOneTSL550TpDimAugSal.Occasionnel " />
+
+								</div>
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Créé par</label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TpDimAugSal.CreatBy" Readonly="true" />
+								</div>
+
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Date création</label>
+								</div>
+								<div class="col-sm-6">
+									<InputDate class="form-control" @bind-Value="oOneTSL550TpDimAugSal.CreatOn" Readonly="true" />
+								</div>
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Modifié par</label>
+								</div>
+								<div class="col-sm-6">
+									<InputNumber class="form-control" @bind-Value="oOneTSL550TpDimAugSal.UserID" Readonly="true" />
+								</div>
+							</div>
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Date modification On</label>
+								</div>
+								<div class="col-sm-6">
+									<InputDate class="form-control" @bind-Value="oOneTSL550TpDimAugSal.LModifOn" Readonly="true" />
+								</div>
+							</div>
+
+
+
+
+
+						</div>
+					</EditForm>
+				</div>
+				<div class="modal-footer" style="height:1px">
+				</div>
+			</div>
+		</div>
+	</div>
+}

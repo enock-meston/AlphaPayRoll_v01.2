@@ -1,0 +1,322 @@
+﻿@using AlphaPayRoll.Data
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@* @inject SessionService osessionService *@
+@inject Blazored.SessionStorage.ISessionStorageService osessionStorage;
+
+<style>
+    body {
+        background-color: #bdbdfa;
+    }
+
+    .Menux.active {
+        background-color: rgba(72, 209, 204, 0.6) !important;
+        font-weight: bold;
+        border-left: 4px solid white;
+        color: white !important;
+    }
+</style>
+
+<MudDrawerHeader Style="background-color: white; ">
+    <MudAvatar Color="Color.Transparent" Size="Size.Large" Image="Images/RIMICON1.png" />
+    <MudText Typo="Typo.h5" Color="Color.Primary" Style="margin-top:10px;margin-left:15px">AlphaPay</MudText>
+    <MudIconButton Color="Color.Inherit" />
+</MudDrawerHeader>
+
+<MudNavMenu Style="background-color: cadetblue; color: white;">
+
+    <MudNavLink Match="NavLinkMatch.Prefix"  @onclick="NouveauRecrutFct" Style="height:5%;" Class="Menux" id="menu-recrut">Nouv recrut/Employé</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="ContratFct" Style="height:5%;" Class="Menux" id="menu-contrat">Contrat</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="ContratModif" Style="height:5%;" Class="Menux" id="menu-contrat-modif">Mofication Contrat</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="ContratSus" Style="height:5%;" Class="Menux" id="menu-contrat">Suspension Contrat</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="AffectationFct" Style="height:5%;" Class="Menux" id="menu-affectation">Affectation</MudNavLink>
+
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="SalaireNvRecrutFct" Style="height:5%;" Class="Menux" id="menu-salaires">Salaire nouveau recru</MudNavLink>
+
+    
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="PostModif" Style="height:5%;" Class="Menux" id="menu-post-modif">Chagement poste</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Promotion" Style="height:5%;" Class="Menux" id="menu-promotion">Promotion</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Mutation" Style="height:5%;" Class="Menux" id="menu-mutation">Mutation</MudNavLink>
+    @* <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Localisation" Style="height:5%;" Class="Menux" id="menu-localisation">Localisation</MudNavLink> *@
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Training" Style="height:5%;" Class="Menux" id="menu-training">Formation</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Faute" Style="height:5%;" Class="Menux" id="menu-faute">Faute</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Sanction" Style="height:5%;" Class="Menux" id="menu-sanction">Sanction</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="DepartFct" Style="height:5%;" Class="Menux" id="menu-depart">Départ</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" @onclick="ChangePassWord" Style="height:5%;" Class="Menux" id="menu-password">Changer MP</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" @onclick="LogOutFct" Style="height:5%;" Class="Menux" id="menu-logout">Logout</MudNavLink>
+
+</MudNavMenu>
+
+<script>
+    function setActiveMenu(menuId) {
+        // Remove active class from all menu items
+        document.querySelectorAll('.Menux').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Add active class to clicked menu item
+        const activeMenu = document.getElementById(menuId);
+        if (activeMenu) {
+            activeMenu.classList.add('active');
+        }
+    }
+</script>
+
+@code {
+    [Parameter]
+    public bool SideBarOpen { set; get; } = true;
+
+    public ClasSessionStorage osessionService { set; get; }
+
+    public string paramTeller = "102";
+    public string paramSafe = "108";
+    public string paramVault = "70";
+
+    private async Task SetActive(string menuId)
+    {
+        await JSRuntime.InvokeVoidAsync("setActiveMenu", menuId);
+    }
+
+    public void DemandeCongeFct()
+    {
+            // await SetActive("menu-demande");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/CongeRequestF/CongeRequestPage/1");
+    }
+
+    public void CongeCirc()
+    {
+        // await SetActive("menu-circ");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/CongeCircRequest/CongeCircRequestPage/1");
+    }
+
+    public void SalaireNvRecrutFct()
+    {
+        /* await SetActive("menu-prep"); */
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Salaire/TSL02SalairePage/1");
+    }
+
+    public void CalculSalaireFct()
+    {
+        // await SetActive("menu-calcul");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/SalProcess/SalCalculPage/1");
+    }
+
+    public void ConstationSalairesFct()
+    {
+        // await SetActive("menu-constat");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL09ImputPay/ConstatSalairePage/1");
+    }
+
+    public void VirementSalairesFct()
+    {
+        // await SetActive("menu-virement");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL09ImputPay/TSL09ImputPayPage/1");
+    }
+
+    public void VirementRemboursFct()
+    {
+        // await SetActive("menu-rembours");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL09ImputPay/ImputRembCreditPage/1");
+    }
+
+    public void ArchiverSalairesFct()
+    {
+        // await SetActive("menu-archiver");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/SalProcess/ArchiverSalairesPage/1");
+    }
+
+    public void NouveauRecrutFct()
+    {
+        // await SetActive("menu-recrut");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TRH02Agent/AgentPage/1");
+    }
+
+    public void ContratFct()
+    {
+        // await SetActive("menu-contrat");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Contrat/ContratPage/1");
+    }
+
+    public void ContratSus()
+    {
+        // await SetActive("menu-contrat");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/ContratSusp/TRH03ContratSuspPage/1");
+    }
+
+    public void ContratModif()
+    {
+        // await SetActive("menu-contrat-modif");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/ContratModif/THR05ContratModif/1");
+    }
+
+    public void PostModif()
+    {
+        // await SetActive("menu-post-modif");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/PostModif/TRH05PostModifPage/1");
+    }
+
+    public void Promotion()
+    {
+        /* await SetActive("menu-promotion"); */
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Promotion/TRH05PromotionPage/1");
+    }
+
+    public async Task AffectationFct()
+    {
+        // await SetActive("menu-affectation");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Contrat/AffectationPage/1");
+    }
+
+    public void SalaireAff()
+    {
+        // await SetActive("menu-salaires");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL02Salaire/AgentAffectedSalairePage/1");
+    }
+
+
+    public async Task PlanningCongeFct()
+    {
+        // await SetActive("menu-planning");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/PlanningConge/PlanningCongePages/1");
+    }
+
+    public void Permission()
+    {
+        // await SetActive("menu-permission");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05PermissionPages");
+    }
+
+    public async Task DepartFct()
+    {
+        // await SetActive("menu-depart");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Depart/DepartPage/1");
+    }
+
+    public void Sanction()
+    {
+        /* await SetActive("menu-sanction"); */
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05SactionPage");
+    }
+
+    public void Training()
+    {
+        // await SetActive("menu-training");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH03TrainingPage");
+    }
+
+    public async Task Faute()
+    {
+        // await SetActive("menu-faute");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH04FAUTEPage");
+    }
+
+    public void Mutation()
+    {
+        // await SetActive("menu-mutation");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05MutationPage");
+    }
+
+    public void Localisation()
+    {
+        // await SetActive("menu-localisation");
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Localisation/TRH05LocalisationPage");
+    }
+
+    public void ChangePassWord()
+    {
+        // await SetActive("menu-password");
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Login/ChangePswPage");
+    }
+
+    public async Task ReportEmbarqFct()
+    {
+        // await SetActive("menu-prime");
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentComReport/AgentComReportPage");
+    }
+
+    public void ReportListPayFct()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentSalaireReport/AgentSalaireReportPage");
+    }
+
+    public async Task LogOutFct()
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to Lougout ?"))
+            return;
+
+        // osessionService.VraiID = 0;
+        // osessionService.ClientID = 0;
+        // osessionService.RoleID = 0;
+        // osessionService.CashAcctID = 0;
+        // osessionService.Reponse = "Cliquer sur le bouton Login pour vous connecter";
+        // osessionService.DateJour = DateTime.Today;
+        // osessionService.JournalName = "";
+        // osessionService.Branch = "";
+        // osessionService.IsLogged = false;
+        // osessionService.UserProfile = "";
+        // osessionService.UserId = 0;
+        // osessionService.UserName = "";
+        // osessionService.BranchID = 0;
+        // osessionService.MenuId = "0";
+        // osessionService.MenuSecId = "0";
+        // osessionService.MenuName = "";
+        // osessionService.MenuSecName = "";
+        // osessionService.DivMessage = "";
+        // osessionService.CustomerNames = "";
+        // osessionService.DataChanged = false;
+        // osessionService.ContratID = 0;
+        // osessionService.DernSouscriptID = 0;
+
+        // await JSRuntime.InvokeVoidAsync("alert", osessionService.sApp);
+
+        NavManager.NavigateTo(osessionService.sApp + $"/");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+                // strUserName = osessionService.UserName;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", ex.Message);
+        }
+    }
+
+
+}

@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace PayLibrary.ParamSec
+{
+   public class TSc552TpTransAllawed
+    {
+        public int ID { set; get; }
+        public int RoleID { set; get; }
+        public int TpTransID { set; get; }
+        public bool AccesAllowed { set; get; }
+        public int CreatBy { set; get; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime CreatOn { set; get; }
+        public int LModifBy { set; get; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime LModifOn { set; get; }
+        public int UserID { set; get; }
+        public int TpMaj { set; get; }
+    }
+}

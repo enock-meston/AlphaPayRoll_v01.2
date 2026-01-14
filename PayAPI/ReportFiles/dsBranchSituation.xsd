@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsBranchSituation" targetNamespace="http://tempuri.org/dsBranchSituation.xsd" xmlns:mstns="http://tempuri.org/dsBranchSituation.xsd" xmlns="http://tempuri.org/dsBranchSituation.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="1" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="AlphaBanqueConnectionString" IsAppSettingsProperty="true" Modifier="Assembly" Name="AlphaBanqueConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.WindowsFormsApp1.Properties.Settings.GlobalReference.Default.AlphaBanqueConnectionString" Provider="System.Data.SqlClient" />
+          <Connection ConnectionStringObject="Data Source=192.168.1.221;Initial Catalog=ALPHAPAIE;User ID=ApplicCon;Password=p@ssw0rd;Encrypt=False" IsAppSettingsProperty="false" Modifier="Assembly" Name="ALPHAPAIEConnectionString" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VueBranchSituationTableAdapter" GeneratorDataComponentClassName="VueBranchSituationTableAdapter" Name="VueBranchSituation" UserDataComponentName="VueBranchSituationTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="ALPHAPAIEConnectionString" DbObjectName="ALPHAPAIE.dbo.VueBranchSituation" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT ID, RICode, Descript, Enab, OrdNum, EcoursTotal, EcoursNP, PAR, InteretCredit, ResultCum, ResultMens, CreatBy, CreatOn, LModifBy, LModifOn, LoanDisbAlowed, Superv, NomPeriode FROM dbo.VueBranchSituation</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ID" DataSetColumn="ID" />
+              <Mapping SourceColumn="RICode" DataSetColumn="RICode" />
+              <Mapping SourceColumn="Descript" DataSetColumn="Descript" />
+              <Mapping SourceColumn="Enab" DataSetColumn="Enab" />
+              <Mapping SourceColumn="OrdNum" DataSetColumn="OrdNum" />
+              <Mapping SourceColumn="EcoursTotal" DataSetColumn="EcoursTotal" />
+              <Mapping SourceColumn="EcoursNP" DataSetColumn="EcoursNP" />
+              <Mapping SourceColumn="PAR" DataSetColumn="PAR" />
+              <Mapping SourceColumn="InteretCredit" DataSetColumn="InteretCredit" />
+              <Mapping SourceColumn="ResultCum" DataSetColumn="ResultCum" />
+              <Mapping SourceColumn="ResultMens" DataSetColumn="ResultMens" />
+              <Mapping SourceColumn="CreatBy" DataSetColumn="CreatBy" />
+              <Mapping SourceColumn="CreatOn" DataSetColumn="CreatOn" />
+              <Mapping SourceColumn="LModifBy" DataSetColumn="LModifBy" />
+              <Mapping SourceColumn="LModifOn" DataSetColumn="LModifOn" />
+              <Mapping SourceColumn="LoanDisbAlowed" DataSetColumn="LoanDisbAlowed" />
+              <Mapping SourceColumn="Superv" DataSetColumn="Superv" />
+              <Mapping SourceColumn="NomPeriode" DataSetColumn="NomPeriode" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsBranchSituation" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="dsBranchSituation" msprop:Generator_DataSetName="dsBranchSituation">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="VueBranchSituation" msprop:Generator_RowEvHandlerName="VueBranchSituationRowChangeEventHandler" msprop:Generator_RowDeletedName="VueBranchSituationRowDeleted" msprop:Generator_RowDeletingName="VueBranchSituationRowDeleting" msprop:Generator_RowEvArgName="VueBranchSituationRowChangeEvent" msprop:Generator_TablePropName="VueBranchSituation" msprop:Generator_RowChangedName="VueBranchSituationRowChanged" msprop:Generator_RowChangingName="VueBranchSituationRowChanging" msprop:Generator_TableClassName="VueBranchSituationDataTable" msprop:Generator_RowClassName="VueBranchSituationRow" msprop:Generator_TableVarName="tableVueBranchSituation" msprop:Generator_UserTableName="VueBranchSituation">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_UserColumnName="ID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RICode" msprop:Generator_ColumnPropNameInRow="RICode" msprop:Generator_ColumnPropNameInTable="RICodeColumn" msprop:Generator_ColumnVarNameInTable="columnRICode" msprop:Generator_UserColumnName="RICode">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="5" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Descript" msprop:Generator_ColumnPropNameInRow="Descript" msprop:Generator_ColumnPropNameInTable="DescriptColumn" msprop:Generator_ColumnVarNameInTable="columnDescript" msprop:Generator_UserColumnName="Descript">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="60" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Enab" msprop:Generator_ColumnPropNameInRow="Enab" msprop:Generator_ColumnPropNameInTable="EnabColumn" msprop:Generator_ColumnVarNameInTable="columnEnab" msprop:Generator_UserColumnName="Enab" type="xs:boolean" />
+              <xs:element name="OrdNum" msprop:Generator_ColumnPropNameInRow="OrdNum" msprop:Generator_ColumnPropNameInTable="OrdNumColumn" msprop:Generator_ColumnVarNameInTable="columnOrdNum" msprop:Generator_UserColumnName="OrdNum" type="xs:int" />
+              <xs:element name="EcoursTotal" msprop:Generator_ColumnPropNameInRow="EcoursTotal" msprop:Generator_ColumnPropNameInTable="EcoursTotalColumn" msprop:Generator_ColumnVarNameInTable="columnEcoursTotal" msprop:Generator_UserColumnName="EcoursTotal" type="xs:decimal" />
+              <xs:element name="EcoursNP" msprop:Generator_ColumnPropNameInRow="EcoursNP" msprop:Generator_ColumnPropNameInTable="EcoursNPColumn" msprop:Generator_ColumnVarNameInTable="columnEcoursNP" msprop:Generator_UserColumnName="EcoursNP" type="xs:decimal" />
+              <xs:element name="PAR" msprop:Generator_ColumnPropNameInRow="PAR" msprop:Generator_ColumnPropNameInTable="PARColumn" msprop:Generator_ColumnVarNameInTable="columnPAR" msprop:Generator_UserColumnName="PAR" type="xs:decimal" />
+              <xs:element name="InteretCredit" msprop:Generator_ColumnPropNameInRow="InteretCredit" msprop:Generator_ColumnPropNameInTable="InteretCreditColumn" msprop:Generator_ColumnVarNameInTable="columnInteretCredit" msprop:Generator_UserColumnName="InteretCredit" type="xs:decimal" />
+              <xs:element name="ResultCum" msprop:Generator_ColumnPropNameInRow="ResultCum" msprop:Generator_ColumnPropNameInTable="ResultCumColumn" msprop:Generator_ColumnVarNameInTable="columnResultCum" msprop:Generator_UserColumnName="ResultCum" type="xs:decimal" />
+              <xs:element name="ResultMens" msprop:Generator_ColumnPropNameInRow="ResultMens" msprop:Generator_ColumnPropNameInTable="ResultMensColumn" msprop:Generator_ColumnVarNameInTable="columnResultMens" msprop:Generator_UserColumnName="ResultMens" type="xs:decimal" />
+              <xs:element name="CreatBy" msprop:Generator_ColumnPropNameInRow="CreatBy" msprop:Generator_ColumnPropNameInTable="CreatByColumn" msprop:Generator_ColumnVarNameInTable="columnCreatBy" msprop:Generator_UserColumnName="CreatBy" type="xs:int" />
+              <xs:element name="CreatOn" msprop:Generator_ColumnPropNameInRow="CreatOn" msprop:Generator_ColumnPropNameInTable="CreatOnColumn" msprop:Generator_ColumnVarNameInTable="columnCreatOn" msprop:Generator_UserColumnName="CreatOn" type="xs:dateTime" />
+              <xs:element name="LModifBy" msprop:Generator_ColumnPropNameInRow="LModifBy" msprop:Generator_ColumnPropNameInTable="LModifByColumn" msprop:Generator_ColumnVarNameInTable="columnLModifBy" msprop:Generator_UserColumnName="LModifBy" type="xs:int" minOccurs="0" />
+              <xs:element name="LModifOn" msprop:Generator_ColumnPropNameInRow="LModifOn" msprop:Generator_ColumnPropNameInTable="LModifOnColumn" msprop:Generator_ColumnVarNameInTable="columnLModifOn" msprop:Generator_UserColumnName="LModifOn" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="LoanDisbAlowed" msprop:Generator_ColumnPropNameInRow="LoanDisbAlowed" msprop:Generator_ColumnPropNameInTable="LoanDisbAlowedColumn" msprop:Generator_ColumnVarNameInTable="columnLoanDisbAlowed" msprop:Generator_UserColumnName="LoanDisbAlowed" type="xs:boolean" />
+              <xs:element name="Superv" msprop:Generator_ColumnPropNameInRow="Superv" msprop:Generator_ColumnPropNameInTable="SupervColumn" msprop:Generator_ColumnVarNameInTable="columnSuperv" msprop:Generator_UserColumnName="Superv" type="xs:int" />
+              <xs:element name="NomPeriode" msprop:Generator_ColumnPropNameInRow="NomPeriode" msprop:Generator_ColumnPropNameInTable="NomPeriodeColumn" msprop:Generator_ColumnVarNameInTable="columnNomPeriode" msprop:Generator_UserColumnName="NomPeriode" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:VueBranchSituation" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

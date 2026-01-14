@@ -1,0 +1,253 @@
+﻿@page "/AgentSalaireReport/AgentSalaireReportPage"
+@inherits AgentSalaireReportPageBase
+
+@if (osessionService != null)
+{
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+
+
+<br />
+<br />
+
+
+
+<div class="row col-12">
+    <div class="col-sm-3">
+
+    </div>
+
+    <div class="col-sm-9">
+        <h3>Rapports paie et primes des gestionnaires de crédits</h3>
+    </div>
+
+</div>
+
+
+<br />
+<br />
+
+
+
+
+<EditForm Model="oItem">
+
+
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+            <label class="form-text text-right">Modules</label>
+        </div>
+        <div class="col-sm-4">
+
+            <InputSelectNumber class="form-control " ValueChanged="@((int value) => ModuleChanged(value))" ValueExpression="@(() => @pModuleID)" Value="@pModuleID" disabled="true">
+                @*<option value="0"> ----------------------- </option>*@
+                @*<option value="1"> Crédits </option>*@
+               <option value="2"> Paie </option>
+
+            </InputSelectNumber>
+
+        </div>
+    </div>
+
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+            <label class="form-text text-right">Exercices</label>
+        </div>
+        <div class="col-sm-4">
+
+            <InputSelectNumber class="form-control " ValueChanged="@((int value) => ExerciceChanged(value))" ValueExpression="@(() => @pExerciceID)" Value="@pExerciceID">
+                <option value=0> ----------------------- </option>
+                <option value=2023> Exercice 2023 </option>
+                <option value=2024> Exercice 2024 </option>
+                <option value=2025> Exercice 2025 </option>
+                <option value=2026> Exercice 2026 </option>
+                <option value=2027> Exercice 2027 </option>
+                <option value=2028> Exercice 2028 </option>
+                <option value=2029> Exercice 2029 </option>
+                <option value=2030> Exercice 2030 </option>
+            </InputSelectNumber>
+
+        </div>
+    </div>
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+            <label class="form-text text-right">Période</label>
+        </div>
+        <div class="col-sm-4">
+
+            <InputSelectNumber class="form-control " ValueChanged="@((int value) => PeriodeChanged(value))" ValueExpression="@(() => @pPeriodeID)" Value="@pPeriodeID">
+                <option value="0"> ----------------------- </option>
+                @if (oPeriodList != null)
+                {
+                    @foreach (var item in oPeriodList)
+                    {
+
+                        @if (@item.ID == pPeriodeID)
+                        {
+                            <option Selected value="@item.ID"> @item.Descript </option>
+                        }
+                        else
+                        {
+                            <option value="@item.ID"> @item.Descript </option>
+                        }
+
+                    }
+
+                }
+
+            </InputSelectNumber>
+
+        </div>
+    </div>
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+
+        </div>
+
+        <div class="col-sm-3">
+            <button type="button" class="btn btn-sm btn-primary" @onclick="ChargerDonnees" style="width:100%;opacity:0.8">Load Data</button>
+        </div>
+
+
+
+    </div>
+
+    <br />
+
+
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+            <label class="form-text text-right">Reports List</label>
+        </div>
+        <div class="col-sm-4">
+
+            <InputSelect class="form-control " ValueChanged="@((string value) => ReportChanged(value))" ValueExpression="@(() => @pReportName)" Value="@pReportName">
+
+                <option value="0"> ----------------------- </option>
+                @if (oReportList != null)
+                {
+                    @foreach (var item in oReportList)
+                    {
+
+                        @if (@item.RICode == pReportName)
+                        {
+                            <option Selected value="@item.RICode"> @item.Descript </option>
+                        }
+                        else
+                        {
+                            <option value="@item.RICode"> @item.Descript </option>
+                        }
+
+                    }
+
+                }
+
+
+            </InputSelect>
+
+        </div>
+    </div>
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+            <label class="form-text text-right">Agence</label>
+        </div>
+        <div class="col-sm-4">
+
+            @*<InputSelect class="form-control " ValueChanged="@((string value) => BranchChanged(value))" ValueExpression="@(() => @pBranchID)" Value="@pBranchID" disabled="@bVerrouillerBranch">*@
+            <InputSelect class="form-control " ValueChanged="@((string value) => BranchChanged(value))" ValueExpression="@(() => @pBranchID)" Value="@pBranchID" >
+                <option value="0"> ----------------------- </option>
+                @if (oTCl550BranchLocList != null)
+                {
+                    @foreach (var item in oTCl550BranchLocList)
+                    {
+
+                        @if (@item.ID == pBranchID)
+                        {
+                            <option Selected value="@item.ID"> @item.Descript </option>
+                        }
+                        else
+                        {
+                            <option value="@item.ID"> @item.Descript </option>
+                        }
+
+                    }
+
+                }
+
+            </InputSelect>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="row col-12">
+        <div class="col-sm-4">
+            <label class="form-text text-right">Reports Type</label>
+        </div>
+        <div class="col-sm-4">
+
+            <InputSelect class="form-control " ValueChanged="@((string value) => ReportTypeChanged(value))" ValueExpression="@(() => @pReportTypeID)" Value="@pReportTypeID">
+                <option value="0"> ----------------------- </option>
+                <option value="PDF"> PDF Report </option>
+                <option value="XLS"> Excel Report </option>
+                <option value="WORD"> Word</option>
+
+            </InputSelect>
+
+        </div>
+    </div>
+
+    @*<div class="row col-12">
+            <div class="col-sm-5">
+
+            </div>
+
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-sm btn-primary" @onclick="AfficherReport" style="width:100%;opacity:0.8">Ajouter </button>
+            </div>
+
+        </div>*@
+
+
+</EditForm>
+
+
+<br />
+
+
+
+
+<div class="row col-12">
+    <div class="col-sm-4">
+
+    </div>
+
+    <div class="col-sm-3">
+        <button type="button" class="btn btn-sm btn-success" @onclick="AfficherReport" style="width:100%;opacity:0.8">Afficher Rapport</button>
+    </div>
+
+</div>
+
+}

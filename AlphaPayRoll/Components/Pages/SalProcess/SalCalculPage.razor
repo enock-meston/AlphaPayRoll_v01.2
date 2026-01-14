@@ -1,0 +1,191 @@
+﻿
+@page "/SalProcess/SalCalculPage/{id}"
+@inherits SalCalculPageBase
+
+
+<br />
+@if (osessionService != null)
+{
+@if (isLoading)
+{
+	<p><em>Loading...</em></p>
+	<div class="d-flex justify-content-center">
+		<div class="spinner-border text-danger" role="status">
+			<span class="sr-only">Loading ...</span>
+		</div>
+	</div>
+}
+
+
+@if (!isLoading && !popup)
+{
+	<div class="row col-sm-12">
+		<table class="table  table-bordered  table-light DataGrid">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Exercice</th>
+					<th>Mois</th>
+					<th>Etape</th>
+					<th></th>
+@*					<th></th>
+					<th></th>*@
+				</tr>
+			</thead>
+			<tbody>
+
+				@if (oTSL00ProcessList != null)
+				{
+					@for (int i = 0; i < oTSL00ProcessList.Count; i++)
+					{
+						var item = oTSL00ProcessList[i];
+						<tr class="@getRowColor(i)">
+
+							<td>@item.ID</td>
+							<td>@item.Exercice</td>
+							<td>@item.Mois</td>
+							<td>@item.StepDenom</td>
+
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Calculer</button>  </td>
+				@*			<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>*@
+
+						</tr>
+					}}
+			</tbody>
+		</table>
+	</div>
+}
+}
+@if (popup)
+{
+	<div class="modal" tabindex="-1" style="display: inline-block ">
+		<div class="modal-dialog modal-xl modalDialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<div class="row col-sm-12">
+						<div class="col-sm-1">
+						</div>
+
+						<div class="col-sm-7">
+							<h5 style="color:black">Calculer Salaires</h5>
+						</div>
+
+						<div class="col-sm-2">
+							@if (iTypeAction != 0)
+							{
+								<button type="button" class=@StyleButton style="width:100%">@ButtonCaption</button>
+							}
+
+
+						</div>
+						<div class="col-sm-2">
+							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body ">
+
+					<EditForm Model="oOneTSL00Process">
+						<div class="well well-sm pre-scrollable modalBody">
+
+							<div class="row col-sm-12">
+
+
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Exercice</label>
+								</div>
+								<div class="col-sm-4">
+									<InputSelectNumber class="form-control" ValueChanged="@((int value) => ExerciceHasChanged(value))" ValueExpression="@(() => @Exercice)" Value="@Exercice" >
+										
+
+		
+										@if (oTSL00ProcessList != null)
+										{
+											@foreach (var item in oTSL00ProcessList)
+											{
+												@if (@item.ID == Exercice)
+												{
+													<option Selected value="@item.Exercice"> @item.Exercice </option>
+												}
+												else
+												{
+													<option value="@item.Exercice"> @item.Exercice </option>
+												}
+											}
+										}
+
+									</InputSelectNumber>
+								</div>
+
+
+							</div>
+
+
+							<div class="row col-sm-12">
+
+								<div class="col-sm-4">
+									<label class="form-text text-right">Mois</label>
+								</div>
+
+								<div class="col-sm-4">
+									<InputSelectNumber class="form-control" ValueChanged="@((int value) => MoisHasChanged(value))" ValueExpression="@(() => @Mois)" Value="@Mois" >
+
+										
+
+										@if (oTSL00ProcessList != null)
+										{
+											@foreach (var item in oTSL00ProcessList)
+											{
+												@if (@item.ID == Mois)
+												{
+													<option Selected value="@item.Mois"> @item.Mois </option>
+												}
+												else
+												{
+													<option value="@item.Mois"> @item.Mois </option>
+												}
+											}
+										}
+
+
+									</InputSelectNumber>
+								</div>
+
+
+							</div>
+
+							<div class="row col-sm-12">
+								<label class="form-text text-right"></label>
+							</div>
+
+							<div class="row col-sm-12">
+
+
+								<div class="col-sm-5">
+								</div>
+
+								<div class="col-sm-2">
+									<button type="button" class="btn btn-sm btn-success" style="width:100%;" @onclick="CalculerSalaires">Calculer Salaires</button>
+								</div>
+
+								<div class="col-sm-5">
+								</div>
+							</div>
+
+
+						</div>
+
+
+
+
+					</EditForm>
+				</div>
+				<div class="modal-footer" style="height:1px">
+				</div>
+			</div>
+		</div>
+	</div>
+}

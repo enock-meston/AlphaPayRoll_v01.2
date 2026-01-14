@@ -1,0 +1,327 @@
+﻿@page "/TSL09ImputPay/TSL09ImputPayPage/{id}"
+@inherits TSL09ImputPayPageBase
+
+<br/>
+@if (osessionService != null)
+{
+@if (isLoading)
+{
+	<p><em>Loading...</em></p>
+	<div class="d-flex justify-content-center">
+		<div class="spinner-border text-danger" role="status">
+			<span class="sr-only">Loading ...</span>
+		</div>
+	</div>
+}
+
+@if (!isLoading)
+{
+
+
+	<div class="row col-12">
+
+		<div class="col-sm-3">
+			
+		</div>
+
+		<div class="col-sm-6">
+			<h5>Constatation des salaires du mois</h5>
+		</div>
+
+	    <div class="col-sm-3">
+			
+		</div>
+
+	</div>
+
+
+	<div class="row col-12">
+
+
+		<div class="col-sm-2">
+			<label class="form-text text-right" style="color:crimson;font-size:125%">Total Débit</label>
+		</div>
+		<div class="col-sm-2">
+			<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat" Style="text-align:left;" @bind-Value="TotDebit" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+		</div>
+
+		<div class="col-sm-2">
+			<label class="form-text text-right" style="color:crimson;font-size:125%">Total Crédit</label>
+		</div>
+		<div class="col-sm-2">
+			<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat" Style="text-align:left;" @bind-Value="TotCredit" class="form-control"></BlazorNumericTextBox.DecimalTextBox>
+		</div>
+
+		<div class="col-sm-2">
+			<button type="button" class="btn  btn-primary" @onclick="(() => EditData(oOneTSL09ImputPay, 1))" style="width:100%;opacity:0.8" disabled>Ajouter</button>
+		</div>
+
+		<div class="col-sm-2">
+			<button type="button" class="btn  btn-success" @onclick="PasserSalaireLocal" style="width:100%;opacity:0.8" >Comptabiliser</button>
+		</div>
+
+
+	</div>
+
+	<br/>
+	
+		<div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
+		<table class="table  table-bordered  table-light DataGrid" style="font-size:14px">
+			<thead>
+				<tr>
+					<th>Code Guichet</th>
+					<th>ID Client</th>
+					<th>Matricule</th>
+					<th>Description</th>
+					<th>Débit</th>
+					<th>Crédit</th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+
+				@if (oTSL09ImputPayList != null)
+				{
+					@for (int i = 0; i < oTSL09ImputPayList.Count; i++)
+					{
+						var item = oTSL09ImputPayList[i];
+						<tr class="@getRowColor(i)">
+
+							<td>@item.BranchID</td>
+							<td>@item.Cpte</td>
+							<td>@item.Matricule</td>
+							<td>@item.Descript</td>
+							<td>@item.Debit.ToString("###,##0")</td>
+							<td>@item.Credit.ToString("###,##0")</td>
+
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modifier</button>  </td>
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%" disabled>Supprimer</button>  </td>
+
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+
+}
+	@if (popup)
+	{
+
+
+		<div class="modal" tabindex="-1" style="display:block">
+			<div class="modal-dialog modal-xl modalDialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+
+						<div class="row col-sm-12">
+							<div class="col-sm-1">
+							</div>
+
+							<div class="col-sm-7">
+								<h5 style="color:black">@modalTitle </h5>
+							</div>
+
+							<div class="col-sm-2">
+								@if (iTypeAction != 0)
+								{
+									<button type="button" class=@StyleButton @onclick="(() => SaveTSL09ImputPay(oOneTSL09ImputPay))" style="width:100%">@ButtonCaption</button>
+								}
+
+
+							</div>
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="modal-body ">
+
+						<EditForm Model="oOneTSL09ImputPay">
+
+
+							<div class="well well-sm pre-scrollable modalBody">
+
+
+
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">ID</label>
+									</div>
+									<div class="col-sm-6">
+										<InputNumber class="form-control" @bind-Value="oOneTSL09ImputPay.ID" Readonly="true" />
+
+									</div>
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Guichet</label>
+									</div>
+									<div class="col-sm-3">
+										<InputText class="form-control" @bind-Value="oOneTSL09ImputPay.BranchID" />
+
+									</div>
+
+
+						
+									<div class="col-sm-3">
+										<InputNumber class="form-control" @bind-Value="oOneTSL09ImputPay.Cpte" />
+
+									</div>
+
+									<div class="col-sm-2">
+										<label class="form-text text-right">Compte</label>
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+
+
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Description</label>
+									</div>
+									<div class="col-sm-6">
+										<InputText class="form-control" @bind-Value="oOneTSL09ImputPay.Descript" />
+
+									</div>
+
+								</div>
+
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Débit</label>
+									</div>
+									<div class="col-sm-6">
+										<BlazorNumericTextBox.DecimalTextBox class="form-control" Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneTSL09ImputPay.Debit" />
+									</div>
+
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Crédit</label>
+									</div>
+									<div class="col-sm-6">
+										<BlazorNumericTextBox.DecimalTextBox class="form-control" Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTSL09ImputPay.Credit" />
+									</div>
+
+								</div>
+
+
+	
+
+
+								<div class="row col-sm-12">
+
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Créé par</label>
+									</div>
+									<div class="col-sm-6">
+
+										<InputNumber class="form-control" @bind-Value="oOneTSL09ImputPay.CreatBy" Readonly=true />
+
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+									<div class="col-sm-4">
+										<label class="form-text text-right">Date création</label>
+									</div>
+
+									<div class="col-sm-6">
+										<InputDate class="form-control" @bind-Value="oOneTSL09ImputPay.CreatOn" Readonly=true />
+									</div>
+
+								</div>
+
+
+
+								<div class="row col-sm-12">
+
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Modifié par</label>
+									</div>
+
+									<div class="col-sm-6">
+										<InputNumber class="form-control" @bind-Value="oOneTSL09ImputPay.LModifBy" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Date modification</label>
+									</div>
+
+									<div class="col-sm-6">
+										<InputDate class="form-control" @bind-Value="oOneTSL09ImputPay.LModifOn" Readonly=true />
+									</div>
+								</div>
+
+
+
+
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+
+
+
+
+
+							</div>
+
+						</EditForm>
+
+
+					</div>
+
+
+					<div class="modal-footer" style="height:1px">
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+
+	}
+}
+
+
+
+
+
+

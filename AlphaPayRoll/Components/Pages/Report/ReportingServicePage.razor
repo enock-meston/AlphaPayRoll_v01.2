@@ -1,0 +1,62 @@
+﻿
+@page "/Report/ReportingServicePage"
+@inherits ReportingServicePageBase
+
+@if (osessionService.IsLogged)
+{
+
+    @if (isLoading)
+    {
+        <p><em>Loading...</em></p>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-danger" role="status">
+                <span class="sr-only">Loading ...</span>
+            </div>
+        </div>
+    }
+    else if (!isLoading)
+    {
+        <div class="row col-sm-12">
+
+            <div class="col-sm-12">
+                <label class="form-text text-left" style="font-size:16px">Rapports paie</label>
+            </div>
+
+
+
+        </div>
+
+
+        <hr style="height:2.5px;border-width:0;color:#6378f8;background-color:#6378f8;">
+        <div class="row col-sm-12  pre-scrollable well" style="max-height: 50vh;">
+            <table class="table  table-bordered  DataGrid table-light" style="font-size:12px">
+                <thead>
+                    <tr>
+                        <th>Descript</th>
+    
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (oTVeh99RapportList != null)
+                    {
+                        @for (int i = 0; i < oTVeh99RapportList.Count; i++)
+                        {
+                            var item = oTVeh99RapportList[i];
+
+                    <tr class="@getRowColor(i)">
+
+                        <td style="width:18%">@item.Descript</td>
+                       
+                        <td style="text-align:center;width:6%"> <a id="btAfficher" class="btn  btn-success " href="@item.Lien.Trim()" style="width:100%;color:white" target="_blank">Imprimer</a> </td>
+                     </tr>
+
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
+}

@@ -1,0 +1,532 @@
+﻿@page "/TSL03Traitem/TSL03TraitemPage"
+@inherits TSL03TraitemPageBase
+
+<div class="row col-12">
+	<div class="col-sm-10">
+		<h3>Traitement salaire</h3>
+	</div>
+
+	<div class="col-sm-2">
+		<button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL03Traitem, 1))" style="width:100%;opacity:0.8">Ajouter Traitem</button>
+	</div>
+
+</div>
+
+
+@if (oTSL03TraitemList == null)
+{
+	<p><em>Loading...</em></p>
+}
+
+else
+{
+
+	<div class="row col-sm-12">
+		<table class="table  table-bordered  table-light DataGrid">
+			<thead>
+				<tr>
+					<th>Sal Base</th>
+					<th>Logement</th>
+					<th>Transport</th>
+					<th>Ind. Fnct</th>
+					<th>Allocations</th>
+					<th>Brut</th>
+					<th>PC 10%</th>
+					<th>PC Volont</th>
+					<th>Rembours</th>
+					<th>Cotis</th>
+					<th>Autres Ret</th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+
+				@if (oTSL03TraitemList != null)
+				{
+					@for (int i = 0; i < oTSL03TraitemList.Count; i++)
+					{
+						var item = oTSL03TraitemList[i];
+						<tr class="@getRowColor(i)">
+
+							<td>@item.SalBase.ToString("###,##0")</td>
+							<td>@item.Logem.ToString("###,##0")</td>
+							<td>@item.Deplacem.ToString("###,##0")</td>
+							<td>@item.IndemFct.ToString("###,##0")</td>
+							<td>@item.Alloc.ToString("###,##0")</td>
+							<td>@item.Brut.ToString("###,##0")</td>
+							<td>@item.PensComp10Prc.ToString("###,##0")</td>
+							<td>@item.PensionComp.ToString("###,##0")</td>
+							<td>@item.Remboursement.ToString("###,##0")</td>
+							<td>@item.Cotisation.ToString("###,##0")</td>
+							<td>@item.AutreRetenue.ToString("###,##0")</td>
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+							<td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+
+
+	@if (popup)
+	{
+
+
+		<div class="modal" tabindex="-1" style="display:block">
+			<div class="modal-dialog modal-xl modalDialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+
+						<div class="row col-sm-12">
+							<div class="col-sm-1">
+							</div>
+
+							<div class="col-sm-7">
+								<h5 style="color:black">@modalTitle </h5>
+							</div>
+
+							<div class="col-sm-2">
+								@if (iTypeAction != 0)
+								{
+									<button type="button" class=@StyleButton @onclick="(() => SaveTSL03Traitem(oOneTSL03Traitem))" style="width:100%">@ButtonCaption</button>
+								}
+
+
+							</div>
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="modal-body ">
+
+						<EditForm Model="oOneTSL03Traitem">
+
+
+							<div class="well well-sm pre-scrollable modalBody">
+
+
+							<div class="row col-sm-12">
+
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">ID</label>
+									</div>
+									<div class="col-sm-4">
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.ID" Readonly="true" />
+
+									</div>
+
+								</div>
+
+						
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Année</label>
+									</div>
+									<div class="col-sm-4">
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.An" />
+
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Mois</label>
+									</div>
+									<div class="col-sm-4">
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.Mois" />
+
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Compte agent</label>
+									</div>
+									<div class="col-sm-4">
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.AgentId" />
+
+									</div>
+
+								</div>
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Nbre jours travail</label>
+									</div>
+									<div class="col-sm-4">
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.NbreJTrav" />
+									</div>
+
+								</div>
+
+								
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">SalBase</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat" Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.SalBase" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Logem</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat" Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Logem" />
+									</div>
+
+
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Déplacement</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat" Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Deplacem" />
+									</div>
+
+								</div>
+
+
+
+								
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Allocations</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Alloc" />
+									</div>
+
+								</div>
+
+						@*		<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Total Indemnités</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Indemnit" />
+									</div>
+
+
+
+								</div>*@
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Indemnités fonction</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.IndemFct" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Autres Indemnités</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.AutresIndmt" />
+									</div>
+
+
+								</div>
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Heures Supplémentaires</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.HeureSup" />
+									</div>
+
+								</div>
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Salaire brut</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Brut" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Pension comp obligatoire(10%)</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.PensComp10Prc" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Pension comp volontaire</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.PensionComp" />
+									</div>
+
+								</div>
+
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">BaseIPR</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.BaseIPR" />
+									</div>
+
+
+
+								</div>
+
+			
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">IPR</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.IPR" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">INSS</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.INSS" />
+									</div>
+
+								</div>
+
+								
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Total des Remboursements</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Remboursement" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Total des Cotisations</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.Cotisation" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Total autres retenues</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Format="@CurrencyFormat"  Style="text-align:left" class="form-control" @bind-Value="oOneTSL03Traitem.AutreRetenue" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">NETS</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox   Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneTSL03Traitem.NETS" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+
+									</div>
+
+								</div>
+
+
+						       <div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">PPINSS6</label>
+									</div>
+									<div class="col-sm-4">
+										<BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneTSL03Traitem.PPINSS6" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+
+									</div>
+
+
+								</div>
+
+								
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">PPINSS3</label>
+									</div>
+									<div class="col-sm-4">
+
+										<BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneTSL03Traitem.PPINSS3" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">PPPens</label>
+									</div>
+									<div class="col-sm-4">
+
+										<BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat" @bind-Value="oOneTSL03Traitem.PPPens" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+									</div>
+
+
+								</div>
+								
+
+	
+								
+		
+
+								<div class="row col-sm-12">
+
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Crée par</label>
+									</div>
+									<div class="col-sm-4">
+
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.CreatBy" Readonly=true />
+
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Date création</label>
+									</div>
+
+									<div class="col-sm-4">
+										<InputDate class="form-control" @bind-Value="oOneTSL03Traitem.CreatOn" Readonly=true />
+									</div>
+
+								</div>
+
+
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">Modifié par</label>
+									</div>
+
+									<div class="col-sm-4">
+										<InputNumber class="form-control" @bind-Value="oOneTSL03Traitem.LModifBy" />
+									</div>
+
+								</div>
+
+								<div class="row col-sm-12">
+
+									<div class="col-sm-4">
+										<label class="form-text text-right">date modification</label>
+									</div>
+
+									<div class="col-sm-4">
+										<InputDate class="form-control" @bind-Value="oOneTSL03Traitem.LModifOn" Readonly=true />
+									</div>
+								</div>
+
+
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+								<br />
+
+						
+
+
+							</div>
+
+					  </EditForm>
+
+
+					</div>
+
+
+
+					<div class="modal-footer" style="height:1px">
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+
+	}
+}
+

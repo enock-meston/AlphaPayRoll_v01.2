@@ -1,0 +1,328 @@
+﻿@page "/TSL04ArchivIPR/TSL04ArchivIPRPage"
+@inherits TSL04ArchivIPRPageBase
+
+<div class="row col-12">
+    <div class="col-sm-10">
+        <h3>ArchivIPR Page</h3>
+    </div>
+
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL04ArchivIPR, 1))" style="width:100%;opacity:0.8">Ajouter ArchivIPR</button>
+    </div>
+
+</div>
+
+
+@if (oTSL04ArchivIPRList == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Exercice</th>
+                    <th>Mois</th>
+                    <th>Matricule</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oTSL04ArchivIPRList != null)
+                {
+                    @for (int i = 0; i < oTSL04ArchivIPRList.Count; i++)
+                    {
+                        var item = oTSL04ArchivIPRList[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.ID</td>
+
+                            <td>@item.Exercice</td>
+
+                            <td>@item.Mois</td>
+
+                            <td>@item.Matricule</td>
+
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (popup)
+    {
+
+
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog modal-xl modalDialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <div class="row col-sm-12">
+                            <div class="col-sm-1">
+
+                            </div>
+
+                            <div class="col-sm-7">
+                                <h5 style="color:black">@modalTitle </h5>
+                            </div>
+
+                            <div class="col-sm-2">
+                                @if (iTypeAction != 0)
+                                {
+                                    <button type="button" class=@StyleButton @onclick="(() => SaveTSL04ArchivIPR(oOneTSL04ArchivIPR))" style="width:100%">@ButtonCaption</button>
+                                }
+
+
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-body ">
+
+                        <EditForm Model="oOneTSL04ArchivIPR">
+
+
+                            <div class="well well-sm pre-scrollable modalBody">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+
+                                <div class="row col-sm-12">
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">ID</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.ID" Readonly="true" />
+
+                                    </div>
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Exercice</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.Exercice" />
+
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Mois</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.Mois" />
+
+                                    </div>
+
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Matricule</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.Matricule" />
+
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+
+
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Brut imposable</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.BrutImpos" />
+                                    </div>
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+                                @*<div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Tranche1</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL04ArchivIPR.Tranche1" />
+                                    </div>
+
+                                </div>
+
+
+
+                                <br />
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Tranche2</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL04ArchivIPR.Tranche2" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Tranche3</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <BlazorNumericTextBox class="form-control" @bind-Value="oOneTSL04ArchivIPR.Tranche3" />
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <br />*@
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Créé par</label>
+                                    </div>
+                                    <div class="col-sm-4">
+
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.CreatBy" Readonly=true />
+
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Date création On</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL04ArchivIPR.CreatOn" Readonly=true />
+                                    </div>
+
+                                </div>
+
+
+
+                                <br />
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Modifié par</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputNumber class="form-control" @bind-Value="oOneTSL04ArchivIPR.LModifBy" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Date modification</label>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <InputDate class="form-control" @bind-Value="oOneTSL04ArchivIPR.LModifOn" Readonly=true />
+                                    </div>
+                                </div>
+
+                                <br />
+
+
+
+
+
+
+
+                                <div class="row col-sm-12">
+
+
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+
+                                </div>
+
+
+
+                            </div>
+
+                        </EditForm>
+
+
+                    </div>
+
+
+                    <div class="modal-footer" style="height:1px">
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    }
+}
+
+
+
+
+
+

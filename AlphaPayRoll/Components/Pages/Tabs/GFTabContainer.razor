@@ -1,0 +1,83 @@
+﻿<CascadingValue Value="this" Name="GFTabContainer">
+    @ChildContent
+
+    <div class="d-flex flex-row"  style="width:100%">
+        <div class="container-fluid px-1">
+            <div class="cubix-tab-content-container m-0 p-0">
+                @getActiveTab()
+            </div>
+        </div>
+
+        <div class="col-sm-2 px-0 ml-1">
+            <div class="cubix-tab-title-container d-flex flex-column p-0 m-0">
+                @for (int i = 0; i < tabItems.Count; i++)
+                {
+                    int index = i;
+                    <div class="title py-2 pl-2 @getTabActiveState(index)" @onclick="(()=>OnTabClick(tabItems[index],index))">
+                        @tabItems[i].TabTitle
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</CascadingValue>
+
+
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private List<GFTabItem> tabItems = new List<GFTabItem>();
+    //private GFTabItem
+    private int activeTab = 0;
+    private string vanish;
+
+    bool render = true;
+
+    protected override bool ShouldRender()
+    {
+        return render;
+    }
+
+    private void OnTabClick(GFTabItem item, int i)
+    {
+        if (activeTab != i)
+        {
+            activeTab = i;
+        }
+
+    }
+    private RenderFragment getActiveTab()
+    {
+        if (activeTab <= tabItems.Count - 1)
+        {
+            return tabItems[activeTab].TabContent;
+        }
+        return null;
+    }
+
+    private string getTabActiveState(int i)
+    {
+        return activeTab == i ? "active" : "";
+    }
+
+    public void AddTabItem(GFTabItem item)
+    {
+        //Console.WriteLine($"Added new item : {item.TabTitle}");
+        tabItems.Add(item);
+        StateHasChanged();
+    }
+
+    public void RemoveTabItem(GFTabItem item)
+    {
+        //Console.WriteLine($"Removed item : {item.TabTitle}");
+        tabItems.Remove(item);
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+}

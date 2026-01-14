@@ -1,0 +1,232 @@
+﻿
+@page "/AgRetPaymentMois/TSL02AgRetOccasMoisPage"
+@inherits TSL02AgRetOccasMoisPageBase
+
+<br/>
+<div class="row col-12">
+    <div class="col-sm-9">
+        <h5 style="color:crimson">Retenues occasionnelles  du mois de :@paramNomAgent</h5>
+    </div>
+
+    <div class="col-sm-3">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneAgDonIntialMois, 1))" style="width:100%;opacity:0.8">Ajouter </button>
+    </div>
+
+</div>
+<br/>
+
+<div class="row col-sm-12">
+    <table class="table  table-bordered  table-light DataGrid">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Exercice</th>
+                <th>Mois</th>
+                <th>Dénomination</th>
+                <th>Montant</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if ( oAgDonIntialMoisList != null)
+            {
+                @for (int i = 0; i <  oAgDonIntialMoisList.Count; i++)
+                {
+                    var item =  oAgDonIntialMoisList[i];
+                    <tr class="@getRowColor(i)">
+
+                        <td>@item.ID</td>
+                        <td>@item.Exercice</td>
+                        <td>@item.Mois</td>
+                        <td>@item.Descript</td>
+                         <td>@item.MontAPayMois.ToString("###,##0")</td>
+              
+
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                    </tr>
+                }}
+        </tbody>
+    </table>
+</div>
+@if (popup)
+{
+
+    <div class="modal" tabindex="-1" style="display: inline-block ">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+
+                        </div>
+
+                        <div class="col-sm-7">
+                            <h5 style="color:black">Retenues occasionnelles du mois</h5>
+                        </div>
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveData(oOneAgDonIntialMois))" style="width:100%">@ButtonCaption</button>}
+
+
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneAgDonIntialMois">
+                        <div class="well well-sm pre-scrollable modalBody">
+                           
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">ID</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneAgDonIntialMois.ID" disabled="true" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agent Id</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneAgDonIntialMois.AgentId" disabled="true"/>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right"> Exercice  </label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneAgDonIntialMois.Exercice" disabled="true" />
+                                </div>
+                            </div>
+
+                           
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Mois </label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneAgDonIntialMois.Mois" disabled="true"/>
+                                 </div>
+                           </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Type retenu</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    
+                                       <InputSelectNumber class="form-control " @bind-Value="oOneAgDonIntialMois.TpRetId" >
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTSL550TpRetAutreList != null)
+                                            {
+                                            @foreach (var item in oTSL550TpRetAutreList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Montant</label>
+                                </div>
+                                <div class="col-sm-4">
+
+                                 <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneAgDonIntialMois.MontAPayMois" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+                                </div>
+
+                            </div>
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Créé par</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneAgDonIntialMois.CreatBy" Readonly="true" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date création</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputDate class="form-control" @bind-Value="oOneAgDonIntialMois.CreatOn" Readonly="true" />
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Modifé par</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneAgDonIntialMois.UserID" Readonly="true" />
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date modification</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputDate class="form-control" @bind-Value="oOneAgDonIntialMois.LModifOn" Readonly="true" />
+                                </div>
+                            </div>
+
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br />
+
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer" style="height:1px">
+                </div>
+            </div>
+        </div>
+    </div>
+}

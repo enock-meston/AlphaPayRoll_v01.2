@@ -1,0 +1,21 @@
+﻿@code {
+
+    [Parameter]
+    public string TabTitle { get; set; }
+    [Parameter]
+    public RenderFragment TabContent { get; set; }
+
+    [CascadingParameter(Name = "GFTabContainer")]
+    GFTabContainer GFTabContainer { get; set; }
+
+    protected override void OnInitialized()
+    {
+        GFTabContainer.AddTabItem(this);
+    }
+
+    public void Dispose()
+    {
+        GFTabContainer.AddTabItem(this);
+    }
+
+}

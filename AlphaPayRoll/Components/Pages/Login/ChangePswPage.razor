@@ -1,0 +1,127 @@
+﻿@layout LoginLayout
+@page "/Login/ChangePswPage"
+@inherits ChangePswPageBase
+<style>
+
+    body {
+        background-color: #d5d5d8;
+    }
+</style>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+@*@if (!osessionService.IsLogged)
+{
+    <div class="alert alert-danger mt-4" role="alert" style="text-align:center">
+
+        <h3>@osessionService.Reponse</h3>
+
+    </div>
+}
+@if (osessionService.IsLogged)
+{
+    <div class="alert alert-success mt-4" role="alert" style="text-align:center">
+
+        <h3>@osessionService.Reponse</h3>
+
+    </div>
+
+}*@
+
+
+
+@if (osessionService != null)
+{
+
+    @if (popUpModal)
+    {
+
+
+
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog   modal-lg" role="document" style="margin-top:15%; margin-left:25%; min-height: 100px;max-height: 100px;min-width: 800px;max-width: 800px;background-color:#9191fc">
+                <div class="modal-content ">
+
+                    <div class="modal-header text-center" style="height: 40px;background-color:#a1a1fa">
+
+
+                        <div class="col-lg-12">
+                            <h5>Change Pass Word</h5>
+                        </div>
+
+                    </div>
+
+
+                    <div class="modal-body" style="background-color:#bdbdfa">
+
+
+
+                        <EditForm Model="oUserLogin">
+                            <div class="well well-sm ">
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Old Pass Word</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <InputText type="password" class="form-control" @bind-Value="OldPsw" />
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">New Pass Word</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <InputText type="password" class="form-control" @bind-Value="NewPsw" />
+                                    </div>
+
+                                </div>
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Confirm New Pass Word</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <InputText type="password" class="form-control" @bind-Value="ConfirmNewPsw" />
+                                    </div>
+
+                                </div>
+
+
+
+
+
+                            </div>
+                        </EditForm>
+
+
+
+
+                    </div>
+
+
+                    <div class="modal-footer alert-secondary" style="height:40px;background-color:#a1a1fa">
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-sm btn-success " @onclick="ChangePsw" style="width:100px;opacity:0.8">Changer</button>
+
+                            <button type="button" class=" btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUpModal" style="width: 100px;opacity:0.8">Quitter </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+}

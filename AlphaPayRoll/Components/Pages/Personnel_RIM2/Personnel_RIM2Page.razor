@@ -1,0 +1,665 @@
+﻿
+@page "/Personnel_RIM2/Personnel_RIM2Page/{id}"
+@inherits Personnel_RIM2PageBase
+
+<br />
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+@if (!isLoading && !AgentSelected)
+{
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+        <EditForm Model="oOnePersonnel_RIM2">
+            <div class="row col-12">
+                <div class="col-sm-2">
+                    <label class="form-text text-right">Search by First name /Last Name /Matricule</label>
+                </div>
+                <div class="col-sm-2">
+                    <InputText class="form-control" @bind-Value="sNomRecherche" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-success" @onclick="Rechercher" style="width:100%;opacity:0.8">Rechercher</button>
+                </div>
+                <div class="col-sm-3">
+                </div>
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-success" style="width:100%;opacity:0.8">Download</button>
+                </div>
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOnePersonnel_RIM2, 1))" style="width:100%;opacity:0.8">Ajouter Personnel</button>
+                </div>
+
+            </div>
+        </EditForm>
+    </div>
+
+
+    <div class="row col-sm-12">
+        <table class="table  table-bordered  table-light DataGrid">
+            <thead>
+                <tr>
+                    <th>NOM</th>
+                    <th>PRENOMS</th>
+                    <th>NUM_MATRICULE</th>
+                    <th>NUMERO PIECE</th>
+
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (oPersonnel_RIM2List != null)
+                {
+                    @for (int i = 0; i < oPersonnel_RIM2List.Count; i++)
+                    {
+
+                        var item = oPersonnel_RIM2List[i];
+                        <tr class="@getRowColor(i)">
+
+                            <td>@item.NOM</td>
+                            <td>@item.PRENOMS</td>
+                            <td>@item.NUM_MATRICULE</td>
+                            <td>@item.NUMERO_PIECE</td>
+
+
+
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">
+
+                            </button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                            <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+                            @if (id != "1")
+                            {
+                                <td style="text-align:center;width:7%"> <button @onclick="(() => DonAgentSuite(item))" class="btn btn-sm btn-outline-danger" style="width:100%">Suite</button>  </td>
+                            }
+
+                        </tr>
+                    }
+                }
+            </tbody>
+
+
+        </table>
+    </div>
+
+}
+
+@if (popup)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+                        </div>
+                        <div class="col-sm-7">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SavePersonnel_RIM2(oOnePersonnel_RIM2))" style="width:100%">@ButtonCaption</button>
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+                    <EditForm Model="oOnePersonnel_RIM2">
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                            @*<div class="row col-sm-12">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Personnel ID</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <InputNumber class="form-control" @bind-Value="oOnePersonnel_RIM2.ID" Readonly="true" />
+                                    </div>
+                                </div>*@
+
+                            <div class="col-sm-12">
+                                <label class="form-text text-center color=green">IDENTIFICATION PERSONNEL RIM </label>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">NUM MATRICULE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NUM_MATRICULE" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NOM" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Nom</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Prénom</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.PRENOMS" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.SEXE">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550SexeList != null)
+                                            {
+                                            @foreach (var item in oTCl550SexeList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Gender</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">DATE NAISSANCE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOnePersonnel_RIM2.DATE_NAISSANCE" />
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.LIEU_NAISSNACE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">LIEU NAISSNACE</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">DATE EMBAUCHE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOnePersonnel_RIM2.DATE_EMBAUCHE" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NUM_SECURITE_SOCIALE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NUMERO SECURITE SOCIALE</label>
+                                </div>
+                            </div>
+
+
+                            @*                                    <div class="col-sm-4">
+                                    <label class="form-text text-right">CIVILITE</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.CIVILITE" />
+                                </div>*@
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">MARITAL STATUS</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.STATUT_MATRIMONIAL">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550MaritStatusList != null)
+                                            {
+                                            @foreach (var item in oTCl550MaritStatusList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOnePersonnel_RIM2.DATE_SECURITE_SOCIALE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">DATE_SECURITE_SOCIALE</label>
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">NOM CONJOINT</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NOM_CONJOINT" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NUM_ALLOCATION" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NUMERO ALLOCATION</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">TYPE PIECE IDENTITE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.LIBELLE">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550NatIDTypeList != null)
+                                            {
+                                            @foreach (var item in oTCl550NatIDTypeList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.ANCIENNETE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">ANCIENNETE</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">ID PIECE IDENTITE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.ID_PIECE_IDENTITE" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NUMERO_PIECE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NUMERO PIECE</label>
+                                </div>
+                            </div>
+
+                            ------------------------
+
+
+                            <div class="col-sm-12">
+                                <label class="form-text text-center color=green">AUTRES INFORMATION  </label>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">DATE DEPART</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOnePersonnel_RIM2.DATE_DEPART" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.NATIONALITE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">NATIONALITE</label>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">CONTACT</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.CONTACT" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOnePersonnel_RIM2.CODE" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">CODE BRANCH</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">POINT SERVICE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.POINT_SERVICE">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550BranchList != null)
+                                            {
+                                            @foreach (var item in oTCl550BranchList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.FONCTION">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550FonctionList != null)
+                                            {
+                                            @foreach (var item in oTCl550FonctionList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Fonction</label>
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">UNIVERSITE</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.UNIVERSITY">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UniversiteList != null)
+                                            {
+                                            @foreach (var item in oTCl550UniversiteList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.DIPLOME">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550NivEtudIdList != null)
+                                            {
+                                            @foreach (var item in oTCl550NivEtudIdList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>
+                                                }
+                                            }
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">DIPLOME</label>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">DOMAINE D'ETUDE</label>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.DOMAINE">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550DomEtudList != null)
+                                            {
+                                            @foreach (var item in oTCl550DomEtudList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.DEPARTMENT">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550DepartementList != null)
+                                            {
+                                            @foreach (var item in oTCl550DepartementList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">DEPARTMENT</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+
+                                    <label class="form-text text-right">Create by</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputSelectNumber class="form-control " @bind-Value="oOnePersonnel_RIM2.CreatBy" Readonly=false>
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTCl550UserList != null)
+                                            {
+                                            @foreach (var item in oTCl550UserList)
+                                                {
+                                                <option value="@item.ID"> @item.UserName </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOnePersonnel_RIM2.CreatOn" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date Creation</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+
+                                    <label class="form-text text-right">Modifié par</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputNumber class="form-control" @bind-Value="oOnePersonnel_RIM2.LModifBy" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOnePersonnel_RIM2.LModifOn" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Date modification</label>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">SIGNATURE</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.SIGNATURE" />
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOnePersonnel_RIM2.PHOTO" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">PHOTO</label>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+            <div class="modal-footer" style="height:1px">
+            </div>
+        </div>
+    </div>
+}
+
+
+@if (!isLoading && AgentSelected)
+{
+
+    @if (id != "1")
+    {
+
+        <AlphaPayRoll.Pages.Tabs.GFTabContainer>
+
+
+            @if (id == "2")
+            {
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Remboursements">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRegAugmBase.TSL02AgDimAugmBasePage paramAgentId="@AgentID"
+                                                                                     paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRegAugmBase.TSL02AgDimAugmBasePage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Cotisations">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetCotisation.TSL02AgRetCotisPage paramAgentId="@AgentID"
+                                                                                    paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetCotisation.TSL02AgRetCotisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+
+            }
+
+
+            @if (id == "3")
+            {
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Heures supplémentaires">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.TSL02AgHSup.TSL02AgHSupPage paramAgentId="@AgentID"
+                                                                            paramSalaireBase="@SalaireBase">
+
+                            </AlphaPayRoll.Pages.TSL02AgHSup.TSL02AgHSupPage>
+                        </div>
+
+                    </TabContent>
+
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Occasionnelles">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetOccasMoisPage paramAgentId="@AgentID"
+                                                                                         paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetOccasMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Remboursements">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetPaymentMoisPage paramAgentId="@AgentID"
+                                                                                           paramNomAgent="@sNomAgent">
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetPaymentMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Retenues Cotisations">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetCotisMoisPage paramAgentId="@AgentID"
+                                                                                         paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRetCotisMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+
+
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Régularisation en augmentation">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRegAugmMoisPage paramAgentId="@AgentID"
+                                                                                        paramNomAgent="@sNomAgent">
+
+                            </AlphaPayRoll.Pages.AgRetPaymentMois.TSL02AgRegAugmMoisPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+
+
+
+            @if (id == "4")
+            {
+                <AlphaPayRoll.Pages.Tabs.GFTabItem TabTitle="Traitement Salaire">
+                    <TabContent>
+                        <div>
+                            <AlphaPayRoll.Pages.TSL03Traitem.TSL03TraitemPage paramAgentId="@AgentID">
+
+                            </AlphaPayRoll.Pages.TSL03Traitem.TSL03TraitemPage>
+                        </div>
+
+                    </TabContent>
+                </AlphaPayRoll.Pages.Tabs.GFTabItem>
+            }
+
+
+        </AlphaPayRoll.Pages.Tabs.GFTabContainer>
+    }
+}

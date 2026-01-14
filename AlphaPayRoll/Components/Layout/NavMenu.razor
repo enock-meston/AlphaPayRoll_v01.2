@@ -1,0 +1,290 @@
+﻿@using AlphaPayRoll.Data
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@* @inject SessionService osessionService *@
+@inject Blazored.SessionStorage.ISessionStorageService osessionStorage;
+
+<style>
+    body {
+        background-color: #bdbdfa;
+    }
+
+    .Menux.active {
+        background-color: rgba(72, 209, 204, 0.6) !important;
+        font-weight: bold;
+        border-left: 4px solid white;
+        color: white !important;
+    }
+</style>
+
+<MudDrawerHeader Style="background-color: white; ">
+    <MudAvatar Color="Color.Transparent" Size="Size.Large" Image="Images/RIMICON1.png" />
+    <MudText Typo="Typo.h5" Color="Color.Primary" Style="margin-top:10px;margin-left:15px">AlphaPay</MudText>
+    <MudIconButton Color="Color.Inherit" />
+</MudDrawerHeader>
+
+<MudNavMenu Style="background-color: cadetblue; color: white;">
+
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="PrepSalaireFct" Style="height 3%;" Class="Menux" id="menu-prep">Preperation salaires</MudNavLink>
+    @* <MudNavLink Match="NavLinkMatch.Prefix" @onclick="SalaireNvRecrutFct" Style="height 3%;" Class="Menux" id="menu-salaires">Salaire nouveau recru</MudNavLink> *@
+   
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="CalculSalaireFct" Style="height 3%;" Class="Menux" id="menu-calcul">Calculer salaires</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="ConstationSalairesFct" Style="height 3%;" Class="Menux" id="menu-constat">Constation salaires</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="VirementSalairesFct" Style="height 3%;" Class="Menux" id="menu-virement">Virement salaires</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="VirementRemboursFct" Style="height 3%;" Class="Menux" id="menu-rembours">Virement remboursement</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="ArchiverSalairesFct" Style="height 3%;" Class="Menux" id="menu-archiver">Archiver salaires</MudNavLink>
+
+    <MudNavLink @onclick="ReportEmbarqFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Print Prime</MudNavLink>
+    <MudNavLink @onclick="ReportListPayFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-payroll">Print Payroll</MudNavLink>
+
+    <MudNavLink Match="NavLinkMatch.All" @onclick="ChangePassWord" Style="height 3%;" Class="Menux" id="menu-password">Change Password</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" @onclick="LogOutFct" Style="height 3%;" Class="Menux" id="menu-logout">Logout</MudNavLink>
+
+</MudNavMenu>
+
+<script>
+    function setActiveMenu(menuId) {
+        // Remove active class from all menu items
+        document.querySelectorAll('.Menux').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Add active class to clicked menu item
+        const activeMenu = document.getElementById(menuId);
+        if (activeMenu) {
+            activeMenu.classList.add('active');
+        }
+    }
+</script>
+
+@code {
+    [Parameter]
+    public bool SideBarOpen { set; get; } = true;
+    public ClasSessionStorage osessionService { set; get; }
+
+
+    public string paramTeller = "102";
+    public string paramSafe = "108";
+    public string paramVault = "70";
+
+    private async Task SetActive(string menuId)
+    {
+        await JSRuntime.InvokeVoidAsync("setActiveMenu", menuId);
+    }
+
+    public void DemandeCongeFct()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/CongeRequestF/CongeRequestPage/1");
+    }
+
+    public void CongeCirc()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/CongeCircRequest/CongeCircRequestPage/1");
+    }
+
+    public void PrepSalaireFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Salaire/PreparationSalPage/1");
+    }
+    public void SalaireNvRecrutFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Salaire/RecruSalaire");
+    }
+
+    public void CalculSalaireFct()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/SalProcess/SalCalculPage/1");
+    }
+
+    public void ConstationSalairesFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL09ImputPay/ConstatSalairePage/1");
+    }
+
+    public void VirementSalairesFct()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL09ImputPay/TSL09ImputPayPage/1");
+    }
+
+    public void VirementRemboursFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TSL09ImputPay/ImputRembCreditPage/1");
+    }
+
+    public void ArchiverSalairesFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/SalProcess/ArchiverSalairesPage/1");
+    }
+
+    public void NouveauRecrutFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TRH02Agent/AgentPage/1");
+    }
+
+    public void ContratFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Contrat/ContratPage/1");
+    }
+
+    public void ContratModif()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/ContratModif/THR05ContratModif/1");
+    }
+
+    public void PostModif()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/PostModif/TRH05PostModifPage/1");
+    }
+
+    public void AffectationFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Contrat/AffectationPage/1");
+    }
+
+    public void PlanningCongeFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/PlanningConge/PlanningCongePages/1");
+    }
+
+    public void Permission()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05PermissionPages");
+    }
+
+    public void DepartFct()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Depart/DepartPage/1");
+    }
+
+    public void Sanction()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05SactionPage");
+    }
+
+    public void Training()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH03TrainingPage");
+    }
+
+    public void Faute()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH04FAUTEPage");
+    }
+
+    public async Task Mutation()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05MutationPage");
+    }
+
+    public void ChangePassWord()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Login/ChangePswPage");
+    }
+
+    public void ReportEmbarqFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentComReport/AgentComReportPage");
+    }
+
+    public void ReportListPayFct()
+    {
+        
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentSalaireReport/AgentSalaireReportPage");
+    }
+
+    public async Task LogOutFct()
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to Lougout ?"))
+            return;
+
+        // osessionService.VraiID = 0;
+        // osessionService.ClientID = 0;
+        // osessionService.RoleID = 0;
+        // osessionService.CashAcctID = 0;
+        // osessionService.Reponse = "Cliquer sur le bouton Login pour vous connecter";
+        // osessionService.DateJour = DateTime.Today;
+        // osessionService.JournalName = "";
+        // osessionService.Branch = "";
+        // osessionService.IsLogged = false;
+        // osessionService.UserProfile = "";
+        // osessionService.UserId = 0;
+        // osessionService.UserName = "";
+        // osessionService.BranchID = 0;
+        // osessionService.MenuId = "0";
+        // osessionService.MenuSecId = "0";
+        // osessionService.MenuName = "";
+        // osessionService.MenuSecName = "";
+        // osessionService.DivMessage = "";
+        // osessionService.CustomerNames = "";
+        // osessionService.DataChanged = false;
+        // osessionService.ContratID = 0;
+        // osessionService.DernSouscriptID = 0;
+
+        NavManager.NavigateTo(osessionService.sApp + $"/");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
+
+                // strUserName = osessionService.UserName;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", ex.Message);
+        }
+    }
+}

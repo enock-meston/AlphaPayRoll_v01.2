@@ -1,0 +1,397 @@
+﻿@layout GrhLayout
+@page "/HumanResource/TRH03TrainingPage"
+@inherits TRH03TrainingPageBase
+@* @layout LoanLayout *@
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert" style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New">Formation</h4>
+    </div>
+
+</div>
+
+@if (osessionService != null)
+{
+
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+
+{
+   
+
+
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+       @*  <EditForm Model="@oOneTRH02Agent"> *@
+            <div class="row g-2 align-items-center">
+
+                <div class="col-sm-2">
+                    <label class="form-label">MATRICULE</label>
+                </div>
+
+                <div class="col-md-2">
+                    <input class="form-control "
+                       @bind="@sMatricule"
+                               placeholder="Enter matricule" />
+                </div>
+
+                <div class="col-sm-2">
+                    <button type="button"
+                            class="btn btn-primary"
+                            @onclick="searchByMatricule" style="width:100%">
+                        Rechercher
+                    </button>
+                </div>
+
+
+                <div class="col-md-4">
+                    <input class="form-control "
+                       @bind="@sNomPrenom" style="width:100%">
+                </div>
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn  btn-dark"
+                        @onclick="GoBack" style="width:100%">
+                        ← Retour
+                    </button>
+                </div>
+
+            </div>
+        @* </EditForm> *@
+    </div>
+
+
+
+    <div class="row col-sm-12">
+
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-sm btn-success" @onclick="(() => EditData(oOneAmount, 1))" style="width:100%;opacity:0.8" disabled="@bAddDisabled">Ajouter </button>
+        </div>
+
+    </div>
+
+<div class="col-md-12 card">
+    <table class="table  table-bordered  DataGrid table-light">
+        <thead>
+            <tr>
+
+                <th style="color:crimson;font-size:18px">No</th>
+
+               
+                <th>Matricule   </th>
+                        <th>Domaine     </th>
+                <th>Descript    </th>
+                <th>Pays        </th>
+                <th>Ville       </th>
+                <th>OrganisePar </th>
+                <th>Observation </th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+
+                <th></th>
+                <th></th>
+                <th></th>
+
+            </tr>
+
+        </thead>
+        <tbody>
+
+                @if (oTRH03TrainingList != null)
+            {
+                @for (int i = 0; i < oTRH03TrainingList.Count; i++)
+                {
+                    var item = oTRH03TrainingList[i];
+                    <tr class="@getRowColor(i)">
+
+                        <td style="color: crimson; font-size: 18px">@item.ID</td>
+
+                        <td>@item.Matricule  </td>
+                        <td>@item.FieldID    </td>
+                        <td>@item.Descript   </td>
+                        <td>@item.Pays       </td>
+                        <td>@item.Ville      </td>
+                        <td>@item.OrganisePar</td>
+                        <td>@item.Observation</td>
+                        <td>@item.StartDate  </td>
+                        <td>@item.EndDate    </td>
+
+
+
+
+
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Detail</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-success" style="width:100%">Modifier</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Supprimer</button>  </td>
+
+
+                    </tr>
+                }}
+        </tbody>
+    </table>
+</div>
+}
+
+@if (popup)
+{
+
+    <div class="modal" tabindex="-1" style="display: inline-block ">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-3">
+                        </div>
+
+                        <div class="col-sm-5">
+                            <h5 style="color:black">Formation</h5>
+                        </div>
+
+
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveDocVal(oOneAmount))" style="width:100%">@ButtonCaption</button>
+                            }
+
+
+                        </div>
+
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneAmount">
+                        <div class="well well-sm pre-scrollable modalBody">
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                        <label class="form-text text-right">Employé </label>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <InputText class="form-control" @bind-Value="@sMatricule" Readonly=true />
+                                </div>
+
+
+                                <div class="col-sm-4">
+                                        <InputText class="form-control" @bind-Value="@sNomPrenom" Readonly=true />
+                                </div>
+
+                                <div class="col-sm-2">
+                                        <label class="form-text text-left">Nom Employé </label>
+                                </div>
+
+                            </div>
+                           
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Domaine</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputSelectNumber class="form-control" @bind-Value="oOneAmount.FieldID">
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTRH031TrainingFieldList != null)
+                                        {
+                                            @foreach (var item in oTRH031TrainingFieldList)
+                                            {
+                                                <option value="@item.ID"> @item.Descript </option>
+                                            }
+                                        }
+                                    </InputSelectNumber>
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Pays </label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputText class="form-control" @bind-Value="oOneAmount.Pays" />
+                                </div>
+
+                                    
+                                    <div class="col-sm-3">
+                                        <InputText class="form-control" @bind-Value="oOneAmount.Ville" />
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Ville </label>
+                                    </div>
+
+                            </div>
+
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Organise Par </label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <InputText class="form-control" @bind-Value="oOneAmount.OrganisePar" />
+                                </div>
+
+                                   
+                            </div>
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Thème </label>
+                                        </div>
+                                    <div class="col-sm-6">
+                                        <InputText class="form-control" rows="5" @bind-Value="oOneAmount.Descript" />
+                                </div>
+                            </div>
+
+
+                                <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                        <label class="form-text text-right">Observation </label>
+                                        </div>
+                                    <div class="col-sm-6">
+
+                                        <InputTextArea class="form-control" rows="5" @bind-Value="oOneAmount.Observation" placeholder="" />
+                                    </div>
+                                </div>
+
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                        <label class="form-text text-right">Date de début</label>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <InputDate class="form-control" @bind-Value="oOneAmount.StartDate" />
+                                </div>
+
+                                    <div class="col-sm-3">
+                                        <InputDate class="form-control" @bind-Value="oOneAmount.EndDate" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Date de Fin </label>
+                                    </div>
+                            </div>
+
+                            
+
+
+
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Créé par</label>
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <InputSelectNumber class="form-control " @bind-Value="oOneAmount.CreatBy" Readonly=false>
+                                            <option value="0"> ----------------------- </option>
+                                            @if (oTSc551UserList != null)
+                                            {
+                                                @foreach (var item in oTSc551UserList)
+                                                {
+                                                    <option value="@item.ID"> @item.UserName </option>
+                                                }
+                           
+                                            }
+                                            
+                                        </InputSelectNumber>
+
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <InputDate class="form-control" @bind-Value="oOneAmount.CreatOn" Readonly=true />
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Date création</label>
+                                    </div>
+                                </div>
+
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Modifié par</label>
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <InputSelectNumber class="form-control " @bind-Value="oOneAmount.LModifBy" Readonly=false>
+                                            <option value="0"> ----------------------- </option>
+                                            @if (oTSc551UserList != null)
+                                            {
+                                                @foreach (var item in oTSc551UserList)
+                                                {
+                                                    <option value="@item.ID"> @item.UserName </option>
+                                                }
+                           
+                                            }
+                                            
+                                        </InputSelectNumber>
+
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <InputDate class="form-control" @bind-Value="oOneAmount.LModifOn" Readonly=true />
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Date modification</label>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+
+
+                        </div>
+
+                    </EditForm>
+                </div>
+                <div class="modal-footer" style="height:1px">
+                </div>
+            </div>
+        </div>
+    </div>
+}}

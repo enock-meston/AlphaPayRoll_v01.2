@@ -1,0 +1,194 @@
+﻿<h3>TSL02TracEvSalPage</h3>
+@page "/TSL02TracEvSal/TSL02TracEvSalPage"
+@inherits TSL02TracEvSalBasePage
+
+
+<div class="row col-12">
+    <div class="col-sm-10">
+
+    </div>
+
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL02TracEvSal, 1))" style="width:100%;opacity:0.8">Ajouter TSL02TracEvSal</button>
+    </div>
+
+</div>
+
+<div class="row col-sm-12">
+    <table class="table  table-bordered  table-light DataGrid">
+        <thead>
+            <tr>
+                <th>Numero</th>
+                <th>DateJour</th>
+                <th>Exercice</th>
+                <th>Mois</th>
+                <th>SalAction</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (oTSL02TracEvSalList != null)
+            {
+                @for (int i = 0; i < oTSL02TracEvSalList.Count; i++)
+                {
+                    var item = oTSL02TracEvSalList[i];
+                    <tr class="@getRowColor(i)">
+
+                        <td>@item.Numero</td>
+                        <td>@item.DateJour</td>
+                        <td>@item.Exercice</td>
+                        <td>@item.Mois</td>
+                        <td>@item.SalAction</td>
+
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                    </tr>
+                }}
+        </tbody>
+    </table>
+</div>
+@if (popup)
+{
+
+    <div class="modal" tabindex="-1" style="display: inline-block ">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+
+                        </div>
+
+                        <div class="col-sm-7">
+                            <h5 style="color:black">@modalTitle </h5>
+                        </div>
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveTSL02TracEvSal(oOneTSL02TracEvSal))" style="width:100%">@ButtonCaption</button>}
+
+
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneTSL02TracEvSal">
+                        <div class="well well-sm pre-scrollable modalBody">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Numero</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02TracEvSal.Numero" Readonly="true" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">DateJour</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputDate class="form-control" @bind-Value="oOneTSL02TracEvSal.DateJour" />
+
+                                </div>
+
+                            </div>
+
+                            <br />
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Exercice</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02TracEvSal.Exercice" />
+                                </div>
+
+                            </div>
+
+                            <br />
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right"> Mois </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02TracEvSal.Mois" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">SalAction</label>
+                                </div>
+                                <div class="col-sm-4">
+
+                                    <InputText class="form-control" @bind-Value="oOneTSL02TracEvSal.SalAction " />
+
+                                </div>
+                                <br />
+                                <br />
+                                <div class="row col-sm-12">
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Created By</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <InputNumber class="form-control" @bind-Value="oOneTSL02TracEvSal.CreatBy" Readonly="true" />
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Created On</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <InputDate class="form-control" @bind-Value="oOneTSL02TracEvSal.CreatOn" Readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Last Modifed By</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <InputNumber class="form-control" @bind-Value="oOneTSL02TracEvSal.UserID" Readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Last Modifed On</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <InputDate class="form-control" @bind-Value="oOneTSL02TracEvSal.LModifOn" Readonly="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row col-sm-12">
+                                </div>
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer" style="height:1px">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

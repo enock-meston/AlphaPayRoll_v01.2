@@ -1,0 +1,284 @@
+﻿
+@page "/AgRegAugmBase/TSL02AgDimAugmBasePage"
+@inherits TSL02AgDimAugmBasePageBase
+
+<br/>
+<div class="row col-12">
+    <div class="col-sm-9">
+        <h5 style="color:crimson">RETENUES PERMANENTES : Remboursements de :@paramNomAgent</h5>
+    </div>
+
+    <div class="col-sm-3">
+        <button type="button" class="btn btn-sm btn-primary" @onclick="(() => EditData(oOneTSL02AgDimAugmSal, 1))" style="width:100%;opacity:0.8">Ajouter </button>
+    </div>
+
+</div>
+<br/>
+
+<div class="row col-sm-12">
+    <table class="table  table-bordered  table-light DataGrid">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Dénomination</th>
+                <th>Total dû</th>
+                <th>Mensualité</th>
+                <th>Cumul payé</th>
+                <th>Reste à payer</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (oTSL02AgDimAugmSalList != null)
+            {
+                @for (int i = 0; i < oTSL02AgDimAugmSalList.Count; i++)
+                {
+                    var item = oTSL02AgDimAugmSalList[i];
+                    <tr class="@getRowColor(i)">
+
+                        <td>@item.ID</td>
+                        <td>@item.Denom</td>
+                         <td>@item.MontAPay.ToString("###,##0")</td>
+                        <td>@item.PayMensuel.ToString("###,##0")</td>
+                        <td>@item.CumulPay.ToString("###,##0")</td>
+                        <td>@item.ResteAPay.ToString("###,##0")</td>
+
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 0))" class="btn btn-sm btn-outline-info" style="width:100%">Details</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 2))" class="btn btn-sm btn-outline-info" style="width:100%">Modify</button>  </td>
+                        <td style="text-align:center;width:7%"> <button @onclick="(() => EditData(item, 3))" class="btn btn-sm btn-outline-danger" style="width:100%">Delete</button>  </td>
+
+                    </tr>
+                }}
+        </tbody>
+    </table>
+</div>
+@if (popup)
+{
+
+    <div class="modal" tabindex="-1" style="display: inline-block ">
+        <div class="modal-dialog modal-xl modalDialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row col-sm-12">
+                        <div class="col-sm-1">
+
+                        </div>
+
+                        <div class="col-sm-7">
+                            <h5 style="color:black">Remboursements</h5>
+                        </div>
+
+                        <div class="col-sm-2">
+                            @if (iTypeAction != 0)
+                            {
+                                <button type="button" class=@StyleButton @onclick="(() => SaveTSL02AgDimAugmSal(oOneTSL02AgDimAugmSal))" style="width:100%">@ButtonCaption</button>}
+
+
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" @onclick="ClosePopUp" style="width:100%;opacity:0.8">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body ">
+
+                    <EditForm Model="oOneTSL02AgDimAugmSal">
+                        <div class="well well-sm pre-scrollable modalBody">
+                           
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">ID</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.ID" Readonly="true" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Agent Id</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.AgentId" />
+
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Type retenu</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    
+                                       <InputSelectNumber class="form-control " @bind-Value="oOneTSL02AgDimAugmSal.TpRetId" >
+                                        <option value="0"> ----------------------- </option>
+                                        @if (oTSL550TpRetRembList != null)
+                                            {
+                                            @foreach (var item in oTSL550TpRetRembList)
+                                                {
+                                                <option value="@item.ID"> @item.Descript </option>}}
+                                        }
+                                        }
+                                    </InputSelectNumber>
+
+                                </div>
+
+                            </div>
+
+
+                     
+                       
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right"> Exercice début retenue </label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.ExercDeb" />
+                                </div>
+                            </div>
+
+                           
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Mois  début retenue</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputNumber class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.MoisDeb" />
+                                 </div>
+                           </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Total à payer</label>
+                                </div>
+                                <div class="col-sm-4">
+
+                                 <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneTSL02AgDimAugmSal.MontAPay" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+                                </div>
+
+                            </div>
+
+
+                             <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Mensualité à payer</label>
+                                </div>
+                                <div class="col-sm-4">
+
+                                 <BlazorNumericTextBox.DecimalTextBox Style="text-align:left" Format="@CurrencyFormat"  @bind-Value="oOneTSL02AgDimAugmSal.PayMensuel" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+                                </div>
+
+                            </div>
+
+
+      
+
+                            
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Cumul payé</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat"  @bind-Value="oOneTSL02AgDimAugmSal.CumulPay" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+                                </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Reste à payer</label>
+                                </div>
+                                <div class="col-sm-4">
+
+                                    <BlazorNumericTextBox.DecimalTextBox Style="text-align:left;pointer-events:none" Format="@CurrencyFormat"  @bind-Value="oOneTSL02AgDimAugmSal.ResteAPay" class="form-control"></BlazorNumericTextBox.DecimalTextBox Style="text-align:left">
+
+                                </div>
+                            </div>
+
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">En vigueur</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <InputCheckbox class="form-control UICheckbox" @bind-Value="oOneTSL02AgDimAugmSal.EnVig "  />
+                                </div>
+                            </div>
+ 
+
+                                
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Créé par</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <InputNumber class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.CreatBy" Readonly="true" />
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Date création</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <InputDate class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.CreatOn" Readonly="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Modifé par</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <InputNumber class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.UserID" Readonly="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Date modification</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <InputDate class="form-control" @bind-Value="oOneTSL02AgDimAugmSal.LModifOn" Readonly="true" />
+                                        </div>
+                                    </div>
+
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br />
+
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer" style="height:1px">
+                </div>
+            </div>
+        </div>
+    </div>
+}
