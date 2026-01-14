@@ -772,7 +772,6 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     oTCl550SubBranchList = oTCl550SubBranchList2;
                     oTPR550Exercice = (await oTabPrmNivOneService.GetDBListName("TPR550Exercice")).ToList();
 
-
                     oTPR550Exercice = oTPR550Exercice.Where(x => x.Enab == true).ToList();
 
                     if (oTPR550Exercice.Count > 0)

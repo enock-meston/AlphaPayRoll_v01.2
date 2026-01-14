@@ -35,14 +35,14 @@
                 <!-- Branch Selection -->
                 <div class="row g-2 align-items-center mb-3">
                     <div class="col-sm-2">
-                        <label class="form-label">Recherche par Agence</label>
+                        <label class="form-label">Agence/Guichet</label>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <InputSelect class="form-control"
                                      Value="@pBranchID"
                                      ValueChanged="@((string value) => BranchRechercherPersonal(value))"
                                      ValueExpression="@(() => pBranchID)">
-                            <option value="">-- Sélectionner Agence --</option>
+
                             @if (oTCl550BranchList != null)
                             {
                                 @foreach (var item in oTCl550BranchList)
@@ -53,18 +53,14 @@
                         </InputSelect>
                     </div>
 
-                    <!-- Sub-Branch (Guichet) Selection -->
-                    <div class="col-sm-1">
-                        <label class="form-label">Guichet</label>
-                    </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <InputSelect class="form-control"
                                      Value="@pSubBranchID"
                                      ValueChanged="@((string value) => SubBranchRechercherPersonal(value))"
                                      ValueExpression="@(() => pSubBranchID)"
                                      disabled="@(string.IsNullOrEmpty(pBranchID))">
-                            <option value="">-- Sélectionner Guichet --</option>
+
                             @if (oTCl550SubBranchList != null)
                             {
                                 @foreach (var item in oTCl550SubBranchList)
@@ -76,13 +72,13 @@
                     </div>
 
                     <!-- Agent Selection -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-5">
                         <InputSelect class="form-control"
                                      Value="@sSelectedPerson"
                                      ValueChanged="@((string value) => SelectedPersonal(value))"
                                      ValueExpression="@(() => sSelectedPerson)"
                                      disabled="@(string.IsNullOrEmpty(pSubBranchID))">
-                            <option value="">-- Sélectionner Agent --</option>
+                            <option value="">Sélectionner Agent</option>
                             @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
                             {
                                 @foreach (var item in oTRH02SelectAgentList)
@@ -99,6 +95,7 @@
                         </InputSelect>
                     </div>
                 </div>
+
             }
 
              @*  <EditForm Model="@oOneTRH02Agent"> *@

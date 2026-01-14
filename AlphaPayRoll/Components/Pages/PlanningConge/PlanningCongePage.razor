@@ -62,69 +62,70 @@
         @if (osessionService.RoleID !=1)
             {
                 <!-- Branch Selection -->
-            <div class="row g-2 align-items-center mb-3">
-                <div class="col-sm-2">
-                    <label class="form-label">Agence/Guichet</label>
-                </div>
-                <div class="col-sm-2">
-                    <InputSelect class="form-control"
-                                 Value="@pBranchID"
-                                 ValueChanged="@((string value) => BranchRechercherPersonal(value))"
-                                 ValueExpression="@(() => pBranchID)">
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label class="form-label">Agence/Guichet</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <InputSelect class="form-control"
+                                     Value="@pBranchID"
+                                     ValueChanged="@((string value) => BranchRechercherPersonal(value))"
+                                     ValueExpression="@(() => pBranchID)">
                       
-                        @if (oTCl550BranchList != null)
-                        {
-                            @foreach (var item in oTCl550BranchList)
+                            @if (oTCl550BranchList != null)
                             {
-                                <option value="@item.ID">@item.Descript</option>
+                                @foreach (var item in oTCl550BranchList)
+                                {
+                                    <option value="@item.ID">@item.Descript</option>
+                                }
                             }
-                        }
-                    </InputSelect>
-                </div>
+                        </InputSelect>
+                    </div>
 
  
-                <div class="col-sm-2">
-                    <InputSelect class="form-control"
-                                 Value="@pSubBranchID"
-                                 ValueChanged="@((string value) => SubBranchRechercherPersonal(value))"
-                                 ValueExpression="@(() => pSubBranchID)"
-                                 disabled="@(string.IsNullOrEmpty(pBranchID))">
+                    <div class="col-sm-2">
+                        <InputSelect class="form-control"
+                                     Value="@pSubBranchID"
+                                     ValueChanged="@((string value) => SubBranchRechercherPersonal(value))"
+                                     ValueExpression="@(() => pSubBranchID)"
+                                     disabled="@(string.IsNullOrEmpty(pBranchID))">
                        
-                        @if (oTCl550SubBranchList != null)
-                        {
-                            @foreach (var item in oTCl550SubBranchList)
+                            @if (oTCl550SubBranchList != null)
                             {
-                                <option value="@item.ID">@item.Descript</option>
+                                @foreach (var item in oTCl550SubBranchList)
+                                {
+                                    <option value="@item.ID">@item.Descript</option>
+                                }
                             }
-                        }
-                    </InputSelect>
-                </div>
+                        </InputSelect>
+                    </div>
 
-                <!-- Agent Selection -->
-                <div class="col-sm-5">
-                    <InputSelect class="form-control"
-                                 Value="@sSelectedPerson"
-                                 ValueChanged="@((string value) => SelectedPersonal(value))"
-                                 ValueExpression="@(() => sSelectedPerson)"
-                                 disabled="@(string.IsNullOrEmpty(pSubBranchID))">
-                        <option value="">Sélectionner Agent</option>
-                        @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
-                        {
-                            @foreach (var item in oTRH02SelectAgentList)
+                    <!-- Agent Selection -->
+                    <div class="col-sm-5">
+                        <InputSelect class="form-control"
+                                     Value="@sSelectedPerson"
+                                     ValueChanged="@((string value) => SelectedPersonal(value))"
+                                     ValueExpression="@(() => sSelectedPerson)"
+                                     disabled="@(string.IsNullOrEmpty(pSubBranchID))">
+                            <option value="">Sélectionner Agent</option>
+                            @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
                             {
-                                <option value="@item.AgentId.ToString()">
-                                    @item.Nom @item.Prenom - @item.Matricule
-                                </option>
+                                @foreach (var item in oTRH02SelectAgentList)
+                                {
+                                    <option value="@item.AgentId.ToString()">
+                                        @item.Nom @item.Prenom - @item.Matricule
+                                    </option>
+                                }
                             }
-                        }
-                        else if (!string.IsNullOrEmpty(pSubBranchID))
-                        {
-                            <option value="" disabled>Aucun agent disponible</option>
-                        }
-                    </InputSelect>
+                            else if (!string.IsNullOrEmpty(pSubBranchID))
+                            {
+                                <option value="" disabled>Aucun agent disponible</option>
+                            }
+                        </InputSelect>
+                    </div>
                 </div>
-            </div>
-             }
+            
+        }
       
             
             <div class="row g-2 align-items-center">
