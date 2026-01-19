@@ -17,7 +17,17 @@
         Utilisateur: @osessionService?.UserName
         &nbsp;&nbsp;&nbsp;&nbsp;
         Profil: @osessionService?.UserProfile
+        <!-- Push notifications to the right -->
+        <MudSpacer />
+
+        <!-- Notifications -->
+        <MudBadge Content="0" Color="Color.Error" Overlap="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Notifications"
+                           Color="Color.Inherit" />
+        </MudBadge>
     </MudAppBar>
+    
+
 
     <MudDrawer @bind-Open="@_drawerOpen">
         <GCongMenu/>

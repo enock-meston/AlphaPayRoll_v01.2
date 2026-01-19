@@ -151,8 +151,8 @@ builder.Services.AddScoped<ClasAuthenticationStatProv>();
 
 //string sUrl = "http://192.168.1.227/hrtestapi/";
 
-string sUrl = "http://localhost:48866/";
-//string sUrl = "http://192.168.1.227/payapi/";
+//string sUrl = "http://localhost:48866/";
+string sUrl = "http://192.168.1.221/payapi/";
 
 
 

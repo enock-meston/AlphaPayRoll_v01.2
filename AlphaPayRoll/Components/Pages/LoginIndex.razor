@@ -248,9 +248,9 @@
 
                     if (oUserLogin.Reponse == "Votre mot de passe a expiré")
                     {
-                        
-                    
-                           osessionService = new ClasSessionStorage();
+
+
+                        osessionService = new ClasSessionStorage();
 
                         // osessionService = new SessionService();
                         isLogged = oUserLogin.IsLogged;
@@ -280,12 +280,12 @@
                         osessionService.ClientID = oUserLogin.ClientID;
                         osessionService.DateJour = DateTime.Parse(oUserLogin.DateJour);
                         osessionService.Reponse = oUserLogin.Reponse;
-   
+
                         osessionService.UserName = oUserLogin.UserName;
                         osessionService.RoleID = oUserLogin.RoleID;
                         osessionService.Matricule = oUserLogin.Matricule;
-                        osessionService.sApp = "http://localhost:19143";
-                        //osessionService.sApp = "/rimpayroll";
+                        //osessionService.sApp = "http://localhost:19143";
+                        osessionService.sApp = "/rimpayroll";
 
                         sSiteUrl = osessionService.sApp;
 
@@ -300,7 +300,7 @@
                     }
 
 
-                  
+
                     return;
                 }
                 else
@@ -345,8 +345,8 @@
 
                     // osessionService.sApp = "/alphabank";
                     //osessionService.sApp = "/clecamtest";
-                   osessionService.sApp = "http://localhost:19143";
-                    //osessionService.sApp = "/rimpayroll";
+                    //osessionService.sApp = "http://localhost:19143";
+                    osessionService.sApp = "/rimpayroll";
                     // osessionService.sApp = "/hrtest";
                     sSiteUrl = osessionService.sApp;
 
@@ -355,11 +355,10 @@
 
                     if (osessionService.RoleID != 1)
                     {
-                       LoginTrace.bRHVisible = true;
+                        LoginTrace.bRHVisible = true;
                     }
                     else
                     {
-                       
                         LoginTrace.bRHVisible = false;
                     }
 
@@ -391,13 +390,13 @@
             if (oUserLogin.Reponse.Trim() == "Vous êtes connectés à la base de données")
             {
 
-                if (osessionService.RoleID >2)
-                {
+                // if (osessionService.RoleID ==3)
+                // {
 
-                    NavManager.NavigateTo(osessionService.sApp + $"/GrhIndex", true);
-                //     //NavManager.NavigateTo("http:localhost:19143/GrhIndex", true);
-                }
-                else
+                //     NavManager.NavigateTo(osessionService.sApp + $"/GrhIndex", true);
+                // //     //NavManager.NavigateTo("http:localhost:19143/GrhIndex", true);
+                // }
+                if (osessionService.RoleID == 1 || osessionService.RoleID == 2 ||  osessionService.RoleID == 4 )
                 {
                     //NavManager.NavigateTo("http://localhost:19143/GcongeIndex", true);
                     NavManager.NavigateTo(osessionService.sApp + $"/GcongeIndex", true);
@@ -499,13 +498,23 @@
 
     public async Task ShowMenuPaie()
     {
+
+
         osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
 
-        // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
+        if (osessionService.RoleID == 3)
+        {
 
-        string sChemin = osessionService.sApp + $"/Index";
+            // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
 
-        NavManager.NavigateTo(sChemin, true);
+            string sChemin = osessionService.sApp + $"/Index";
+
+            NavManager.NavigateTo(sChemin, true);
+        }
+       else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Vous n'avez pas les droits d'accès à ce module");
+        }
     }
 
     public async Task ShowMenuGConge()
@@ -529,9 +538,17 @@
     {
         osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
 
-        string sChemin = osessionService.sApp + $"/GrhIndex";
+        if (osessionService.RoleID == 3)
+        {
+            string sChemin = osessionService.sApp + $"/GrhIndex";
 
-        NavManager.NavigateTo(sChemin, true);
+            NavManager.NavigateTo(sChemin, true);
+
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Vous n'avez pas les droits d'accès à ce module");
+        }
         // oClasLocalStorage = await osessionService.GetItemAsync<ClasSessionStorage>("LogedUser");
 
         // string sChemin = oClasLocalStorage.sApp + "/Comptabhome";

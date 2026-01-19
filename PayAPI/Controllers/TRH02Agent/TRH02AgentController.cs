@@ -50,6 +50,18 @@ namespace PayAPI.Controllers.TRH02Agent
             }
         }
 
+        [HttpPost("validePlanningConge")]
+        public async Task<Resultat> ValidePlanningConge([FromBody] ParamAgentMatricule param)
+        {
+            if (ModelState.IsValid)
+            {
+                return await oItem.ValidePlanningConge(param);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         [HttpPost]
         public async Task<Resultat> Post([FromBody] ClassTRH02Agent item)

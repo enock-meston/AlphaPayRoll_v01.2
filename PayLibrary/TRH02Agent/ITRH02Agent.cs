@@ -19,8 +19,9 @@ namespace PayLibrary.TRH02Agent
 		Task<List<ClassTRH02Agent>> GetAgentBySubBranch(string id);
 		Task<List<ClassTRH02Agent>> GetAgentByMatriculeCongeReq(ParamAgentMatricule param);
 		Task<List<ClassTRH02Agent>> GetAgentByMatriculeXX(ParamAgentMatricule param);
+		Task<Resultat> ValidePlanningConge(ParamAgentMatricule param);
 
 
-	}
+    }
 }
 

@@ -78,7 +78,7 @@
                                  Value="@sSelectedPerson"
                                  ValueChanged="@((string value) => SelectedPersonal(value))"
                                  ValueExpression="@(() => sSelectedPerson)"
-                                 disabled="@(string.IsNullOrEmpty(pSubBranchID))">
+                                 disabled="@(string.IsNullOrEmpty(pBranchID))">
                         <option value="">Sélectionner Agent</option>
                         @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
                         {
@@ -141,8 +141,15 @@
 
     <div class="row col-sm-12">
 
-        <div class="col-sm-2">
-            <button type="button" class="btn btn-sm btn-success" @onclick="(() => EditData(OneCongeRequest, 1))" style="width:100%;opacity:0.8" disabled="@bAddDisabled">Ajouter </button>
+        <div class="col-sm-12 d-flex justify-content-between align-items-center">
+            @if (osessionService.RoleID==1)
+            {
+            <button type="button" 
+                class="btn btn-sm btn-success" 
+                @onclick="(() => EditData(OneCongeRequest, 1))"  
+                disabled="@bAddDisabled">Ajouter </button> 
+            }
+                
         </div>
 
     </div>
@@ -157,8 +164,10 @@
                  <th>Guichet</th>
                 <th>Date Demande</th>
                 <th>Nbr Jour</th>
-               
-                <th></th>
+                <th>Chef Status</th>
+                <th>HR Status</th>
+                       <th></th>
+                    <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -174,8 +183,25 @@
                         <td>@item.SBranchID</td>
                         <td>@item.DateRequest</td>
                             <td>@item.NbrJour</td>
+                            <td>@item.StatusChefID</td>
+                            <td>@item.StatusHRID</td>
                             <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 0))"> Detail</button></td>
                             <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
+                            <td>
+                                @if (@item.ValidReq != false){
+                                    <span class="badge bg-success">
+                                        validé Congé
+                                    </span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-success" @onclick="(() => ValideCongeReq(item.ID))">
+                                        Validation Congé
+                                    </button>
+                                }
+                                
+                            </td>
+                            
                     </tr>
                 }
             }

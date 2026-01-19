@@ -49,13 +49,9 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
         public List<TSc551SubBranch> oTCl550SubBranchList { set; get; }
         [Inject]
         public ITabPrmNivOne oDonBaseService { set; get; }
-
-
         [Inject]
         protected ITSc551User oTCl550UserService { set; get; }
         public List<TSc551User> oTCl550UserList { set; get; }
-
-
         [Inject]
         protected ITCl550Fonction oTCl550FonctionService { set; get; }
         public List<ClassTCl550Fonction> oTCl550FonctionList { set; get; }
@@ -117,7 +113,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
         public int Day_CongPris { set; get; }
         public int Day_CongRest { set; get; }
 
-
+        public bool aValidePlanning { set; get; } = true;
 
         public bool bHRApprovMois { get; set; } = true;
         //public bool bDgApprov { get; set; } = true;
@@ -358,11 +354,11 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 // Use oOneActiveCongeRequest instead of item or OneCongeRequest
                 oOneActiveCongeRequest.TpMaj = iTypeAction;
                 oOneActiveCongeRequest.UserID = int.Parse(osessionService.UserId);
-                if (Day_CongRest < oOneActiveCongeRequest.ProposNbreJour)
-                {
-                    await JSRuntime.InvokeVoidAsync("alert", "Le nombre de jours proposés ne doit pas être supérieur au nombre de jours restants.");
-                }
-                else if (iTypeAction == 2)
+                //if (Day_CongRest < oOneActiveCongeRequest.ProposNbreJour)
+                //{
+                //    await JSRuntime.InvokeVoidAsync("alert", "Le nombre de jours proposés ne doit pas être supérieur au nombre de jours restants.");
+                //}
+                if (iTypeAction == 2)
                 {
                     oOneActiveCongeRequest.LModifBy = int.Parse(osessionService.UserId);
                     oOneActiveCongeRequest.LModifOn = DateTime.Now;
@@ -385,6 +381,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 if (oResult != null && !string.IsNullOrEmpty(oResult.Result))
                 {
                     await JSRuntime.InvokeVoidAsync("alert", oResult.Result);
+                    searchByMatricule();
                 }
 
                 // Refresh the list
@@ -437,29 +434,32 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
             {
                 Matricule = sMatricule
             };
-            
            
             var resultNumTranche = await oPlanningCongeService.GetNumTranche(param);
             
-
             //==========================
             try
             {
                 isLoading = true;
                 StateHasChanged();
                 oTRH02AgentList = await oTRH02AgentService.GetAgentByMatricule(sMatricule);
-
-
+                // iyi list iri kwa affectinga nuko ba agent bari kwishakisha
+                if (osessionService.RoleID != 1)
+                {
+                    oTRH02AgentList = oTRH02AgentList.Where(a => a.validPlanning == true).ToList(); // 
+                }
 
                 if (oTRH02AgentList != null && oTRH02AgentList.Count > 0)
                 {
                     sNomPrenom = oTRH02AgentList[0].Nom.Trim() + " " + oTRH02AgentList[0].Prenom.Trim();
-
+                    aValidePlanning = oTRH02AgentList[0].validPlanning;
                     //day conge
                     ///Day_CongRetard = oTRH02AgentList[0].CongRetard;
+                    
                     Day_CongCurrentYear = oTRH02AgentList[0].CongCurrentYear+ oTRH02AgentList[0].CongRetard;
                     //Day_CongPris = oTRH02AgentList[0].CongPris;
                     //Day_CongRest = oTRH02AgentList[0].CongRest;
+
                     // end day conge
                     if (osessionService.RoleID == 2 || osessionService.RoleID == 3)
                     {
@@ -471,6 +471,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                         bDisableChefDirect = false;
                         oPlanningCongeList = oPlanningCongeList.Where(a => (a.Matricule == sMatricule)).ToList();
                         bAddDisabled = false;
+                        @aValidePlanning = false;
                     }
                     else if(osessionService.RoleID == 1)
                     {
@@ -487,6 +488,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                     }
                     else
                     {
+                       
                         if (int.TryParse(resultNumTranche.Result, out int tranche))
                         {
                             iNumTranche = tranche;
@@ -551,6 +553,26 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 .Where(row => row.CodeBranch.Trim() == pBranchID.Trim())
                 .ToList();
 
+
+            if (oTCl550SubBranchList.Count == 1)
+            {
+                pSubBranchID = oTCl550SubBranchList[0].ID;
+
+                var param = new ParamAgentByChef
+                {
+                    ChefID = int.Parse(osessionService.UserId),
+                    SBranch = pSubBranchID,
+                    RoleID = osessionService.RoleID
+                };
+
+                oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+
+                oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
+
+            }
+
+
             pSubBranchID = string.Empty;
             sSelectedPerson = string.Empty;
 
@@ -570,6 +592,9 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
             };
 
             oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+
+            oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
             StateHasChanged();
         }
 
@@ -581,6 +606,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
             {
                 // Find the selected agent
                 var selectedAgent = oTRH02SelectAgentList?.FirstOrDefault(a => a.AgentId.ToString() == value);
+                //oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
 
                 if (selectedAgent != null)
                 {
@@ -590,8 +616,31 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 }
             }
         }
-       
-        
+
+        public async Task ValidePlanningonge()
+        {
+            bool confirm = await JSRuntime.InvokeAsync<bool>(
+                "confirm",
+                "Are you sure you want to validate this planning?"
+            );
+
+            if (!confirm)
+                return;
+
+            var param = new ParamAgentMatricule
+            {
+                Matricule = sMatricule
+            };
+
+            var result = await oTRH02AgentService.ValidePlanningConge(param);
+            if (result != null && !string.IsNullOrEmpty(result.Result))
+            {
+                await JSRuntime.InvokeVoidAsync("alert", result.Result);
+            }
+
+            searchByMatricule();
+        }
+
         public bool bAddDisabled { get; set; } = true;
 
 
@@ -616,6 +665,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 if (osessionService.RoleID == 1)
                 {
                     oTRH02AgentList = await oTRH02AgentService.GetAgentByMatricule(osessionService.Matricule);
+                    oTRH02AgentList= oTRH02AgentList.Where(a => a.validPlanning ==true).ToList(); 
                     bEmployee = true;
                     sMatricule = osessionService.Matricule;
                 }
@@ -636,9 +686,6 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
 
 
    
-
-
-
 
             }
             catch (Exception ex)

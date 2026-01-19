@@ -47,6 +47,19 @@ namespace PayAPI.Controllers.CongeRequestF
             }
         }
 
+        [HttpPost("valideConge/{id}")]
+        public async Task<Resultat> ValideCongeRequest(int id,[FromBody] ParamMatricule item)
+        {
+            if (ModelState.IsValid)
+            {
+                return await _congeRequests.ValideCongeRequest(item,id);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
 
     }
 }

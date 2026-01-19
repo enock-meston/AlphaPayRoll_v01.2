@@ -316,6 +316,26 @@ namespace AlphaPayRoll.Components.Pages.Permission
                 .Where(row => row.CodeBranch.Trim() == pBranchID.Trim())
                 .ToList();
 
+
+            if (oTCl550SubBranchList.Count == 1)
+            {
+                pSubBranchID = oTCl550SubBranchList[0].ID;
+
+                var param = new ParamAgentByChef
+                {
+                    ChefID = int.Parse(osessionService.UserId),
+                    SBranch = pSubBranchID,
+                    RoleID = osessionService.RoleID
+                };
+
+                oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+
+                oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
+
+            }
+
+
             pSubBranchID = string.Empty;
             sSelectedPerson = string.Empty;
 
@@ -336,6 +356,8 @@ namespace AlphaPayRoll.Components.Pages.Permission
 
             oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
 
+            oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
             StateHasChanged();
         }
 
@@ -347,6 +369,7 @@ namespace AlphaPayRoll.Components.Pages.Permission
             {
                 // Find the selected agent
                 var selectedAgent = oTRH02SelectAgentList?.FirstOrDefault(a => a.AgentId.ToString() == value);
+                //oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
 
                 if (selectedAgent != null)
                 {
@@ -365,10 +388,6 @@ namespace AlphaPayRoll.Components.Pages.Permission
 
         }
         Resultat oResultat = new Resultat();
-
-
-
-
 
         protected async Task SaveDocVal(TRH05Permission item)
         {
@@ -402,10 +421,11 @@ namespace AlphaPayRoll.Components.Pages.Permission
 
             oResultat = await oTRH05PermissionService.GetUpdateResult(item);
             await JSRuntime.InvokeVoidAsync("alert", oResultat.Result);
+           
             //oHr_ApplicationList = await oHr_ApplicationService.GetList(sClientId);
-            oTRH05PermissionList = await oTRH05PermissionService.GetListAll();
+            oTRH05PermissionList = await oTRH05PermissionService.GetList(sMatricule);
             ClosePopUp();
-
+            await searchByMatricule();
 
         }
         public int sClientId { set; get; } = 0;

@@ -389,7 +389,7 @@ namespace PayAPI.DataImplementation.TRH02Agent
 
             string strQuery = string.Empty;
 
-            if (param.RoleID == 2 && param.RoleID !=1)  // two is Chef
+            if (param.RoleID == 2 && param.RoleID != 1)  // two is Chef
             {
                 strQuery = "Ps_RechPersonneByChef";
             }
@@ -427,6 +427,38 @@ namespace PayAPI.DataImplementation.TRH02Agent
         }
 
         //=====================
+
+        
+       
+
+        public async Task<Resultat> ValidePlanningConge(ParamAgentMatricule param)
+        {
+            oResultat = new Resultat();
+            try
+            {
+
+                using (IDbConnection oCon = new SqlConnection(ClassConString.sConnectionString))
+                {
+                    if (oCon.State == ConnectionState.Closed) oCon.Open();
+                    var oRecord = await oCon.QueryAsync<Resultat>("Ps_ValidePlanning", this.RenseignerPrmPlanningConge(param), commandType: CommandType.StoredProcedure);
+
+                    oResultat = oRecord.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                oResultat.Result = ex.Message;
+            }
+            return oResultat;
+        }
+
+        private DynamicParameters RenseignerPrmPlanningConge(ParamAgentMatricule param)
+        {
+            DynamicParameters oParameters = new DynamicParameters();
+            oParameters.Add("@Matricule", param.Matricule);
+            return oParameters;
+        }
+
     }
 }
 

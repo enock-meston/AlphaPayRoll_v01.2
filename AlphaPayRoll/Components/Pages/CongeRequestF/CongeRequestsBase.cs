@@ -121,7 +121,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         public string sNomAgent { set; get; }
         public string sNomPrenom { set; get; }
         public string sMatricule { set; get; }
-
+        public bool aValidePlanning { set; get; } = true;
 
         public void DonAgentSuite(THRCongCircRequest pConge)
         {
@@ -231,6 +231,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
                 oResultat = await oContratService.GetResutUpdateAffect(item);
                 await JSRuntime.InvokeVoidAsync("alert", oResultat.Result);
+                
                 oContratList = await oContratService.GetContractByMatricule(sMatricule);
                 var param = new ParamAgentMatricule
                 {
@@ -265,6 +266,31 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
             }
         }
 
+
+        public async Task ValideCongeReq(int id)
+        {
+            bool confirm = await JSRuntime.InvokeAsync<bool>(
+                "confirm",
+                "Are you sure you want to validate this planning?"
+            );
+
+            if (!confirm)
+                return;
+
+            var param = new ParamMatricule
+            {
+                Matricule = sMatricule
+            };
+
+            var result = await oCongeRequestsService.ValideCongeRequest(param,id);
+            if (result != null && !string.IsNullOrEmpty(result.Result))
+            {
+                await JSRuntime.InvokeVoidAsync("alert", result.Result);
+            }
+
+            searchByMatricule();
+
+        }
 
 
 
@@ -449,19 +475,24 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                 if (oResult != null && !string.IsNullOrEmpty(oResult.Result))
                 {
                     await JSRuntime.InvokeVoidAsync("alert", oResult.Result);
+                    searchByMatricule();
+                    ClosePopUp();
                 }
 
 
 
                 // Refresh the list
                 oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
-
-                // Close popup if successful (check for success message)
-                if (oResult != null && oResult.Result.Contains("success", StringComparison.OrdinalIgnoreCase))
+                // Close popup if successful
+                if (oResult != null && oResult.Result.Contains("Insert succeeded", StringComparison.OrdinalIgnoreCase) ||
+                    oResult.Result.Contains("Successfully", StringComparison.OrdinalIgnoreCase) ||
+                    oResult.Result.Contains("Updated", StringComparison.OrdinalIgnoreCase) ||
+                    oResult.Result.Contains("Deleted", StringComparison.OrdinalIgnoreCase))
                 {
                     ClosePopUp();
                 }
 
+                //ClosePopUp();
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -483,19 +514,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
             try
             {
                 isLoading = true;
-                //var param = new ParamAgentMatricule
-                //{
-                //    Matricule = sMatricule,
-                //    UserID = int.Parse(osessionService.UserId)
-                //};
-
-                //oTRH02AgentList = await oTRH02AgentService.GetAgentByMatricule(sMatricule);
-                // oTRH02AgentList = await oTRH02AgentService.GetAgentByMatricule(sMatricule);
-
-                //var agent = await oTRH02AgentService.GetAgentByMatricule(sMatricule);
-
-                //var OuserId = agent[0].UserID;
-                //var OroleId = 1;
+              
 
                 var param1 = new ParamAgentMatricule
                 {
@@ -544,26 +563,33 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
                     iNumTranche = oTRH02AgentList[0].NextTranche;
 
-
+                    await JSRuntime.InvokeVoidAsync("alert","Congé: "+ oCongeRequestsList.Count);
                     if (osessionService.RoleID == 2)
                     {
                         bDisableChefDirect = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.StatusChefID != "Attente")).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true && a.Matricule == sMatricule && a.StatusChefID == "Attente")).ToList();
+                        bAddDisabled = true;
                     }
 
                     if (osessionService.RoleID == 3)
                     {
                         bDisableHR = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true &&  a.Matricule == sMatricule && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
+                        bAddDisabled = true;
+
                     }
 
                     if (osessionService.RoleID == 4)
                     {
                         bDisableDG = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.StatusHRID != "Attente" && (a.StatusDGID == "Attente" || a.StatusDGID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true &&  a.Matricule == sMatricule && a.StatusHRID != "Attente" && (a.StatusDGID == "Attente" || a.StatusDGID != "Attente"))).ToList();
+                        bAddDisabled = true;
+
                     }
 
+
                     bAddDisabled = false;
+                    
                 }
                 else
                 {
@@ -593,6 +619,26 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                 .Where(row => row.CodeBranch.Trim() == pBranchID.Trim())
                 .ToList();
 
+
+            if (oTCl550SubBranchList.Count == 1)
+            {
+                pSubBranchID = oTCl550SubBranchList[0].ID;
+
+                var param = new ParamAgentByChef
+                {
+                    ChefID = int.Parse(osessionService.UserId),
+                    SBranch = pSubBranchID,
+                    RoleID = osessionService.RoleID
+                };
+
+                oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+
+                oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
+
+            }
+
+
             pSubBranchID = string.Empty;
             sSelectedPerson = string.Empty;
 
@@ -613,6 +659,8 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
             oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
 
+            oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
             StateHasChanged();
         }
 
@@ -624,6 +672,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
             {
                 // Find the selected agent
                 var selectedAgent = oTRH02SelectAgentList?.FirstOrDefault(a => a.AgentId.ToString() == value);
+                //oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
 
                 if (selectedAgent != null)
                 {
@@ -646,6 +695,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         public int iNumTranche { get; set; } = 0;
         public int TotalDays { get; set; }
 
+        public bool bAjoute { get; set; } = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -663,53 +713,6 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
                     oOneTRH02Agent = new ClassTRH02Agent();
 
-
-                    //if (osessionService.RoleID == 1)
-                    //{
-                    //    var param1 = new ParamAgentMatricule
-                    //    {
-                    //        Matricule = sMatricule,
-                    //        UserID = int.Parse(osessionService.UserId)
-                    //    };
-
-                    //    oTRH02AgentList = await oTRH02AgentService.GetAgentByMatriculeCongeReq(param1);
-                    //    bEmployee = true;
-                    //    sMatricule = osessionService.Matricule;
-
-                    //    // view tranch
-                    //    var param = new ParamNumTranche
-                    //    {
-                    //        Matricule = osessionService.Matricule
-                    //    };
-
-                    //    oPlanningCongeList = await oPlanningCongeService.GetPlanningCongeByMatricule(osessionService.Matricule);
-
-                    //    if (oPlanningCongeList != null && oPlanningCongeList.Count > 0)
-                    //    {
-                    //        var firstPlanning = oPlanningCongeList[0];
-                    //        var bChefDirect = firstPlanning.StatusChefD;
-                    //        var bHR = firstPlanning.Remark;
-
-                    //        if (bChefDirect == null || bChefDirect == "Attente" || bChefDirect == "No" || bHR == "" || bHR == null)
-                    //        {
-                    //            await JSRuntime.InvokeVoidAsync("alert", "Veuillez attendre l’approbation de votre superviseur et de HG");
-
-                    //            string sChemin = "http://localhost:19143/GcongeIndex";
-
-                    //            NavMager.NavigateTo(sChemin, true);
-                    //        }
-                    //        else
-                    //        {
-                    //            await JSRuntime.InvokeVoidAsync("alert", "You have " + oPlanningCongeList.Count + " Tranches of leave");
-
-                    //        }
-
-                    //    }
-                    //    else
-                    //    {
-                    //        await JSRuntime.InvokeVoidAsync("alert", "no planing you have");
-                    //        return;
-                    //    }
 
 
                     //}
@@ -745,10 +748,11 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                             {
                                 await JSRuntime.InvokeVoidAsync("alert", "Veuillez attendre l'approbation de votre superviseur et de HG");
 
-                                //string sChemin = "http://localhost:19143/GcongeIndex";
-                                string sChemin = "/rimpayroll/GcongeIndex";
+                                ////string sChemin = "http://localhost:19143/GcongeIndex";
+                                //string sChemin = "/rimpayroll/GcongeIndex";
 
-                                NavMager.NavigateTo(sChemin, true);
+                                //NavMager.NavigateTo(sChemin, true);
+                                return;
                             }
                             else
                             {

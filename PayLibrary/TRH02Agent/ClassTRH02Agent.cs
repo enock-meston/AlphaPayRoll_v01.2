@@ -103,9 +103,10 @@ namespace PayLibrary.TRH02Agent
 
 		public int NextTranche { set; get; } = 0;
 		public int ModifTranche { set; get; } = 0;
-		// end days planning
+		public bool validPlanning { set; get; } = true;
+        // end days planning
 
-		public int CreatBy { set; get; } = 0;
+        public int CreatBy { set; get; } = 0;
 		[DataType(DataType.Date)]
 		[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
 		public DateTime? CreatOn { set; get; } = DateTime.Now;

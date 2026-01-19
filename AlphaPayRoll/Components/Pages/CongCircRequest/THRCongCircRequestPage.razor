@@ -77,7 +77,7 @@
                                      Value="@sSelectedPerson"
                                      ValueChanged="@((string value) => SelectedPersonal(value))"
                                      ValueExpression="@(() => sSelectedPerson)"
-                                     disabled="@(string.IsNullOrEmpty(pSubBranchID))">
+                                     disabled="@(string.IsNullOrEmpty(pBranchID))">
                             <option value="">Sélectionner Agent</option>
                             @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
                             {

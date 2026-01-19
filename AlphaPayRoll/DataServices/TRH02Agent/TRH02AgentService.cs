@@ -79,7 +79,10 @@ namespace AlphaPayRoll.DataServices.TRH02Agent
 			
 		}
 
-		
-	}
+        public async Task<Resultat> ValidePlanningConge(ParamAgentMatricule param)
+        {
+            return await oHttpClient.PostJsonAsync<Resultat>($"api/TRH02Agent/validePlanningConge/", param);
+        }
+    }
 }
 

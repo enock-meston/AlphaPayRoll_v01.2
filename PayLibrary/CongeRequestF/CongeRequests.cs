@@ -33,7 +33,8 @@ namespace PayLibrary.CongeRequestF
         public string RemHR { set; get; } = "";
         public string RemDG { set; get; } = "";
         public string DecDG { set; get; } = ""; 
-        public string DecFinale { set; get; } = "";     
+        public string DecFinale { set; get; } = "";  
+        public bool ValidReq { set; get; } = false;
         public DateTime? DateDecFinale { set; get; } =DateTime.Now;
         public DateTime? CreatOn { set; get; } = DateTime.Now;
         public int CreatBy { set; get; } = 0;

@@ -1,15 +1,16 @@
 ﻿
-using Microsoft.AspNetCore.Components.Web;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using PayLibrary.CongeRequestF;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Net.Http.Json;
 using PayLibrary.ParamSec.ViewModel;
-using System.Linq;
 using PayLibrary.TRH02Agent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using static MudBlazor.CategoryTypes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CongeRequest.DataService.CongeRequestF
 {
@@ -45,10 +46,10 @@ namespace CongeRequest.DataService.CongeRequestF
             return await ohttpClient.PostJsonAsync<Resultat>($"api/AllCongeRequest/", item);
         }
 
-  
-        
-
-
+        public async Task<Resultat> ValideCongeRequest(ParamMatricule param, int id)
+        {
+            return await ohttpClient.PostJsonAsync<Resultat>($"api/AllCongeRequest/valideConge/{id}", param);
+        }
     }
 }
 

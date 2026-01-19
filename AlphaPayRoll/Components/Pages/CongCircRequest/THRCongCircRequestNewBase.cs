@@ -328,6 +328,8 @@ public class THRCongCircRequestNewBase : ComponentBase
                 if (oResult != null && !string.IsNullOrEmpty(oResult.Result))
                 {
                     await JSRuntime.InvokeVoidAsync("alert", oResult.Result);
+                    searchByMatricule();
+                    ClosePopUp();
                 }
 
                 // Refresh the list
@@ -440,6 +442,26 @@ public class THRCongCircRequestNewBase : ComponentBase
                 .Where(row => row.CodeBranch.Trim() == pBranchID.Trim())
                 .ToList();
 
+
+            if (oTCl550SubBranchList.Count == 1)
+            {
+                pSubBranchID = oTCl550SubBranchList[0].ID;
+
+                var param = new ParamAgentByChef
+                {
+                    ChefID = int.Parse(osessionService.UserId),
+                    SBranch = pSubBranchID,
+                    RoleID = osessionService.RoleID
+                };
+
+                oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+
+                oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
+
+            }
+
+
             pSubBranchID = string.Empty;
             sSelectedPerson = string.Empty;
 
@@ -460,6 +482,8 @@ public class THRCongCircRequestNewBase : ComponentBase
 
             oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
 
+            oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+
             StateHasChanged();
         }
 
@@ -471,6 +495,7 @@ public class THRCongCircRequestNewBase : ComponentBase
             {
                 // Find the selected agent
                 var selectedAgent = oTRH02SelectAgentList?.FirstOrDefault(a => a.AgentId.ToString() == value);
+                //oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
 
                 if (selectedAgent != null)
                 {

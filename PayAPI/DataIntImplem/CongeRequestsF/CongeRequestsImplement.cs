@@ -94,6 +94,31 @@ namespace PayAPI.DataIntImplem.CongeRequestsF
             return oResultat;
         }
 
+        public async Task<Resultat> ValideCongeRequest(ParamMatricule param, int id)
+        {
+            oResultat = new Resultat();
+            try
+            {
+
+                using (IDbConnection oCon = new SqlConnection(ClassConString.sConnectionString))
+                {
+
+                    if (oCon.State == ConnectionState.Closed) oCon.Open();
+                    var oRecord = await oCon.QueryAsync<Resultat>("Ps_ValideConge", this.RenseignerPrmValideCongeReq(param,id), commandType: CommandType.StoredProcedure);
+
+                    oResultat = oRecord.FirstOrDefault();
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                oResultat.Result = ex.Message;
+            }
+
+            return oResultat;
+        }
 
         private DynamicParameters RenseignerPrmUpdate(THRCongCircRequest item)
         {
@@ -127,5 +152,13 @@ namespace PayAPI.DataIntImplem.CongeRequestsF
         }
 
 
+        private DynamicParameters RenseignerPrmValideCongeReq(ParamMatricule param,int id)
+        {
+            DynamicParameters oParameters = new DynamicParameters();
+            oParameters.Add("@Matricule", param.Matricule ?? string.Empty);
+            oParameters.Add("@ID", id);
+
+            return oParameters;
+        }
     }
 }
