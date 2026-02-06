@@ -39,7 +39,7 @@ namespace PayLibrary.ParamSec
       
         public int ClientID { set; get; }
         public int RoleID { set; get; }
-        public int BranchID { set; get; }
+        public int BranchID { set; get; } = 0;
         public int DepatmentID { set; get; }
         public int CashAcctID { set; get; }
         public int ChefID { set; get; }

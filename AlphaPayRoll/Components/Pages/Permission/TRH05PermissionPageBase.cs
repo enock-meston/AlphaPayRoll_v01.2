@@ -24,6 +24,10 @@ namespace AlphaPayRoll.Components.Pages.Permission
 {
     public class TRH05PermissionPageBase : ComponentBase
     {
+
+        [Inject]
+        public NavigationManager NavMager { get; set; }
+
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
 
@@ -244,7 +248,10 @@ namespace AlphaPayRoll.Components.Pages.Permission
         }
         public async Task GoBack()
         {
-            await JSRuntime.InvokeVoidAsync("history.back");
+
+            string sChemin = osessionService.sApp + "/GcongeIndex";
+
+            NavMager.NavigateTo(sChemin, true);
         }
 
 

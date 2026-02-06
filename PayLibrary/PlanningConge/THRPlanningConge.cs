@@ -22,6 +22,7 @@ namespace PayLibrary.PlanningConge
         public int NbrJourPris { get; set; } = 0;
         public string Remark { get; set; } = "";
         public string StatusChefD { get; set; } = "";
+        public string StatusHR { get; set; } = "";
         public string RemChefD { get; set; } = "";
         //public string RemDG { get; set; }
 

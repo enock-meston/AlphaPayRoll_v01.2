@@ -194,9 +194,10 @@ namespace AlphaPayRoll.Components.Pages.AgentComReport
 
 				if (pReportName == "rptAgentComPrime")
 				{
-			
-					url = $"http://192.168.1.221/payapi/api/AgentComListPrime/" + pReportName + "/" + pReportTypeID;
-				}
+                    await JSRuntime.InvokeVoidAsync("alert", pReportName);
+                    await JSRuntime.InvokeVoidAsync("alert", pReportTypeID);
+                    //url = $"http://192.168.1.221/payapi/api/AgentComListPrime/" + pReportName + "/" + pReportTypeID;
+                }
 				if (pReportName == "rptPrimeAgComVerif")
 				{
 

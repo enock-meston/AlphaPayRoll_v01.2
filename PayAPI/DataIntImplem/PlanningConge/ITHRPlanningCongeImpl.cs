@@ -121,6 +121,7 @@ namespace PayAPI.DataIntImplem.PlanningConge
             oParameters.Add("@NbrJourPris", item.NbrJourPris);
             oParameters.Add("@Remark", item.Remark);
             oParameters.Add("@StatusChefD", item.StatusChefD);
+            oParameters.Add("@StatusHR", item.StatusHR);
             oParameters.Add("@RemChefD", item.RemChefD);
             oParameters.Add("@UserID", item.UserID);
             oParameters.Add("@TpMaj", item.TpMaj);

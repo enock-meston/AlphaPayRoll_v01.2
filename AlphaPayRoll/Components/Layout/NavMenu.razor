@@ -36,6 +36,7 @@
 
     <MudNavLink @onclick="ReportEmbarqFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Print Prime</MudNavLink>
     <MudNavLink @onclick="ReportListPayFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-payroll">Print Payroll</MudNavLink>
+    @* <MudNavLink @onclick="ReportListPlanning" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux">Print Congé Plannifier</MudNavLink> *@
 
     <MudNavLink Match="NavLinkMatch.All" @onclick="ChangePassWord" Style="height 3%;" Class="Menux" id="menu-password">Change Password</MudNavLink>
     <MudNavLink Match="NavLinkMatch.All" @onclick="LogOutFct" Style="height 3%;" Class="Menux" id="menu-logout">Logout</MudNavLink>
@@ -237,6 +238,14 @@
         
         NavManager.NavigateTo(osessionService.sApp + $"/home");
         NavManager.NavigateTo(osessionService.sApp + $"/AgentSalaireReport/AgentSalaireReportPage");
+    }
+
+
+    public void ReportListPlanning()
+    {
+
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Report/ReportingServicePage");
     }
 
     public async Task LogOutFct()

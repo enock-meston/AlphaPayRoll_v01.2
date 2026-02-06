@@ -54,11 +54,103 @@
 
         </div>
 
+        <div class="row col-sm-12">
+            @if (osessionService.RoleID == 3)
+            {
+                <div class="col-sm-4 mb-2">
+                    <a href="http://192.168.1.221/ReportServer/Pages/ReportViewer.aspx?%2fHRReporting%2frptPlanningConge&rs:Command=Render"
+                       target="_blank"
+                       class="btn btn-sm btn-primary "
+                       style="opacity:0.8;">
+                        View Report
+                    </a>
+                </div>
+
+                <div class="col-sm-4 mb-2">
+                    <a href="http://192.168.1.221/ReportServer/Pages/ReportViewer.aspx?%2fHRReporting%2frptPlanningJourMois&rs:Command=Render"
+                       target="_blank"
+                       class="btn btn-sm btn-primary "
+                       style="opacity:0.8;">
+                        Report with Date
+                    </a>
+                </div>
+
+            }
+        </div>
+        
+
         <br />
 
 
     <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
-           
+        @if(osessionService.RoleID == 3){
+                <!-- Branch Selection -->
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label class="form-label">Par Chef.</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <InputSelect class="form-control"
+                                     Value="@pBranchID"
+                                     ValueChanged="@((string value) => BranchRechercherPersonal(value))"
+                                     ValueExpression="@(() => pBranchID)">
+
+                            @if (oTCl550BranchList != null)
+                            {
+                                @foreach (var item in oTCl550BranchList)
+                                {
+                                    <option value="@item.ID">@item.Descript</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="col-sm-2">
+                        
+                        <InputSelect class="form-control"
+                                     Value="@sSelectedPersonChef"
+                                     ValueChanged="@((int value) => searchByAgentChef(value))"
+                                     ValueExpression="@(() => sSelectedPersonChef)"
+                                     disabled="@(string.IsNullOrEmpty(pBranchID))">
+                            <option value="0"> ----------------------- </option>
+
+                            @if (oTCl550UserListSearch != null)
+                            {
+                                @foreach (var item in oTCl550UserListSearch)
+                                {
+                                    <option value="@item.ID">@item.UserName</option>
+                                }
+                            }
+                        </InputSelect>
+
+                    </div>
+
+                    <!-- Agent Selection -->
+                    <div class="col-sm-5">
+                        <InputSelect class="form-control"
+                                     Value="@sSelectedPerson"
+                                     ValueChanged="@((string value) => SelectedPersonal(value))"
+                                     ValueExpression="@(() => sSelectedPerson)"
+                                     disabled="@(string.IsNullOrEmpty(pBranchID))">
+                            <option value="">Sélectionner Agent</option>
+                            @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
+                            {
+                                @foreach (var item in oTRH02SelectAgentList)
+                                {
+                                    <option value="@item.AgentId.ToString()">
+                                        @item.Nom @item.Prenom - @item.Matricule
+                                    </option>
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(pSubBranchID))
+                            {
+                                <option value="" disabled>Aucun agent disponible</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+        }   
+
         @if (osessionService.RoleID !=1)
             {
                 <!-- Branch Selection -->
@@ -162,6 +254,7 @@
 
         </div>
         @* </EditForm> *@
+
     </div>
 
 
@@ -181,6 +274,8 @@
                     Ajouter
                 </button>
 
+                
+
                 @if (osessionService.RoleID == 1)
                 {
                     <button type="button"
@@ -189,21 +284,12 @@
                         Validation planification
                     </button>
                 }
+
             </div>
 
+            @* http://rimwinsrv-aluat/ReportServer/Pages/ReportViewer.aspx?%2fHRReporting%2frptPlanningConge&rs:Command=Render *@
 
-
-            @* @if (osessionService.RoleID == 3)
-                {
-                    <div class="col-sm-2">
-                        <a href="http://enockn_pc/ReportServer/Pages/ReportViewer.aspx?%2fReport_HR_RIM%2fReport001&rs:Command=Render"
-                           target="_blank"
-                           class="btn btn-sm btn-primary "
-                           style="width:100%;opacity:0.8;">
-                            View Report
-                        </a>
-                    </div>
-                    } *@
+            
     </div>
 
 <div class="row">
@@ -217,8 +303,9 @@
                 <th>Exercice</th>
                 <th>Propos Mois</th>
                 <th>Num Tranche</th>
-                     <th>Propos Nbre Jour</th>
+                <th>Propos Nbre Jour</th>
                             <th>Chef Status</th>
+                            <th>HR Status</th>
 
                    <th>Action</th>
 
@@ -241,6 +328,7 @@
                             <td>@item.NumTranche</td>
                                     <td>@item.ProposNbreJour</td>
                                     <td>@item.StatusChefD</td>
+                                    <td>@item.StatusHR</td>
                         <td>
                                         <button class="btn btn-sm btn-danger" @onclick="(() => EditData(item, 0))">Detail</button>
                                         <button class="btn btn-sm btn-primary" @onclick="(() => EditData(item, 2))" disabled="@aValidePlanning">Modifier </button>
@@ -524,6 +612,21 @@
                                             <h6 class="form-text text-right"> Partie RH </h6>
                                         </div>
                                     </div>
+                                    <div class="row col-sm-12">
+
+                                        <div class="col-sm-4">
+                                            <label class="form-text text-right">Avis HR</label>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <InputSelect class="form-control" @bind-Value="oOneActiveCongeRequest.StatusHR" disabled="@bHRApprovMois">
+                                                <option value="Attente">Attente</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </InputSelect>
+                                        </div>
+                                    </div>
+
                                     <div class="row col-sm-12">
 
                                     <div class="col-sm-4">

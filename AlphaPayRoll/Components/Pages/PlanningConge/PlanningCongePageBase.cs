@@ -27,6 +27,10 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
     public class PlanningCongePageBase : Microsoft.AspNetCore.Components.ComponentBase
     {
 
+
+        [Inject]
+        public NavigationManager NavMager { get; set; }
+
         [Inject]
         public ITHRPlanningConge oPlanningCongeService { get; set; }
 
@@ -52,13 +56,16 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
         [Inject]
         protected ITSc551User oTCl550UserService { set; get; }
         public List<TSc551User> oTCl550UserList { set; get; }
+        public List<TSc551User> oTCl550UserListSearch { set; get; }
+
         [Inject]
         protected ITCl550Fonction oTCl550FonctionService { set; get; }
         public List<ClassTCl550Fonction> oTCl550FonctionList { set; get; }
         
         public List<ClassTRH02Agent> oTRH02SelectAgentList { get; set; } = new List<ClassTRH02Agent>();
         public string sSelectedPerson { get; set; }
-       
+        public int sSelectedPersonChef { get; set; }
+
         public string TestMes { get; set; } = "";
 
         [Inject]
@@ -222,6 +229,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 StyleButton = "btn btn-sm btn-primary";
                 ButtonCaption = "Sauvegarder";
                 //oOneActiveCongeRequest.NumTranche = iNumTranche;
+                
             }
             else if (tPAction == 3)
             {
@@ -304,7 +312,10 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
 
         public async Task GoBack()
         {
-            await JSRuntime.InvokeVoidAsync("history.back");
+
+            string sChemin = osessionService.sApp + "/GcongeIndex";
+
+            NavMager.NavigateTo(sChemin, true);
         }
         public string pBranchID = "";
         public string pSubBranchID = "";
@@ -350,6 +361,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                     return;
                 }
 
+                
 
                 // Use oOneActiveCongeRequest instead of item or OneCongeRequest
                 oOneActiveCongeRequest.TpMaj = iTypeAction;
@@ -469,11 +481,39 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                         
                         oPlanningCongeList = await oPlanningCongeService.GetAllPlanningConge();
                         bDisableChefDirect = false;
-                        oPlanningCongeList = oPlanningCongeList.Where(a => (a.Matricule == sMatricule)).ToList();
+                        if (osessionService.RoleID == 1)
+                        {
+                            aValidePlanning = false;
+                            oPlanningCongeList = oPlanningCongeList.Where(a => (a.Matricule == sMatricule)).ToList();
+                            //await JSRuntime.InvokeVoidAsync("alert","1");
+                            return;
+                        }
+
+                       
+
+                        if (osessionService.RoleID == 2)
+                        {
+                            aValidePlanning = false;
+                            oPlanningCongeList = oPlanningCongeList.Where(a => (a.Matricule == sMatricule)).ToList();
+                        //await JSRuntime.InvokeVoidAsync("alert", "2");
+                          }
+
+                        // check if chef status is yes and show data to HR
+                        if (osessionService.RoleID == 3)
+                        {
+                            aValidePlanning = false;
+                            oPlanningCongeList = oPlanningCongeList.Where(a => (a.Matricule == sMatricule && a.StatusChefD == "Yes")).ToList();
+                            //await JSRuntime.InvokeVoidAsync("alert","1");
+                            //return;
+                        }
+
                         bAddDisabled = false;
-                        @aValidePlanning = false;
+                        aValidePlanning = false;
+                        return;
+
                     }
-                    else if(osessionService.RoleID == 1)
+
+                    if (osessionService.RoleID == 1)
                     {
                         int.TryParse(resultNumTranche.Result, out int tranche);
                         
@@ -485,6 +525,8 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                             
                         
                         bAddDisabled = false;
+                        return;
+
                     }
                     else
                     {
@@ -499,7 +541,10 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                             oPlanningCongeList = await oPlanningCongeService.GetAllPlanningConge();
                             bDisableChefDirect = false;
                             oPlanningCongeList = oPlanningCongeList.Where(a => (a.Matricule == sMatricule)).ToList();
+                            //await JSRuntime.InvokeVoidAsync("alert", "3");
                             StateHasChanged();
+                            return;
+
                         }
                         bAddDisabled = false;
                     }
@@ -544,6 +589,37 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
             }
         }
 
+        public async Task searchByAgentChef(int value)
+        {
+            string pSubBranchID = "001";
+            //await JSRuntime.InvokeVoidAsync("alert", pSubBranchID);
+            sSelectedPersonChef = value;
+            //await JSRuntime.InvokeVoidAsync("alert", sSelectedPersonChef);
+            //  ndaza  gufata value ya SIEGE nyikoreshe shaka aba USER baba Chef
+            oTCl550UserListSearch = await oTCl550UserService.GetList();
+            oTCl550UserListSearch = oTCl550UserListSearch
+                                    .Where(row => row.RoleID == 2 && row.BranchID.ToString("D3") == pSubBranchID)
+                                    .ToList();
+            //==================
+
+            //sSelectedPerson = string.Empty;
+
+            var param = new ParamAgentByChef
+            {
+                ChefID = int.Parse(osessionService.UserId),
+                SBranch = pSubBranchID,
+                RoleID = osessionService.RoleID
+            };
+
+            oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+
+            oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true && a.ChefID== sSelectedPersonChef).ToList();
+            //==================
+
+            //sSelectedPersonChef = 0;
+            StateHasChanged();
+        }
+
         public async Task BranchRechercherPersonal(string value)
         {
             pBranchID = value;
@@ -566,10 +642,15 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 };
 
                 oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
-
                 oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
 
+                //========
 
+                oTCl550UserListSearch = await oTCl550UserService.GetList();
+                oTCl550UserListSearch = oTCl550UserListSearch
+                                        .Where(row => row.RoleID == 2 && row.BranchID.ToString("D3") == pSubBranchID)
+                                        .ToList();
+                StateHasChanged();
             }
 
 
@@ -590,7 +671,7 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 SBranch = pSubBranchID,
                 RoleID = osessionService.RoleID
             };
-
+            
             oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
 
             oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
@@ -613,7 +694,9 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                     // Auto-fill the matricule and trigger search
                     sMatricule = selectedAgent.Matricule;
                     await searchByMatricule();
+                    StateHasChanged();
                 }
+            StateHasChanged();
             }
         }
 
@@ -685,7 +768,11 @@ namespace AlphaPayRoll.Components.Pages.PlanningConge
                 }
 
 
-   
+                oTCl550UserListSearch = await oTCl550UserService.GetList();
+                oTCl550UserListSearch = oTCl550UserListSearch
+                                        .Where(x => x.RoleID == 2)
+                                        .ToList();
+
 
             }
             catch (Exception ex)

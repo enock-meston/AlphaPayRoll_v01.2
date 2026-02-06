@@ -26,7 +26,11 @@ namespace AlphaPayRoll.Components.Pages.CongCircRequest
 { 
 public class THRCongCircRequestNewBase : ComponentBase
 {
-    [Inject]
+
+        [Inject]
+        public NavigationManager NavMager { get; set; }
+
+        [Inject]
     public ITHRCongCircRequestNew oCongeRequestsService { get; set; }
 
     public List<THRCongCircRequestNew> oCongeRequestsList { get; set; } 
@@ -271,7 +275,10 @@ public class THRCongCircRequestNewBase : ComponentBase
 
         public async Task GoBack()
         {
-            await JSRuntime.InvokeVoidAsync("history.back");
+
+            string sChemin = osessionService.sApp + "/GcongeIndex";
+
+            NavMager.NavigateTo(sChemin, true);
         }
 
         public string pBranchID = "";

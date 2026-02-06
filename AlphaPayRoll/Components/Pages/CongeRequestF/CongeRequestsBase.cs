@@ -423,7 +423,10 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
         public async Task GoBack()
         {
-            await JSRuntime.InvokeVoidAsync("history.back");
+            
+            string sChemin = osessionService.sApp + "/GcongeIndex";
+
+            NavMager.NavigateTo(sChemin, true);
         }
 
 
@@ -477,22 +480,25 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     await JSRuntime.InvokeVoidAsync("alert", oResult.Result);
                     searchByMatricule();
                     ClosePopUp();
+                    StateHasChanged();
                 }
 
 
 
                 // Refresh the list
-                oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
+                //oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
+               
                 // Close popup if successful
-                if (oResult != null && oResult.Result.Contains("Insert succeeded", StringComparison.OrdinalIgnoreCase) ||
-                    oResult.Result.Contains("Successfully", StringComparison.OrdinalIgnoreCase) ||
-                    oResult.Result.Contains("Updated", StringComparison.OrdinalIgnoreCase) ||
-                    oResult.Result.Contains("Deleted", StringComparison.OrdinalIgnoreCase))
-                {
-                    ClosePopUp();
-                }
-
-                //ClosePopUp();
+                //if (oResult != null && oResult.Result.Contains("Insert succeeded", StringComparison.OrdinalIgnoreCase) ||
+                //    oResult.Result.Contains("Successfully", StringComparison.OrdinalIgnoreCase) ||
+                //    oResult.Result.Contains("Updated", StringComparison.OrdinalIgnoreCase) ||
+                //    oResult.Result.Contains("Deleted", StringComparison.OrdinalIgnoreCase))
+                //{
+                //    searchByMatricule();
+                //    ClosePopUp();
+                //}
+                 searchByMatricule();
+                ClosePopUp();
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -563,7 +569,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
                     iNumTranche = oTRH02AgentList[0].NextTranche;
 
-                    await JSRuntime.InvokeVoidAsync("alert","Congé: "+ oCongeRequestsList.Count);
+                    //await JSRuntime.InvokeVoidAsync("alert","Congé: "+ oCongeRequestsList.Count);
                     if (osessionService.RoleID == 2)
                     {
                         bDisableChefDirect = false;
@@ -742,16 +748,16 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                         {
                             var firstPlanning = oPlanningCongeList[0];
                             var bChefDirect = firstPlanning.StatusChefD;
-                            var bHR = firstPlanning.Remark;
-
-                            if (bChefDirect == null || bChefDirect == "Attente" || bChefDirect == "No" || bHR == "" || bHR == null)
+                            var bHR = firstPlanning.StatusHR;
+                            //await JSRuntime.InvokeVoidAsync("alert", bHR);
+                            if (bChefDirect != "Yes" || bHR != "Yes")
                             {
-                                await JSRuntime.InvokeVoidAsync("alert", "Veuillez attendre l'approbation de votre superviseur et de HG");
+                                await JSRuntime.InvokeVoidAsync("alert", "Veuillez attendre l'approbation de votre superviseur et de HR");
 
-                                ////string sChemin = "http://localhost:19143/GcongeIndex";
-                                //string sChemin = "/rimpayroll/GcongeIndex";
+                                //string sChemin = "http://localhost:19143/GcongeIndex";
+                                string sChemin = osessionService.sApp+ "/GcongeIndex";
 
-                                //NavMager.NavigateTo(sChemin, true);
+                                NavMager.NavigateTo(sChemin, true);
                                 return;
                             }
                             else
@@ -761,7 +767,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                         }
                         else
                         {
-                            await JSRuntime.InvokeVoidAsync("alert", "no planing you have");
+                            await JSRuntime.InvokeVoidAsync("alert", "no planning you have");
                             return;
                         }
                     }

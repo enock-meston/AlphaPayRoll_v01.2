@@ -73,10 +73,10 @@
                     <br>
                     <br>
                     <br>
-                    Leave App for android phone here:
+                    @* Leave App for android phone here:
                     <a href="apk/rim.apk" download>
                         Download
-                    </a>
+                    </a> *@
                 </div>
 
 
@@ -109,6 +109,18 @@
                                 </div> *@
 
                             </div>
+
+                            <div class="row mt-3">
+                                @* <div class="col-sm-12">
+                                    <a href="/rimleave/ForgetPassword"
+                                       class="btn btn-primary-danger btn-lg w-100 fw-semibold"
+                                       style="height:50px; line-height:38px;">
+                                        Forgot Password?
+                                    </a>
+                                </div> *@
+                            </div>
+
+
 
                         </div>
 
@@ -285,7 +297,8 @@
                         osessionService.RoleID = oUserLogin.RoleID;
                         osessionService.Matricule = oUserLogin.Matricule;
                         //osessionService.sApp = "http://localhost:19143";
-                        osessionService.sApp = "/rimpayroll";
+                        //osessionService.sApp = "/rimpayroll";
+                        osessionService.sApp = "/rimleave";
 
                         sSiteUrl = osessionService.sApp;
 
@@ -305,7 +318,7 @@
                 }
                 else
                 {
-                    osessionService = new ClasSessionStorage();
+                    osessionService = new ClasSessionStorage(); 
 
                     // osessionService = new SessionService();
                     isLogged = oUserLogin.IsLogged;
@@ -346,7 +359,8 @@
                     // osessionService.sApp = "/alphabank";
                     //osessionService.sApp = "/clecamtest";
                     //osessionService.sApp = "http://localhost:19143";
-                    osessionService.sApp = "/rimpayroll";
+                    //osessionService.sApp = "/rimpayroll";
+                    osessionService.sApp = "/rimleave";
                     // osessionService.sApp = "/hrtest";
                     sSiteUrl = osessionService.sApp;
 
@@ -613,7 +627,7 @@
             // WinUserName = WinUserName.Replace(sARemplacer, "");
 
 
-            model.Username = "Peggy"
+            model.Username = "Username"
             /*  model.Username = WinUserName */
             ;//(System.Security.Principal.WindowsIdentity.GetCurrent()?.Name ?? "No windows identity");
 

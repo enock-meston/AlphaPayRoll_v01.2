@@ -159,7 +159,7 @@
     <table class="table  table-bordered  DataGrid table-light" style="font-family: Arial">
         <thead>
             <tr>
-                <th>No</th>
+                @* <th>No</th> *@
                 <th>Matricule</th>
                  <th>Guichet</th>
                 <th>Date Demande</th>
@@ -176,9 +176,10 @@
             {
                 @for (int i = 0; i < oCongeRequestsList.Count; i++)
                 {
+                    var CountRow =1;
                     var item = oCongeRequestsList[i];
                     <tr class="@getRowColor(i)">
-                        <td>@item.ID</td>
+                            <td>@(i + 1)</td>
                         <td>@item.Matricule</td>
                         <td>@item.SBranchID</td>
                         <td>@item.DateRequest</td>
@@ -383,7 +384,7 @@
 
                             <div class="row col-sm-12">
                                 <div class="col-sm-4">
-                                    <label class="form-text text-right">Numbre Tranche</label>
+                                    <label class="form-text text-right">Nombre Tranche</label>
                                 </div>
                                 <div class="col-sm-6">
 
@@ -397,7 +398,7 @@
 
                             <div class="row col-sm-12">
                                 <div class="col-sm-4">
-                                    <label class="form-text text-right">Date Request</label>
+                                    <label class="form-text text-right">Demande de dates</label>
                                 </div>
                                 <div class="col-sm-6">
 
@@ -437,7 +438,7 @@
                             <div class="row col-sm-12">
                                
                                 <div class="col-sm-4">
-                                    <label class="form-text text-right">Nobre Jour</label>
+                                    <label class="form-text text-right">Nombre Jour</label>
                                 </div>
 
                                 <div class="col-sm-6">
