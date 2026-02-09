@@ -11,10 +11,13 @@ namespace PayLibrary.CongeRequestF
     {
         public int ID { set; get; } = 0;
         public int PlanningID { set; get; } = 0;
+        public int ChefID { set; get; } = 0;
         public string Matricule { set; get; } = "";
+        public string Names { set; get; } = "";
         public string SBranchID { set; get; } = "";
         //public int TpCongeID { set; get; }
         public string Exercice { set; get; } = "";
+        //public string Names { set; get; } = "";
         public int NumTranche { set; get; } = 0;
         public DateTime DateRequest { set; get; } = DateTime.Now;
         public DateTime DateDebutReq { set; get; } = DateTime.Now;

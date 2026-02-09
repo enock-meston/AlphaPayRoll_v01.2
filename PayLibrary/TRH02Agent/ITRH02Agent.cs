@@ -15,7 +15,8 @@ namespace PayLibrary.TRH02Agent
 		Task<Resultat> GetUpdateDon(ClasParamMajDon item);
 		Task<List<ClassTRH02Agent>> GetAgentRech(string id);
 		Task<List<ClassTRH02Agent>> GetAgentByChef(ParamAgentByChef param);
-		Task<List<ClassTRH02Agent>> GetAgentByMatricule(string id);
+		Task<List<ClassTRH02Agent>> GetAgentByChefResponce(ParamAgentByChef param); //
+        Task<List<ClassTRH02Agent>> GetAgentByMatricule(string id);
 		Task<List<ClassTRH02Agent>> GetAgentBySubBranch(string id);
 		Task<List<ClassTRH02Agent>> GetAgentByMatriculeCongeReq(ParamAgentMatricule param);
 		Task<List<ClassTRH02Agent>> GetAgentByMatriculeXX(ParamAgentMatricule param);

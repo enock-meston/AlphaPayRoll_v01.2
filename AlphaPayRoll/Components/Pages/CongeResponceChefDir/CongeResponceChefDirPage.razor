@@ -1,18 +1,16 @@
-﻿@* @using AlphaPayRoll.Components.Pages.CongeRequestF *@
+﻿@page "/CongeResponceChefDir/CongeResponceChefDirPage"
 @layout GcongLayout
-@page "/CongeRequestF/CongeRequestPage"
-@inherits THRCongCircRequestBase
-
-
+@inherits CongeResponceChefDirBase
 
 <div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert"
      style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
 
     <div class="col-sm-12 text-center">
-        <h4 style="color:yellow" Font="Courier New">Demande Congé</h4>
+        <h4 style="color:yellow" Font="Courier New">Conge Responce ChefDir. Page</h4>
     </div>
 
 </div>
+
 
 @if (isLoading)
 {
@@ -27,7 +25,7 @@
 @if (!isLoading && !AgentSelected)
 
 {
-   
+
     <div class="row col-sm-12">
         @if (osessionService.RoleID != 1)
         {
@@ -46,7 +44,43 @@
     <br />
 
     <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
-        @if (osessionService.RoleID != 1)
+        <div class="row g-2 align-items-center mb-3">
+            <div class="col-sm-2">
+                <label class="form-label">Filtre De Recherche: </label>
+            </div>
+
+            <div class="col-sm-2">
+                <label class="form-label">From</label>
+                <InputDate @bind-Value="DateFrom"
+                           class="form-control" />
+            </div>
+
+            <div class="col-sm-2">
+                <label class="form-label">To</label>
+                <InputDate @bind-Value="DateTo"
+                           class="form-control" />
+            </div>
+
+
+            <div class="col-sm-3">
+                <label class="form-label">Status</label>
+                <InputSelect class="form-control" Value="@FilterValue" ValueChanged="@((string value) => FilterValueChanged(value))" ValueExpression="@(() => FilterValue)">
+                
+                        <option value="All">All</option>
+                        <option value="Validated">Validated</option>
+                        <option value="Non Validated">Non Validated</option>
+                </InputSelect>
+            </div>
+
+            <div class="col-sm-2 mt-2 d-flex align-items-end">
+                <button class="btn btn-primary" @onclick="ApplyFilter">
+                    Filter
+                </button>
+            </div>
+        </div>
+
+
+        @* @if (osessionService.RoleID != 1)
         {
             <!-- Branch Selection -->
             <div class="row g-2 align-items-center mb-3">
@@ -55,15 +89,15 @@
                 </div>
                 <div class="col-sm-2">
                     <InputSelect class="form-control"
-                                 Value="@pBranchID"
+                                 Value="@DirpBranchID"
                                  ValueChanged="@((string value) => BranchRechercherPersonal(value))"
-                                 ValueExpression="@(() => pBranchID)">
+                                 ValueExpression="@(() => DirpBranchID)">
 
-                        @if (oTCl550BranchList != null)
+                        @if (oTCl550BranchListDir != null)
                         {
-                            @foreach (var item in oTCl550BranchList)
+                            @foreach (var item in oTCl550BranchListDir)
                             {
-                                <option value="@item.ID">@item.Descript</option>
+                                <option value="@item.ID">@item.UserName </option>
                             }
                         }
                     </InputSelect>
@@ -71,17 +105,14 @@
 
 
                 <div class="col-sm-2">
-                    <InputSelect class="form-control"
-                                 Value="@pSubBranchID"
-                                 ValueChanged="@((string value) => SubBranchRechercherPersonal(value))"
-                                 ValueExpression="@(() => pSubBranchID)"
-                                 disabled="@(string.IsNullOrEmpty(pBranchID))">
+                    <InputSelect class="form-control" Value="@DirpSubBranchID" ValueChanged="@((string value) => SubBranchRechercherPersonal(value))"  ValueExpression="@(() => DirpSubBranchID)"
+                                 disabled="@(string.IsNullOrEmpty(DirpBranchID))">
 
-                        @if (oTCl550SubBranchList != null)
+                        @if (oTCl550SubBranchListDir != null)
                         {
-                            @foreach (var item in oTCl550SubBranchList)
+                            @foreach (var item in oTCl550SubBranchListDir)
                             {
-                                <option value="@item.ID">@item.Descript</option>
+                                <option value="@item.Code">@item.Descript</option>
                             }
                         }
                     </InputSelect>
@@ -93,7 +124,7 @@
                                  Value="@sSelectedPerson"
                                  ValueChanged="@((string value) => SelectedPersonal(value))"
                                  ValueExpression="@(() => sSelectedPerson)"
-                                 disabled="@(string.IsNullOrEmpty(pBranchID))">
+                                 disabled="@(string.IsNullOrEmpty(DirpBranchID))">
                         <option value="">Sélectionner Agent</option>
                         @if (oTRH02SelectAgentList != null && oTRH02SelectAgentList.Any())
                         {
@@ -104,7 +135,7 @@
                                 </option>
                             }
                         }
-                        else if (!string.IsNullOrEmpty(pSubBranchID))
+                        else if (!string.IsNullOrEmpty(DirpSubBranchID))
                         {
                             <option value="" disabled>Aucun agent disponible</option>
                         }
@@ -112,43 +143,40 @@
                 </div>
             </div>
 
-        }
+        } *@
 
-        
+
         @*  <EditForm Model="@oOneTRH02Agent"> *@
-            <div class="row g-2 align-items-center">
+        <div class="row g-2 align-items-center">
 
-                <div class="col-sm-2">
-                    <label class="form-label">MATRICULE</label>
-                </div>
-
-                <div class="col-md-2">
-                    <input class="form-control "
-                       @bind="sMatricule" disabled="@bEmployee" />
-                </div>
-
-                <div class="col-sm-2">
-                    <button type="button"
-                            class="btn btn-primary"
-                            @onclick="searchByMatricule" style="width:100%">
-                            Rechercher
-                    </button>
-                </div>
-
-
-                <div class="col-md-4">
-                    <input class="form-control "
-                       @bind="sNomPrenom" style="width:100%">
-                </div>
-
-                <div class="col-sm-2">
-                    <button type="button" class="btn  btn-dark"
-                        @onclick="GoBack" style="width:100%">
-                        ← Retout
-                    </button>
-                </div>
-
+            <div class="col-sm-2">
+                <label class="form-label">Nom et Prénom</label>
             </div>
+
+            @* <div class="col-md-2">
+    <input class="form-control "
+           @bind="sMatricule" disabled="@bEmployee" />
+</div> *@
+
+            <div class="col-md-4">
+                <input class="form-control "
+                       @bind="sNames" style="width:100%">
+            </div>
+            <div class="col-sm-2">
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="searchByNames" style="width:100%">
+                    Rechercher
+                </button>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn  btn-dark"
+                        @onclick="GoBack" style="width:100%">
+                    ← Retout
+                </button>
+            </div>
+
+        </div>
         @* </EditForm> *@
     </div>
 
@@ -157,54 +185,59 @@
     <div class="row col-sm-12">
 
         <div class="col-sm-12 d-flex justify-content-between align-items-center">
-            @if (osessionService.RoleID==1)
+            @if (osessionService.RoleID == 1)
             {
-            <button type="button" 
-                class="btn btn-sm btn-success" 
-                @onclick="(() => EditData(OneCongeRequest, 1))"  
-                disabled="@bAddDisabled">Ajouter </button> 
+                <button type="button"
+                        class="btn btn-sm btn-success"
+                        @onclick="(() => EditData(OneCongeRequest, 1))"
+                        disabled="@bAddDisabled">
+                    Ajouter
+                </button>
             }
-                
+
         </div>
 
     </div>
 
 
-<div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
-    <table class="table  table-bordered  DataGrid table-light" style="font-family: Arial">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Matricule</th>
-                 <th>Guichet</th>
-                <th>Date Demande</th>
-                <th>Nbr Jour</th>
-                <th>Chef Status</th>
-                <th>HR Status</th>
-                       <th></th>
+    <div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
+        <table class="table  table-bordered  DataGrid table-light" style="font-family: Arial">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Matricule</th>
+                    <th>Nom et Prénom </th>
+                    <th>Guichet</th>
+                    <th>Date Demande</th>
+                    <th>HR Status</th>
                     <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (oCongeRequestsList != null)
-            {
-                @for (int i = 0; i < oCongeRequestsList.Count; i++)
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (oCongeRequestsList != null)
                 {
-                    var CountRow =1;
-                    var item = oCongeRequestsList[i];
-                    <tr class="@getRowColor(i)">
+                    @for (int i = 0; i < oCongeRequestsList.Count; i++)
+                    {
+                        var CountRow = 1;
+                        var item = oCongeRequestsList[i];
+                        <tr class="@getRowColor(i)">
                             <td>@(i + 1)</td>
-                        <td>@item.Matricule</td>
-                        <td>@item.SBranchID</td>
-                        <td>@item.DateRequest</td>
-                            <td>@item.NbrJour</td>
-                            <td>@item.StatusChefID</td>
+                            <td>@item.Matricule</td>
+                            <td>@item.Names</td>
+                            <td>@item.SBranchID</td>
+                            <td>@item.DateRequest.ToString("dd/MM/yyy")</td>
                             <td>@item.StatusHRID</td>
                             <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 0))"> Detail</button></td>
-                            <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
-                            <td>
-                                @if (@item.ValidReq != false){
+                            @if(item.ValidReq)
+                            {
+                                <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
+                            }
+                           
+       @*                      <td>
+                                @if (@item.ValidReq != false)
+                                {
                                     <span class="badge bg-success">
                                         validé Congé
                                     </span>
@@ -215,23 +248,23 @@
                                         Validation Congé
                                     </button>
                                 }
-                                
-                            </td>
-                            
-                    </tr>
+
+                            </td> *@
+
+                        </tr>
+                    }
                 }
-            }
-        </tbody>
-    </table>
-</div>
-
-
-
-<div class="row">
-    <div class="col-sm-5">
-        <h5>@TestMes</h5>
+            </tbody>
+        </table>
     </div>
-</div>
+
+
+
+    <div class="row">
+        <div class="col-sm-5">
+            <h5>@TestMes</h5>
+        </div>
+    </div>
 
 }
 
@@ -264,7 +297,7 @@
                 </div>
 
 
-                <div class="modal-body" >
+                <div class="modal-body">
 
 
                     <EditForm Model="OneCongeRequest" OnValidSubmit="(() => SaveData(OneCongeRequest))">
@@ -362,11 +395,11 @@
 
                                     </InputSelect>
                                 </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-text text-left">Guichet</label>
-                                        </div>
-                                    
-                        </div>
+                                <div class="col-sm-2">
+                                    <label class="form-text text-left">Guichet</label>
+                                </div>
+
+                            </div>
 
 
                             <div class="row col-sm-12">
@@ -407,9 +440,9 @@
                                 </div>
 
                             </div>
-                          
 
-                        
+
+
 
                             <div class="row col-sm-12">
                                 <div class="col-sm-4">
@@ -418,9 +451,9 @@
                                 <div class="col-sm-6">
 
                                     <InputDate class="form-control" @bind-Value="OneCongeRequest.DateRequest" />
-                                    <ValidationMessage For="@(() => OneCongeRequest.DateRequest)" />    
+                                    <ValidationMessage For="@(() => OneCongeRequest.DateRequest)" />
                                 </div>
-                                
+
                             </div>
 
                             <div class="row col-sm-12">
@@ -429,7 +462,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <InputDate class="form-control"
-                                               @bind-Value="OneCongeRequest.DateDebutReq"/>  
+                                               @bind-Value="OneCongeRequest.DateDebutReq" />
                                 </div>
 
 
@@ -443,7 +476,7 @@
 
                                     @* <InputDate class="form-control" @bind-Value="OneCongeRequest.DateFinReq" ValueChanged="@(e => OnDateChanged())"/> *@
                                     <InputDate class="form-control"
-                                               @bind-Value="OneCongeRequest.DateFinReq"/>   
+                                               @bind-Value="OneCongeRequest.DateFinReq" />
                                 </div>
 
 
@@ -451,7 +484,7 @@
 
 
                             <div class="row col-sm-12">
-                               
+
                                 <div class="col-sm-4">
                                     <label class="form-text text-right">Nombre Jour</label>
                                 </div>
@@ -463,7 +496,7 @@
                                 </div>
 
                             </div>
-                    <hr />
+                            <hr />
 
 
                             <div class="row col-sm-12">
@@ -516,8 +549,8 @@
                                 </div>
 
                                 <div class="col-sm-2">
-                                    
-                                        <InputSelect class="form-control" @bind-Value="OneCongeRequest.StatusChefID" disabled="@bDisableChefDirect">
+
+                                    <InputSelect class="form-control" @bind-Value="OneCongeRequest.StatusChefID" disabled="@bDisableChefDirect">
                                         <option value="Attente">Attente</option>
                                         <option value="Yes">Yes</option>
                                         <option value="No">No</option>
@@ -603,7 +636,7 @@
                                             {
                                                 <option value="@item.ID"> @item.UserName </option>
                                             }
-                       
+
                                         }
                                     </InputSelectNumber>
 

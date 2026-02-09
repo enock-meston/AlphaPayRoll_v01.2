@@ -1,13 +1,9 @@
-using PayAPI.DataImplementation.TRH02Agent;
-using PayAPI.DataImplementation.TSL02AgentRet;
-using PayAPI.StringCon;
-using PayLibrary.TRH02Agent;
-using PayLibrary.TSL02AgentRet;
-using PayLibrary.TSL03Traitem;
-using Scalar.AspNetCore;
-
+using AlphaBkBlzr.API.DataIntImplem.HumanResource;
+using PayAPI.DataImplementation.DonBase;
 using PayAPI.DataImplementation.TCl550Deplom;
 using PayAPI.DataImplementation.TCl550MaritStatus;
+using PayAPI.DataImplementation.TRH02Agent;
+using PayAPI.DataImplementation.TSL02AgentRet;
 using PayAPI.DataImplementation.TSL03Traitem;
 using PayAPI.DataImplementation.TSL03TraitemAv;
 using PayAPI.DataImplementation.TSL04ArchivINSS;
@@ -31,6 +27,7 @@ using PayAPI.DataIntImplem.GetHRCounts;
 using PayAPI.DataIntImplem.GetUserCounts;
 using PayAPI.DataIntImplem.Localisation;
 using PayAPI.DataIntImplem.Mutation;
+using PayAPI.DataIntImplem.ParamDonBase.TSc551BranchAndSubBranch;
 using PayAPI.DataIntImplem.ParamSec;
 using PayAPI.DataIntImplem.Personnel_RIM2;
 using PayAPI.DataIntImplem.PlanningConge;
@@ -59,6 +56,7 @@ using PayAPI.DataIntImplem.TxDAT;
 using PayAPI.DataIntImplem.TypeCongCircons;
 using PayAPI.DataIntImplem.TypeSalaire;
 using PayAPI.RepServices;
+using PayAPI.StringCon;
 using PayLibrary.AgRegAugmBase;
 using PayLibrary.CalculSalaire;
 using PayLibrary.Cl550Branch;
@@ -79,6 +77,7 @@ using PayLibrary.InterfParamSec;
 using PayLibrary.InterfPrmDonBase;
 using PayLibrary.IReport;
 using PayLibrary.Localisation;
+using PayLibrary.ParamDonBase.TSc551BranchAndSubBranch;
 using PayLibrary.Permission;
 using PayLibrary.Personnel_RIM2;
 using PayLibrary.PlanningConge;
@@ -103,10 +102,13 @@ using PayLibrary.TCl550User;
 using PayLibrary.TCt550TpTransTout;
 using PayLibrary.Training;
 using PayLibrary.TrainingField;
+using PayLibrary.TRH02Agent;
 using PayLibrary.TRH550TypeSalaire;
 using PayLibrary.TSL02AgDimAugmSal;
+using PayLibrary.TSL02AgentRet;
 using PayLibrary.TSL02AgHSup;
 using PayLibrary.TSL02TracEvSal;
+using PayLibrary.TSL03Traitem;
 using PayLibrary.TSL03TraitemAv;
 using PayLibrary.TSL04ArchivINSS;
 using PayLibrary.TSL04ArchivIPR;
@@ -117,13 +119,12 @@ using PayLibrary.TxDAT;
 using PayLibrary.TypeCongCircons;
 using PayLibrary.TypeSaction;
 using RimProjectAPi.DataIntImplem.DocVal;
+using Scalar.AspNetCore;
 using static PayAPI.RepServices.AgentComBranchService;
 using static PayAPI.RepServices.AgentComListPrimeService;
 using static PayAPI.RepServices.AgentComListPrimeVerifService;
 using static PayAPI.RepServices.AgentComSubBranchService;
 using static PayAPI.RepServices.SuperviseurZonervice;
-using AlphaBkBlzr.API.DataIntImplem.HumanResource;
-using PayAPI.DataImplementation.DonBase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -219,6 +220,10 @@ builder.Services.AddScoped<ITRH055FAUTE, TRH055FAUTEImpl>();
 builder.Services.AddScoped<ITRH05Permission, TRH05PermissionImpl>();
 builder.Services.AddScoped<ITCt550TpTransTout, TCt550TpTransToutImpl>();
 builder.Services.AddScoped<ITCpt050TxDAT, TCpt050TxDATImpl>();
+
+builder.Services.AddScoped<ITSc551SubBranchDir, TSc551SubBranchDirImpl>();
+builder.Services.AddScoped<ITSc551BranchDir, TSc551BranchDirImpl>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

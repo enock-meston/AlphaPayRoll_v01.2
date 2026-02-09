@@ -46,6 +46,11 @@ namespace AlphaPayRoll.DataServices.TRH02Agent
             return await oHttpClient.PostJsonAsync<List<ClassTRH02Agent>>($"api/TRH02Agent/AgentByChef/", param);
 
         }
+        public async Task<List<ClassTRH02Agent>> GetAgentByChefResponce(ParamAgentByChef param) // get agent by CHEF Direct II			
+        {
+            return await oHttpClient.PostJsonAsync<List<ClassTRH02Agent>>($"api/TRH02Agent/AgentByChefDir/", param);
+
+        }
 
         public async Task<List<ClassTRH02Agent>> GetAgentBySubBranch(string id)
 		{

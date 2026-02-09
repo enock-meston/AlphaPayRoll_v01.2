@@ -31,7 +31,7 @@ namespace PayAPI.DataIntImplem.CongeRequestsF
                 if (oCon.State == ConnectionState.Closed) oCon.Open();
 
 
-                var List = await oCon.QueryAsync<THRCongCircRequest>("Select * from THRCongRequest", commandType: CommandType.Text);
+                var List = await oCon.QueryAsync<THRCongCircRequest>("Ps_AfficherConge", commandType: CommandType.StoredProcedure);
 
                 if (List != null && List.Count() > 0)
                 {

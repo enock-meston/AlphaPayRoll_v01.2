@@ -426,10 +426,11 @@ namespace PayAPI.DataImplementation.TRH02Agent
             return oParameters;
         }
 
+
         //=====================
 
-        
-       
+
+
 
         public async Task<Resultat> ValidePlanningConge(ParamAgentMatricule param)
         {
@@ -459,6 +460,45 @@ namespace PayAPI.DataImplementation.TRH02Agent
             return oParameters;
         }
 
+        public async Task<List<ClassTRH02Agent>> GetAgentByChefResponce(ParamAgentByChef param)
+        {
+            string strQuery = string.Empty;
+
+            if (param.RoleID == 2 && param.RoleID != 1)  // two is Chef
+            {
+                strQuery = "Ps_RechPersonneByChefII";
+            }
+            else
+            {
+                strQuery = "Ps_RechPersonneBySBranchWithDG_HR_II";
+            }
+
+            oItemList = new List<ClassTRH02Agent>();
+
+            using (IDbConnection oCon = new SqlConnection(ClassConString.sConnectionString))
+            {
+                if (oCon.State == ConnectionState.Closed) oCon.Open();
+                var vCustomList = await oCon.QueryAsync<ClassTRH02Agent>(strQuery, this.RenseignerPrmRechByChefDire(param), commandType: CommandType.StoredProcedure);
+
+
+                if (vCustomList != null && vCustomList.ToList().Count > 0)
+                {
+                    oItemList = vCustomList.ToList();
+                }
+
+
+            }
+
+            return oItemList;
+        }
+        private DynamicParameters RenseignerPrmRechByChefDire(ParamAgentByChef param)
+        {
+            DynamicParameters oParameters = new DynamicParameters();
+            oParameters.Add("@SBranch", param.SBranch);
+            oParameters.Add("@ChefID", param.ChefID);
+
+            return oParameters;
+        }
     }
 }
 

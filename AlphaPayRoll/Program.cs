@@ -1,12 +1,8 @@
-using AlphaPayRoll.Components;
-using AlphaPayRoll.FAuthentication;
-using AlphaPayRoll.StringCon;
-using Blazored.SessionStorage;
-
 using AlphaAssurance.DataServices.Login;
 using AlphaAssurance.DataServices.ParamSec;
 using AlphaAssurance.DataServices.Report;
 using Alphabankblazor.DataServices.HumanResource;
+using AlphaPayRoll.Components;
 using AlphaPayRoll.DataServices.AgentComReport;
 using AlphaPayRoll.DataServices.AgRetCotisation;
 using AlphaPayRoll.DataServices.AgRetPaymentMois;
@@ -16,6 +12,7 @@ using AlphaPayRoll.DataServices.ContratModif;
 using AlphaPayRoll.DataServices.ContratSusp;
 using AlphaPayRoll.DataServices.Depart;
 using AlphaPayRoll.DataServices.DonBase;
+using AlphaPayRoll.DataServices.DonBase.TSc551BranchAndSubBranch;
 using AlphaPayRoll.DataServices.Exercice;
 using AlphaPayRoll.DataServices.GetHRCounts;
 using AlphaPayRoll.DataServices.GetUserCounts;
@@ -58,9 +55,13 @@ using AlphaPayRoll.DataServices.TSto551EventIn;
 using AlphaPayRoll.DataServices.TxDAT;
 using AlphaPayRoll.DataServices.TypeCongCircons;
 using AlphaPayRoll.DataServices.TypeSalaire;
+using AlphaPayRoll.FAuthentication;
+using AlphaPayRoll.StringCon;
+using Blazored.SessionStorage;
 using CongeRequest.DataService.CongeRequestF;
 using HRProject.DataService.PlanningCongeFord;
 using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor.Services;
 using PayLibrary.AgRegAugmBase;
 using PayLibrary.CalculSalaire;
 using PayLibrary.Cl550Branch;
@@ -81,6 +82,7 @@ using PayLibrary.InterfParamSec;
 using PayLibrary.InterfPrmDonBase;
 using PayLibrary.IReport;
 using PayLibrary.Localisation;
+using PayLibrary.ParamDonBase.TSc551BranchAndSubBranch;
 using PayLibrary.Permission;
 using PayLibrary.Personnel_RIM2;
 using PayLibrary.PlanningConge;
@@ -128,7 +130,6 @@ using static PayAPI.RepServices.AgentComListPrimeService;
 using static PayAPI.RepServices.AgentComListPrimeVerifService;
 using static PayAPI.RepServices.AgentComSubBranchService;
 using static PayAPI.RepServices.SuperviseurZonervice;
-using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -151,9 +152,9 @@ builder.Services.AddScoped<ClasAuthenticationStatProv>();
 
 //string sUrl = "http://192.168.1.227/hrtestapi/";
 
-//string sUrl = "http://localhost:48866/";
+string sUrl = "http://localhost:48866/";
 //string sUrl = "http://192.168.1.221/payapi/";
-string sUrl = "http://192.168.1.221/leaveapi/";
+//string sUrl = "http://192.168.1.221/leaveapi/";
 
 
 
@@ -238,6 +239,9 @@ builder.Services.AddHttpClient<ITRH03ContratSusp, TRH03ContratSuspService>(t => 
 builder.Services.AddHttpClient<ITRH051TypeCongCircons, TRH051TypeCongCirconsService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<ITCt550TpTransTout, TCt550TpTransToutService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<ITCpt050TxDAT, TCpt050TxDATService>(t => { t.BaseAddress = new Uri(sUrl); });
+
+builder.Services.AddHttpClient<ITSc551BranchDir, TSc551BranchDirService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<ITSc551SubBranchDir, TSc551SubBranchDirService>(t => { t.BaseAddress = new Uri(sUrl); });
 
 builder.Services.AddSingleton<UserAccountService>();
 

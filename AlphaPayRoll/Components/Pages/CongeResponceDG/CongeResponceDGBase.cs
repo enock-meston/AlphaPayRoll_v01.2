@@ -1,4 +1,5 @@
-﻿using AlphaPayRoll.Data;
+﻿using Microsoft.AspNetCore.Components;
+using AlphaPayRoll.Data;
 using AlphaPayRoll.DataServices.Contrat;
 using AlphaPayRoll.DataServices.DonBase;
 using Microsoft.AspNetCore.Components;
@@ -11,24 +12,16 @@ using PayLibrary.Contrat;
 using PayLibrary.InterfParamSec;
 using PayLibrary.InterfPrmDonBase;
 using PayLibrary.ParamDonBase;
+using PayLibrary.ParamDonBase.TSc551BranchAndSubBranch;
 using PayLibrary.ParamSec;
 using PayLibrary.ParamSec.ViewModel;
 using PayLibrary.PlanningConge;
 using PayLibrary.TCl550Fonction;
 using PayLibrary.TRH02Agent;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-
-
-namespace AlphaPayRoll.Components.Pages.CongeRequestF
+namespace AlphaPayRoll.Components.Pages.CongeResponceDG
 {
-    public class THRCongCircRequestBase : ComponentBase
+    public class CongeResponceDGBase : ComponentBase
     {
-
-
         [Inject]
         public NavigationManager NavMager { get; set; }
 
@@ -37,6 +30,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         public ITHRCongCircRequest oCongeRequestsService { get; set; }
 
         public List<THRCongCircRequest> oCongeRequestsList { get; set; }
+        public List<THRCongCircRequest> oCongeRequestsList2 { get; set; }
 
         public List<TpConge> TpCongeList { get; set; } = new List<TpConge>();
         public List<THRPlanningConge> PlanningList { get; set; } = new List<THRPlanningConge>();
@@ -48,13 +42,35 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         public THRCongCircRequest OneCongeRequest { get; set; } = new THRCongCircRequest();
         public Resultat oResult { get; set; }
 
+
         [Inject]
         protected ITCl550Branch oTCl550BranchService { set; get; }
         public List<ClassTCl550Branch> oTCl550BranchList { set; get; }
-        public List<TSc551SubBranch> oTCl550SubBranchList2 { set; get; }
+
+        /// <summary>
+        /// ama brach by dir 
+        /// </summary>
+        [Inject]
+        protected ITSc551BranchDir oTCl550BranchServiceDir { set; get; }
+        public List<TSc551BranchDir> oTCl550BranchListDir { set; get; }
+
+
+
         [Inject]
         protected ITSc551SubBranch oTCl550SubBranchService { set; get; }
         public List<TSc551SubBranch> oTCl550SubBranchList { set; get; }
+        public List<TSc551SubBranch> oTCl550SubBranchList2 { set; get; }
+
+        /// <summary>
+        /// ama subBranch par dir
+        /// </summary>
+        /// 
+        [Inject]
+        protected ITSc551SubBranchDir oTCl550SubBranchServiceDir { set; get; }
+        public List<TSc551SubBranchDir> oTCl550SubBranchListDir { set; get; }
+        public List<TSc551SubBranchDir> oTCl550SubBranchList2Dir { set; get; }
+
+
         [Inject]
         public ITabPrmNivOne oDonBaseService { set; get; }
 
@@ -231,7 +247,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
                 oResultat = await oContratService.GetResutUpdateAffect(item);
                 await JSRuntime.InvokeVoidAsync("alert", oResultat.Result);
-                
+
                 oContratList = await oContratService.GetContractByMatricule(sMatricule);
                 var param = new ParamAgentMatricule
                 {
@@ -244,7 +260,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                 if (oTRH02AgentList.Count > 0)
                 {
                     sNomPrenom = oTRH02AgentList[0].Nom.Trim() + " " + oTRH02AgentList[0].Prenom.Trim();
-                    oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
+                    oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();  ///
 
                 }
 
@@ -282,7 +298,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                 Matricule = sMatricule
             };
 
-            var result = await oCongeRequestsService.ValideCongeRequest(param,id);
+            var result = await oCongeRequestsService.ValideCongeRequest(param, id);
             if (result != null && !string.IsNullOrEmpty(result.Result))
             {
                 await JSRuntime.InvokeVoidAsync("alert", result.Result);
@@ -423,7 +439,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
         public async Task GoBack()
         {
-            
+
             string sChemin = osessionService.sApp + "/GcongeIndex";
 
             NavMager.NavigateTo(sChemin, true);
@@ -433,6 +449,9 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
         public string pBranchID = "";
         public string pSubBranchID = "";
+
+        public string DirpBranchID = "";
+        public string DirpSubBranchID = "";
         public void BranchChanged(string Value)
         {
             pBranchID = Value;
@@ -483,21 +502,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     StateHasChanged();
                 }
 
-
-
-                // Refresh the list
-                //oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
-               
-                // Close popup if successful
-                //if (oResult != null && oResult.Result.Contains("Insert succeeded", StringComparison.OrdinalIgnoreCase) ||
-                //    oResult.Result.Contains("Successfully", StringComparison.OrdinalIgnoreCase) ||
-                //    oResult.Result.Contains("Updated", StringComparison.OrdinalIgnoreCase) ||
-                //    oResult.Result.Contains("Deleted", StringComparison.OrdinalIgnoreCase))
-                //{
-                //    searchByMatricule();
-                //    ClosePopUp();
-                //}
-                 searchByMatricule();
+                searchByMatricule();
                 ClosePopUp();
                 StateHasChanged();
             }
@@ -520,7 +525,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
             try
             {
                 isLoading = true;
-              
+
 
                 var param1 = new ParamAgentMatricule
                 {
@@ -534,11 +539,6 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     ? await oTRH02AgentService.GetAgentByMatricule(sMatricule) :
                     await oTRH02AgentService.GetAgentByMatriculeXX(param1);
 
-
-                //oTRH02AgentList = await oTRH02AgentService.GetAgentByMatriculeXX(param1);
-
-
-                ///oPlanningCongeList = await oPlanningCongeService.GetPlanningCongeByMatricule(sMatricule);
 
                 if (osessionService.RoleID == 2)
                 {
@@ -554,15 +554,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                 {
 
                     sNomPrenom = oTRH02AgentList[0].Nom.Trim() + " " + oTRH02AgentList[0].Prenom.Trim();
-                    // abakozi banjye gusa
-                    //UserSubBranct = oTRH02AgentList[0].SBranchLocID.Trim();
 
-                    //if (UserSubBranct != osessionService.BranchID && osessionService.RoleID != 3)
-                    //{
-                    //    await JSRuntime.InvokeVoidAsync("alert", "Cette personne ne fait pas partie des employés de votre agence.");
-                    //    return;
-                    //}
-                    // end gushaka abbakozi
 
 
                     oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequestsByMatricule(sMatricule);
@@ -580,7 +572,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     if (osessionService.RoleID == 3)
                     {
                         bDisableHR = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true &&  a.Matricule == sMatricule && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true && a.Matricule == sMatricule && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
                         bAddDisabled = true;
 
                     }
@@ -588,14 +580,14 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     if (osessionService.RoleID == 4)
                     {
                         bDisableDG = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true &&  a.Matricule == sMatricule && a.StatusHRID != "Attente" && (a.StatusDGID == "Attente" || a.StatusDGID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true && a.Matricule == sMatricule && a.StatusHRID != "Attente" && (a.StatusDGID == "Attente" || a.StatusDGID != "Attente"))).ToList();
                         bAddDisabled = true;
 
                     }
 
 
                     bAddDisabled = false;
-                    
+
                 }
                 else
                 {
@@ -616,78 +608,97 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
             }
         }
 
-        public async Task BranchRechercherPersonal(string value)
-        {
-            pBranchID = value;
+        //public async Task BranchRechercherPersonal(string value)
+        //{
+        //    DirpBranchID = value;
 
-            // Filter sub-branches based on selected branch
-            oTCl550SubBranchList = oTCl550SubBranchList2
-                .Where(row => row.CodeBranch.Trim() == pBranchID.Trim())
-                .ToList();
-
-
-            if (oTCl550SubBranchList.Count == 1)
-            {
-                pSubBranchID = oTCl550SubBranchList[0].ID;
-
-                var param = new ParamAgentByChef
-                {
-                    ChefID = int.Parse(osessionService.UserId),
-                    SBranch = pSubBranchID,
-                    RoleID = osessionService.RoleID
-                };
-
-                oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
-
-                oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+        //    // Filter sub-branches based on selected branch
+        //    oTCl550SubBranchListDir = oTCl550SubBranchList2Dir
+        //        .Where(row => row.Code.Trim() == DirpBranchID.Trim())
+        //        .ToList();
 
 
-            }
+        //    if (oTCl550SubBranchListDir.Count == 1)
+        //    {
+        //        DirpSubBranchID = oTCl550SubBranchListDir[0].ID.ToString();
+
+        //        //var param = new ParamAgentByChef
+        //        //{
+        //        //    ChefID = int.Parse(osessionService.UserId),
+        //        //    SBranch = DirpSubBranchID,
+        //        //    RoleID = osessionService.RoleID
+        //        //};
+
+        //        var param = new ParamAgentByChef
+        //        {
+        //            ChefID = int.Parse(DirpBranchID),
+        //            //SBranch = DirpSubBranchID,
+        //            RoleID = osessionService.RoleID
+        //        };
+
+        //        oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChefResponce(param);
+
+        //        oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
 
 
-            pSubBranchID = string.Empty;
-            sSelectedPerson = string.Empty;
+        //    StateHasChanged();
+        //    }
 
-            StateHasChanged();
-        }
 
-        public async Task SubBranchRechercherPersonal(string value)
-        {
-            pSubBranchID = value;
-            sSelectedPerson = string.Empty;
+        //    DirpSubBranchID = string.Empty;
+        //    sSelectedPerson = string.Empty;
 
-            var param = new ParamAgentByChef
-            {
-                ChefID = int.Parse(osessionService.UserId),
-                SBranch = pSubBranchID,
-                RoleID = osessionService.RoleID
-            };
+        //}
 
-            oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChef(param);
+        //public async Task SubBranchRechercherPersonal(string value)
+        //{
+        //    DirpSubBranchID = value;
+        //    sSelectedPerson = string.Empty;
 
-            oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+        //    //var param = new ParamAgentByChef
+        //    //{
+        //    //    ChefID = int.Parse(osessionService.UserId),
+        //    //    SBranch = DirpSubBranchID,
+        //    //    RoleID = osessionService.RoleID
+        //    //};
 
-            StateHasChanged();
-        }
+        //    var param = new ParamAgentByChef
+        //    {
+        //        ChefID = int.Parse(DirpSubBranchID),
+        //        //SBranch = DirpSubBranchID,
+        //        RoleID = osessionService.RoleID
+        //    };
 
-        public async Task SelectedPersonal(string value)
-        {
-            sSelectedPerson = value;
+        //    oTRH02SelectAgentList = await oTRH02AgentService.GetAgentByChefResponce(param);
 
-            if (!string.IsNullOrEmpty(value))
-            {
-                // Find the selected agent
-                var selectedAgent = oTRH02SelectAgentList?.FirstOrDefault(a => a.AgentId.ToString() == value);
-                //oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+        //    oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+        //    //await JSRuntime.InvokeVoidAsync("alert",
+        //    //            $"1111 agent : {oTRH02SelectAgentList.Count}");
 
-                if (selectedAgent != null)
-                {
-                    // Auto-fill the matricule and trigger search
-                    sMatricule = selectedAgent.Matricule;
-                    await searchByMatricule();
-                }
-            }
-        }
+        //    StateHasChanged();
+        //}
+
+        //public async Task SelectedPersonal(string value)
+        //{
+        //    sSelectedPerson = value;
+
+        //    if (!string.IsNullOrEmpty(value))
+        //    {
+        //        // Find the selected agent
+        //        var selectedAgent = oTRH02SelectAgentList?.FirstOrDefault(a => a.AgentId.ToString() == value);
+        //        //oTRH02SelectAgentList = oTRH02SelectAgentList.Where(a => a.validPlanning == true).ToList();
+        //        //await JSRuntime.InvokeVoidAsync("alert",
+        //        //        $"2222 agent : {oTRH02SelectAgentList.Count}");
+        //        if (selectedAgent != null)
+        //        {
+        //            // Auto-fill the matricule and trigger search
+        //            sMatricule = selectedAgent.Matricule;
+        //            await searchByMatricule();
+        //        }
+        //        //StateHasChanged();
+
+        //    }
+        //}
 
         public bool bAddDisabled { get; set; } = true;
 
@@ -712,6 +723,136 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         4 => "http://192.168.1.221/ReportServer?%2fHRReporting%2frptDGCongeAttente&rs:Command=Render",
         _ => string.Empty
     };
+
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public string? SelectedStatus { get; set; }
+
+        public string FilterValue { get; set; } = "";
+        public void enableAndDisableButton()
+        {
+            if (osessionService.RoleID == 2)
+            {
+                bDisableChefDirect = false;
+                bAddDisabled = true;
+            }
+            if (osessionService.RoleID == 3)
+            {
+                bDisableHR = false;
+                bAddDisabled = true;
+            }
+            if (osessionService.RoleID == 4)
+            {
+                bDisableDG = false;
+                bAddDisabled = true;
+            }
+
+            bAddDisabled = false;
+        }
+        public async Task ApplyFilter()
+        {
+            try
+            {
+                int userId = int.Parse(osessionService.UserId);
+                //From: 2/9/2026 12:00:00 AM , To: 2/13/2026 12:00:00 AM ,Status: NotVerified
+                //await JSRuntime.InvokeVoidAsync("alert",
+                //            $"From: {DateFrom} , To: {DateTo} ,Status: {SelectedStatus}");
+                //CreatOn, StatusChefID
+                //oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
+                // Filter by date range
+                if (DateFrom.HasValue && DateTo.HasValue)
+                {
+                    if (FilterValue == "Validated")
+                    {
+                        enableAndDisableButton();
+                        oCongeRequestsList = oCongeRequestsList2
+                        .Where(x => x.CreatOn >= DateFrom.Value.Date
+                                 && x.CreatOn <= DateTo.Value.Date && x.ValidReq == true)
+                        .ToList();
+                    }
+                    else if (FilterValue == "Non Validated")
+                    {
+                        enableAndDisableButton();
+                        oCongeRequestsList = oCongeRequestsList2
+                        .Where(x => x.CreatOn >= DateFrom.Value.Date
+                                 && x.CreatOn <= DateTo.Value.Date && x.ValidReq == false)
+                        .ToList();
+                    }
+                    else
+                    {
+                        enableAndDisableButton();
+                        oCongeRequestsList = oCongeRequestsList2
+                        .Where(x => x.CreatOn >= DateFrom.Value.Date
+                                 && x.CreatOn <= DateTo.Value.Date)
+                        .ToList();
+                    }
+
+
+                }
+                else
+                {
+                    await JSRuntime.InvokeVoidAsync("alert", "Please enter date from and date to");
+                }
+
+                // Optionally filter by status
+                //if (!string.IsNullOrEmpty(SelectedStatus))
+                //{
+                //    oCongeRequestsList = oCongeRequestsList2
+                //        .Where(x => (x.ChefID == userId) && (x.StatusChefID == SelectedStatus))
+                //        .ToList();
+                //}
+
+            }
+
+
+            catch (Exception ex)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", ex.Message);
+
+            }
+            finally
+            {
+                isLoading = false;
+            }
+
+        }
+
+        public string sNames { get; set; } = "";
+        public async Task searchByNames()
+        {
+            if (osessionService.RoleID == 3 || osessionService.RoleID == 4)
+            {
+                
+
+                if (FilterValue == "Validated")
+                {
+                    enableAndDisableButton();
+                    oCongeRequestsList = oCongeRequestsList2
+                    .Where(x => x.Names.Contains(sNames) && x.ValidReq == true)
+                    .ToList();
+                }
+                else if (FilterValue == "Non Validated")
+                {
+                    enableAndDisableButton();
+                    oCongeRequestsList = oCongeRequestsList2
+                    .Where(x => x.Names.Contains(sNames) && x.ValidReq == false)
+                    .ToList();
+                }
+                else
+                {
+                    enableAndDisableButton();
+                    oCongeRequestsList = oCongeRequestsList2
+                    .Where(x => x.Names.Contains(sNames))
+                    .ToList();
+                }
+            }
+        }
+
+
+        public void FilterValueChanged(string Value)
+        {
+            FilterValue = Value;
+        }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             try
@@ -721,8 +862,23 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
 
                     int userId = int.Parse(osessionService.UserId);
-                    //oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
 
+                    //filtering by chef
+
+                    oCongeRequestsList = await oCongeRequestsService.GetAllCongeRequests();
+
+                    if (osessionService.RoleID == 2)
+                    {
+                        enableAndDisableButton();
+                        oCongeRequestsList = oCongeRequestsList.Where(row => (row.ChefID == userId)).ToList();
+                    }
+                    if (osessionService.RoleID == 3 || osessionService.RoleID == 4)
+                    {
+                        enableAndDisableButton();
+                        oCongeRequestsList = oCongeRequestsList.Where(row => (row.ChefID != 0)).ToList();
+                    }
+
+                    oCongeRequestsList2 = oCongeRequestsList;
 
                     oCongeList = (await oDonBaseService.GetDBListName("TRH051TypeConge")).ToList();
 
@@ -764,7 +920,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                                 await JSRuntime.InvokeVoidAsync("alert", "Veuillez attendre l'approbation de votre superviseur et de HR");
 
                                 //string sChemin = "http://localhost:19143/GcongeIndex";
-                                string sChemin = osessionService.sApp+ "/GcongeIndex";
+                                string sChemin = osessionService.sApp + "/GcongeIndex";
 
                                 NavMager.NavigateTo(sChemin, true);
                                 return;
@@ -783,12 +939,19 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
                     oTCl550BranchList = await oTCl550BranchService.GetT550Branch();
                     oTCl550SubBranchList2 = await oTCl550SubBranchService.GetList();
-
                     oTCl550BranchList = await oTCl550BranchService.GetT550Branch();
+                    oTCl550SubBranchList = oTCl550SubBranchList2;
+
+                    //========
+
+                    oTCl550BranchListDir = await oTCl550BranchServiceDir.GetList();
+                    oTCl550SubBranchList2Dir = await oTCl550SubBranchServiceDir.GetList();
+                    oTCl550BranchListDir = await oTCl550BranchServiceDir.GetList();
+                    oTCl550SubBranchListDir = oTCl550SubBranchList2Dir;
+
                     oTCl550UserList = await oTCl550UserService.GetList();
                     oTCl550FonctionList = await oTCl550FonctionService.GetTCl550Fonction();
                     TRH550StatusContratList = (await oDonBaseService.GetDBListName("TRH550StatusContrat")).ToList();
-                    oTCl550SubBranchList = oTCl550SubBranchList2;
                     oTPR550Exercice = (await oTabPrmNivOneService.GetDBListName("TPR550Exercice")).ToList();
 
                     oTPR550Exercice = oTPR550Exercice.Where(x => x.Enab == true).ToList();

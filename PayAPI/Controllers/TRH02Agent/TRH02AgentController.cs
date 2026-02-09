@@ -50,6 +50,20 @@ namespace PayAPI.Controllers.TRH02Agent
             }
         }
 
+        [HttpPost("AgentByChefDir")]
+        public async Task<List<ClassTRH02Agent>> GetAgentByChefResponce([FromBody] ParamAgentByChef param)
+        {
+            if (ModelState.IsValid)
+            {
+                return await oItem.GetAgentByChefResponce(param);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
         [HttpPost("validePlanningConge")]
         public async Task<Resultat> ValidePlanningConge([FromBody] ParamAgentMatricule param)
         {
