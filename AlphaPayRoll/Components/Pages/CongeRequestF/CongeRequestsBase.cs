@@ -121,6 +121,8 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         public string sNomAgent { set; get; }
         public string sNomPrenom { set; get; }
         public string sMatricule { set; get; }
+
+        public  int itemId { get; set;  }
         public bool aValidePlanning { set; get; } = true;
 
         public void DonAgentSuite(THRCongCircRequest pConge)
@@ -154,6 +156,7 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         protected void EditData(THRCongCircRequest item, int TpAction)
         {
             iTypeAction = TpAction;
+            itemId = item.ID;
             oOneActiveCongeRequest = item;
 
             if (TpAction == 2 || TpAction == 0) // Edit or View
@@ -213,11 +216,11 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
 
 
-            if (iTypeAction == 3)
-            {
-                if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Voulez-vous vraiment supprimer ceci ?"))
-                    return;
-            }
+            //if (iTypeAction == 3)
+            //{
+            //    if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Voulez-vous vraiment supprimer ceci ?"))
+            //        return;
+            //}
 
 
 
@@ -460,8 +463,11 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                         return;
                 }
 
+                //await JSRuntime.InvokeVoidAsync("alert", iTypeAction);
+                //await JSRuntime.InvokeVoidAsync("alert", OneCongeRequest.ID);
 
                 OneCongeRequest.TpMaj = iTypeAction;
+                OneCongeRequest.ID = itemId;
                 OneCongeRequest.UserID = int.Parse(osessionService.UserId);
 
                 OneCongeRequest.NumTranche = iNumTranche;
@@ -703,6 +709,10 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
 
         public bool bAjoute { get; set; } = false;
 
+        public int iminsiAfiteGusaba { get; set; } = 0;
+        public int iminsiYasabye { get; set; } = 0; //conge pris
+        public int iminsiYasigaranye { get; set; } = 0;
+
         // view report for Chefs,HR,DG
         public string ReportLink =>
     osessionService.RoleID switch
@@ -758,6 +768,15 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                             var firstPlanning = oPlanningCongeList[0];
                             var bChefDirect = firstPlanning.StatusChefD;
                             var bHR = firstPlanning.StatusHR;
+
+                            //var AllPlanning = oPlanningCongeList[0];
+                            //iminsiAfiteGusaba = AllPlanning.ApprovNbreJour;
+                            iminsiAfiteGusaba = oPlanningCongeList.Sum(p => p.ApprovNbreJour);
+                            //iminsiYasabye = AllPlanning.NbrJourPris;
+                            iminsiYasabye = oPlanningCongeList.Sum(p => p.NbrJourPris);
+                            iminsiYasigaranye = iminsiAfiteGusaba - iminsiYasabye;
+
+
                             //await JSRuntime.InvokeVoidAsync("alert", bHR);
                             if (bChefDirect != "Yes" || bHR != "Yes")
                             {

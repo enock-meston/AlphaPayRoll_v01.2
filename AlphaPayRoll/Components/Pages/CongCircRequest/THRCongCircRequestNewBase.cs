@@ -401,6 +401,11 @@ public class THRCongCircRequestNewBase : ComponentBase
                     oCongeRequestsList = await oCongeRequestsService.GetAllCongeCircRequests();
 
                     // ?? need to select by matricule..............(will do it) future???
+                    if (osessionService.RoleID == 1)
+                    {
+                        bDisableChefDirect = false;
+                        oCongeRequestsList = oCongeRequestsList.Where(a => a.Matricule == sMatricule).ToList();
+                    }
 
                     if (osessionService.RoleID == 2)
                     {

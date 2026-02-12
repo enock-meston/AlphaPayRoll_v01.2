@@ -27,6 +27,25 @@
 @if (!isLoading && !AgentSelected)
 
 {
+    @if (osessionService.RoleID == 1)
+    {
+        <div style="text-align:center; display:flex; justify-content:center; gap:40px;">
+
+
+            <p style="color:blue; font-weight:bold; margin:0;">
+                Les Jour de Congé dont je dispose: @iminsiAfiteGusaba
+            </p>
+
+            <p style="color:black; font-weight:bold; margin:0;">
+                Les jours de congé aue j'ai demandés : @iminsiYasabye
+            </p>
+
+            <p style="color:green; font-weight:bold; margin:0;">
+                Le jours de congé restants: @iminsiYasigaranye
+            </p>
+
+        </div>
+    }
    
     <div class="row col-sm-12">
         @if (osessionService.RoleID != 1)
@@ -203,6 +222,10 @@
                             <td>@item.StatusHRID</td>
                             <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 0))"> Detail</button></td>
                             <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
+                            @if(osessionService.RoleID == 3)
+                            {
+                                <td><button class="btn btn-sm btn-outline-danger" @onclick="(() => EditData(item, 3))">Supprimer</button></td>
+                            }
                             <td>
                                 @if (@item.ValidReq != false){
                                     <span class="badge bg-success">
