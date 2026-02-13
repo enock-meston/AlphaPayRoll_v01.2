@@ -45,6 +45,12 @@
         <MudDivider class="my-2"></MudDivider>
     }
 
+    @if (osessionService != null && osessionService.RoleID == 1)
+    {
+        <MudNavLink Match="NavLinkMatch.Prefix" @onclick="StatusDemandeCongeMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé Consult Statut  </MudNavLink>
+
+    }
+
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="CongeCirc" Style="height 5%;" Class="Menux" id="menu-circ">Congé Circ.</MudNavLink>
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Permission" Style="height 5%;" Class="Menux" id="menu-permission">Demande de Permission</MudNavLink>
 
@@ -172,6 +178,13 @@
         NavManager.NavigateTo(osessionService.sApp + $"/HumanResource/TRH05PermissionPages");
     }
     // ==== adminstration congé
+
+    public void StatusDemandeCongeMenu()
+    {
+
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/CongConsult/CongConsultStatusPage");
+    }
 
     public void CongeChefDirMenu()
     {

@@ -1,0 +1,103 @@
+﻿@page "/CongConsult/CongConsultStatusPage"
+@layout GcongLayout
+@inherits CongConsultStatusBase
+
+
+
+<div class="alert alert-dark mt-0 col-sm-12 cacherImpression" role="alert"
+     style="text-align: center; width: 100%; background-color: steelblue; margin: 2px">
+
+    <div class="col-sm-12 text-center">
+        <h4 style="color:yellow" Font="Courier New">Congé Consult Status </h4>
+    </div>
+
+</div>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading ...</span>
+        </div>
+    </div>
+}
+
+@if (!isLoading && !AgentSelected)
+
+{
+
+    <br />
+
+    <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
+    
+
+        @*  <EditForm Model="@oOneTRH02Agent"> *@
+        <div class="row g-2 align-items-center">
+            <div class="col-sm-2">
+                <button type="button" class="btn  btn-dark"
+                        @onclick="GoBack" style="width:100%">
+                    ← Retout
+                </button>
+            </div>
+
+        </div>
+        @* </EditForm> *@
+    </div>
+
+
+
+    <div class="row col-sm-12">
+
+        
+
+    </div>
+
+
+    <div class="row col-sm-12  pre-scrollable well" style="max-height:65vh;">
+        <table class="table  table-bordered  DataGrid table-light" style="font-family: Arial">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>DateDemande</th>
+                    <th>NombreJour</th>
+                    <th>EmployValid</th>
+                    <th>ChefDirect</th>
+                    <th>HR</th>
+                    <th>DG</th>
+                    <th>Date CongeAccourd</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (oCongConsultStatusList != null)
+                {
+                    @for (int i = 0; i < oCongConsultStatusList.Count; i++)
+                    {
+                        var CountRow = 1;
+                        var item = oCongConsultStatusList[i];
+                        if (item.DateDemande.ToString("dd/MM/yyyy") != "01/01/0001")
+                        {
+                            <tr class="@getRowColor(i)">
+                            <td>@(i + 1)</td>
+                            <td>@item.DateDemande.ToString("dd/MM/yyyy")</td>
+                            <td>@item.NombreJour</td>
+                            <td>@item.EmployValid</td>
+                            <td>@item.ChefDirectStatus</td>
+                            <td>@item.HRStatus</td>
+                            <td>@item.DGStatus</td>
+                                <td>@item.DateCongeAccourd.ToString("dd/MM/yyyy")</td>
+
+                        </tr>
+                        }
+                        else
+                        {
+                            <h3>Non Demande Congé </h3>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+

@@ -7,6 +7,7 @@ using AlphaPayRoll.DataServices.AgentComReport;
 using AlphaPayRoll.DataServices.AgRetCotisation;
 using AlphaPayRoll.DataServices.AgRetPaymentMois;
 using AlphaPayRoll.DataServices.CalculSalaire;
+using AlphaPayRoll.DataServices.CongConsult;
 using AlphaPayRoll.DataServices.Contrat;
 using AlphaPayRoll.DataServices.ContratModif;
 using AlphaPayRoll.DataServices.ContratSusp;
@@ -66,6 +67,7 @@ using PayLibrary.AgRegAugmBase;
 using PayLibrary.CalculSalaire;
 using PayLibrary.Cl550Branch;
 using PayLibrary.CongCircRequest;
+using PayLibrary.CongConsult;
 using PayLibrary.CongeRequestF;
 using PayLibrary.Contrat;
 using PayLibrary.ContratModif;
@@ -239,6 +241,7 @@ builder.Services.AddHttpClient<ITRH03ContratSusp, TRH03ContratSuspService>(t => 
 builder.Services.AddHttpClient<ITRH051TypeCongCircons, TRH051TypeCongCirconsService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<ITCt550TpTransTout, TCt550TpTransToutService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<ITCpt050TxDAT, TCpt050TxDATService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<ICongConsultStatus, CongConsultStatusService>(t => { t.BaseAddress = new Uri(sUrl); });
 
 builder.Services.AddHttpClient<ITSc551BranchDir, TSc551BranchDirService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<ITSc551SubBranchDir, TSc551SubBranchDirService>(t => { t.BaseAddress = new Uri(sUrl); });
