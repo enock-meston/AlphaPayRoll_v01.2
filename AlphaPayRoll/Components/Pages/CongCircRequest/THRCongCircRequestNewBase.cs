@@ -179,7 +179,7 @@ public class THRCongCircRequestNewBase : ComponentBase
             ShowPopUp(TpAction);
         }
 
-        Resultat oResultat = new Resultat();
+        //Resultat oResultat = new Resultat();
 
 
 
@@ -403,26 +403,26 @@ public class THRCongCircRequestNewBase : ComponentBase
                     // ?? need to select by matricule..............(will do it) future???
                     if (osessionService.RoleID == 1)
                     {
-                        bDisableChefDirect = false;
+                        //bDisableChefDirect = false;
                         oCongeRequestsList = oCongeRequestsList.Where(a => a.Matricule == sMatricule).ToList();
                     }
-
+                    // && a.ValidReq== true
                     if (osessionService.RoleID == 2)
                     {
                         bDisableChefDirect = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.StatusChefID == "Attente")).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.ValidReq == true && a.StatusChefID == "Attente")).ToList();
                     }
 
                     if (osessionService.RoleID == 3)
                     {
                         bDisableHR = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.ValidReq == true && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
                     }
 
                     if (osessionService.RoleID == 4)
                     {
                         bDisableDG = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.StatusHRID != "Attente" && (a.StatusDGID == "Attente" || a.StatusDGID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.ValidReq == true && a.StatusHRID != "Attente" && (a.StatusDGID == "Attente" || a.StatusDGID != "Attente"))).ToList();
                     }
                     bAddDisabled = false;
                 }
@@ -534,7 +534,37 @@ public class THRCongCircRequestNewBase : ComponentBase
             }
         }
 
+        public async Task ValideCongeReq(int Congeid)
+        {
+            bool confirm = await JSRuntime.InvokeAsync<bool>(
+                "confirm",
+                "Are you sure you want to validate this Leave?"
+            );
 
+            if (!confirm)
+                return;
+
+            var param = new ParamMatricule
+            {
+                Matricule = sMatricule
+            };
+            //await JSRuntime.InvokeVoidAsync("alert", param.Matricule);
+            //await JSRuntime.InvokeVoidAsync("alert", Congeid);
+            //return;
+            var result = await oCongeRequestsService.ValideCongeRequest(param, Congeid);
+            if (result != null && !string.IsNullOrEmpty(result.Result))
+            {
+                await JSRuntime.InvokeVoidAsync("alert", result.Result);
+            }
+            else
+            {
+               await JSRuntime.InvokeVoidAsync("alert", "result.Result");
+           
+            }
+
+            searchByMatricule();
+
+        }
         public bool bAddDisabled { get; set; } = true;
 
         public bool bDisableChefDirect { get; set; } = true;

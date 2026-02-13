@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PayLibrary.CongCircRequest;
+using PayLibrary.CongeRequestF;
 using PayLibrary.ParamSec.ViewModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,6 +40,18 @@ namespace PayAPI.Controllers.CongCircRequest
             }
         }
 
+        [HttpPost("valideCongeCir/{id}")]
+        public async Task<Resultat> ValideCongeRequest(int id, [FromBody] ParamMatricule item)
+        {
+            if (ModelState.IsValid)
+            {
+                return await _congeRequests.ValideCongeRequest(item, id);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
     }
 }

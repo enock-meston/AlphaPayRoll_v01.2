@@ -16,6 +16,7 @@ namespace PayLibrary.CongCircRequest
         public string StatusChefID { set; get; } = "";
         public string StatusDGID { set; get; } = "";
         public string DecFinale { set; get; } = "";
+        public bool ValidReq { set; get; }
         public DateTime? DateDecFinale { set; get; } = DateTime.Now;
         public DateTime? CreatOn { set; get; } = DateTime.Now;
         public int CreatBy { set; get; } = 0;

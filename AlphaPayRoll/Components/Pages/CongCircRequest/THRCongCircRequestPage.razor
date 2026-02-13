@@ -152,13 +152,16 @@
             <tr>
                 <th>ID</th>
                 <th>Matricule</th>
-                <th>SBranch</th>
                 <th>TpConge</th>
                 <th>Date Demande</th>
                 <th>Nbr Jour</th>
+                <th>Chef Dir.</th>
+                        <th>HR</th>
+                        <th>DG</th>
                
                 <th></th>
-                <th></th>
+                        <th></th>
+                        <th></th>
             </tr>
         </thead>
         <tbody>
@@ -168,17 +171,35 @@
                 {
                     var item = oCongeRequestsList[i];
                     <tr class="@getRowColor(i)">
-                        <td>@item.ID</td>
+                              
+                         <td>@(i + 1)</td>
                         <td>@item.Matricule</td>
-                        <td>@item.SBranchID</td>
-                        <td>@item.TpCongeID</td>
-                        <td>@item.DateRequest</td>
+                                <td>
+                                    @(oCongeList?.FirstOrDefault(c => c.ID == item.TpCongeID)?.Descript ?? "")
+                                </td>
+                                <td>@item.DateRequest?.ToString("dd/MM/yyyy")</td>
                             <td>@item.NbrJour</td>
+                                <td>@item.StatusChefID</td>
+                                <td>@item.StatusHRID</td>
+                                <td>@item.StatusDGID</td>
+
                         
 
                         <td><button class="btn btn-sm btn-danger" @onclick="(() => EditData(item, 0))">Detail</button></td>
                                 <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
-                    </tr>
+                    <td>
+                                    @if (@item.ValidReq == false)
+                                    {
+                                        @* <span class="badge bg-success">
+                                        validé Congé
+                                    </span> *@
+                                        <button type="button" class="btn btn-sm btn-outline-success" @onclick="(() => ValideCongeReq(item.ID))">
+                                            Validation Congé Cir.
+                                        </button>
+                                    }
+                    </td>
+                            </tr>
+
                 }
             }
         </tbody>

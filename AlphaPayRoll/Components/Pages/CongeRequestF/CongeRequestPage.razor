@@ -216,28 +216,43 @@
                             <td>@(i + 1)</td>
                         <td>@item.Matricule</td>
                         <td>@item.SBranchID</td>
-                        <td>@item.DateRequest</td>
+                        <td>@item.DateRequest.ToString("dd/MM/yyyy")</td>
                             <td>@item.NbrJour</td>
                             <td>@item.StatusChefID</td>
                             <td>@item.StatusHRID</td>
                             <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 0))"> Detail</button></td>
-                            <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
+                            
+                            @if (osessionService.RoleID == 1 && @item.ValidReq==false)
+                            {
+
+                                <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
+                               
+                            }
+                             
+                            @if (osessionService.RoleID != 1)
+                            {
+                                <td><button class="btn btn-sm btn-outline-info" @onclick="(() => EditData(item, 2))">Modifier</button></td>
+                            }
+
                             @if(osessionService.RoleID == 3)
                             {
                                 <td><button class="btn btn-sm btn-outline-danger" @onclick="(() => EditData(item, 3))">Supprimer</button></td>
                             }
                             <td>
-                                @if (@item.ValidReq != false){
-                                    <span class="badge bg-success">
+                                @if (@item.ValidReq == false){
+                                    @* <span class="badge bg-success">
                                         validé Congé
-                                    </span>
-                                }
-                                else
-                                {
+                                    </span> *@
                                     <button type="button" class="btn btn-sm btn-outline-success" @onclick="(() => ValideCongeReq(item.ID))">
                                         Validation Congé
                                     </button>
                                 }
+                         @*        else
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-success" @onclick="(() => ValideCongeReq(item.ID))">
+                                        Validation Congé
+                                    </button>
+                                } *@
                                 
                             </td>
                             

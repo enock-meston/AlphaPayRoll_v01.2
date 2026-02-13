@@ -722,6 +722,9 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
         4 => "http://192.168.1.221/ReportServer?%2fHRReporting%2frptDGCongeAttente&rs:Command=Render",
         _ => string.Empty
     };
+
+
+        public bool bSaisieCongeValid { set; get; }   
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             try
@@ -788,10 +791,10 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                                 NavMager.NavigateTo(sChemin, true);
                                 return;
                             }
-                            else
-                            {
-                                await JSRuntime.InvokeVoidAsync("alert", "You have " + oPlanningCongeList.Count + " Tranches of leave");
-                            }
+                            //else
+                            //{
+                            //    await JSRuntime.InvokeVoidAsync("alert", "You have " + oPlanningCongeList.Count + " Tranches of leave");
+                            //}
                         }
                         else
                         {

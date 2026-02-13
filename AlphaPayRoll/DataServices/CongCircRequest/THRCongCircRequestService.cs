@@ -31,6 +31,11 @@ namespace CongeRequest.DataService.CongeRequestF
             return await ohttpClient.PostJsonAsync<Resultat>($"api/THRCongCircRequest/", item);
            
         }
+
+        public async Task<Resultat> ValideCongeRequest(ParamMatricule param, int id)
+        {
+            return await ohttpClient.PostJsonAsync<Resultat>($"api/THRCongCircRequest/valideCongeCir/{id}", param);
+        }
     }
 }
 
