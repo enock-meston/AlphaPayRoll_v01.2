@@ -221,8 +221,11 @@ namespace AlphaPayRoll.Components.Pages.CongConsult
                     osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");
 
                     string userId = osessionService.Matricule;
+                    ParamConsultConge param = new ParamConsultConge();
+                    param.Matricule = userId;
+                    param.TypeConge = "CongeAnnuel";
 
-                    oCongConsultStatusList = await oCongConsultStatusService.GetAllCongeConsultStatus(userId);
+                    oCongConsultStatusList = await oCongConsultStatusService.GetAllCongeConsultStatus(param);
 
                 }
                 await InvokeAsync(StateHasChanged);

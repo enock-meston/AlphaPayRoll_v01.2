@@ -16,10 +16,10 @@ namespace PayAPI.Controllers.CongConsult
             _congeStatus = congeStatus;
         }
 
-        [HttpGet("{id}")]
-        public async Task<List<CongConsultStatus>> GetAllCongeConsultStatus(string id)
+        [HttpPost]
+        public async Task<List<CongConsultStatus>> GetAllCongeConsultStatus([FromBody] ParamConsultConge param)
         {
-            return await _congeStatus.GetAllCongeConsultStatus(id);
+            return await _congeStatus.GetAllCongeConsultStatus(param);
         }
     }
 }

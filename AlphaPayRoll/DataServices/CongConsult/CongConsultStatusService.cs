@@ -1,4 +1,5 @@
-﻿using PayLibrary.CongConsult;
+﻿using Microsoft.AspNetCore.Components;
+using PayLibrary.CongConsult;
 using PayLibrary.CongeRequestF;
 
 namespace AlphaPayRoll.DataServices.CongConsult
@@ -11,10 +12,10 @@ namespace AlphaPayRoll.DataServices.CongConsult
             ohttpClient = httpClient;
 
         }
-        public async Task<List<CongConsultStatus>> GetAllCongeConsultStatus(string id)
+        public async Task<List<CongConsultStatus>> GetAllCongeConsultStatus(ParamConsultConge param)
         {
-            return (await ohttpClient.GetFromJsonAsync<CongConsultStatus[]>("api/CongConsultStatus/" + id)).ToList();
-
+            //return (await ohttpClient.PostJsonAsync<CongConsultStatus[]>("api/CongConsultStatus/")).ToList();
+            return (await ohttpClient.PostJsonAsync<CongConsultStatus[]>($"api/CongConsultStatus/", param)).ToList();
         }
     }
 }

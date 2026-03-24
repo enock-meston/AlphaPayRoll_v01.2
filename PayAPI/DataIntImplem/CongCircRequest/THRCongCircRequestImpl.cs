@@ -104,6 +104,13 @@ namespace PayAPI.DataIntImplem.CongCircRequest
             oParameters.Add("@TpCongeID", item.TpCongeID);
             oParameters.Add("@DateRequest", item.DateRequest);
             oParameters.Add("@NbrJour", item.NbrJour);
+            //------
+            oParameters.Add("@DateDebutReq", item.DateDebutReq);
+            oParameters.Add("@DateFinReq", item.DateFinReq);
+            oParameters.Add("@DateDebutApprov", item.DateDebutApprov);
+            oParameters.Add("@DateFinApprov", item.DateFinApprov);
+            //---
+
             oParameters.Add("@Observation", item.Observation);
             oParameters.Add("@StatusChefID", item.StatusChefID);
             oParameters.Add("@StatusHRID", item.StatusHRID);
@@ -114,7 +121,7 @@ namespace PayAPI.DataIntImplem.CongCircRequest
             return oParameters;
 
         }
-
+         
         private DynamicParameters RenseignerPrmValideCongeReq(ParamMatricule param, int id)
         {
             DynamicParameters oParameters = new DynamicParameters();

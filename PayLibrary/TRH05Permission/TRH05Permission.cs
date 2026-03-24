@@ -17,6 +17,8 @@ namespace PayLibrary.Permission
         public string MotifDemand { set; get; } = "";
         public string Decision { set; get; } = "";
         public int DecisionPrisePar { set; get; }= 0;
+        public string H_sorti { set; get; } = "";
+        public string H_retour { set; get; } = "";
         public DateTime? CreatOn { set; get; } = DateTime.Now;
         public int CreatBy { set; get; } = 0;
         public int LModifBy { set; get; } = 0;

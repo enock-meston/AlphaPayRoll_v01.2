@@ -1,0 +1,236 @@
+﻿@page "/AgentPDFReport/ListRetCaisSolidPage"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inherits ListRetCaisSolidBase
+
+@* ── Page Title ── *@
+<h3 style="color:#004080; margin-bottom:20px; text-align:center;"> List Rec Caisse Solidarite  </h3>
+
+
+@* ── Toolbar ── *@
+<div class="row mb-3">
+    
+    <div class="col-sm-2 m-2">
+        <button type="button" class="btn btn-primary"
+                @onclick="async () => await PrintComponent()"
+                style="width:100%;">
+            <i class="bi bi-printer me-1"></i> Imprimer
+        </button>
+    </div>
+</div>
+
+@* ── Screen Table (visible on screen, hidden on print) ── *@
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>No</th>
+                <th>Matricule</th>
+                <th>Branch</th>
+                <th>Nom Prenom</th>
+                <th>Net A Payer </th>
+                <th>Periode</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (SalaireList != null)
+            {
+                int i = 1;
+                foreach (var item in SalaireList)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.Matricule</td>
+                        <td>@item.Branch</td>
+                        <td>@item.NomPrenom</td>
+                        <td class="text-end">@item.NetAPayer</td>
+                        <td class="text-end">@item.Periode</td>
+                       
+                    </tr>
+                    i++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@* ════════════════════════════════════════════════
+   PRINT AREA — hidden on screen, visible on print
+   ════════════════════════════════════════════════ *@
+<div id="printArea" style="display:none">
+    <div class="liste-paie-print-root" style="font-family:Arial,sans-serif; padding:20px; max-width:100%; margin:auto; box-sizing:border-box;">
+
+        @* ── Print Header ── *@
+        <div style="border-bottom:2px solid #004080; padding-bottom:12px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:20px;">
+
+                @* Logo *@
+                <div style="flex:0 0 auto;">
+                    @* <img src="@logoUrl" alt="Logo" *@
+                    <img src="/Images/RIMICON.png" alt="Logo"
+                         style="height:70px; width:auto; display:block;" />
+                </div>
+
+                @* Title + Date *@
+                <div style="flex:1; text-align:center;">
+                    <h3 style="color:#004080; margin:0 0 4px;"> List Rec Caisse Solidarite</h3>
+                    <p style="margin:0; font-size:10px; color:#555;">
+                        Date : @DateTime.Now.ToString("dd/MM/yyyy")
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+       
+
+        @* ── Detail Table ── *@
+        <table class="liste-paie-grid" style="width:100%; border-collapse:collapse; font-size:7px; table-layout:fixed;">
+            <colgroup>
+                <col style="width:3%;" />   @* N° *@
+                <col style="width:9%;" />   @* Noms — wider for full names *@
+                <col style="width:5%;" />   @* Matricule *@
+                <col style="width:5%;" />
+                <col style="width:5%;" />
+                <col style="width:5%;" />
+                
+            </colgroup>
+            
+            <thead>
+                <tr style="background-color:#004080; color:white;">
+                    <th style="padding:5px; border:1px solid #ccc;">N°</th>
+                    <th style="padding:5px; border:1px solid #ccc;">Noms</th>
+                    <th style="padding:5px; border:1px solid #ccc;">Matricule</th>
+                    <th style="padding:5px; border:1px solid #ccc;">Branch</th>
+                    <th style="padding:5px; border:1px solid #ccc;">Net A Payer</th>
+                    <th style="padding:5px; border:1px solid #ccc;">Periode</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (SalaireList != null)
+                {
+                    bool altRow = false;
+                    int num = 1;
+                    foreach (var item in SalaireList)
+                    {
+                        <tr style="background-color:@(altRow ? "#f0f4ff" : "white")">
+                            <td style="padding:4px; border:1px solid #ddd; text-align:center;">@num</td>
+                            <td style="padding:4px; border:1px solid #ddd;">@item.NomPrenom</td>
+                            <td style="padding:4px; border:1px solid #ddd;">@item.Matricule</td>
+                            <td style="padding:4px; border:1px solid #ddd;">@item.Branch</td>
+                            <td style="padding:4px; border:1px solid #ddd;">@item.NetAPayer</td>
+                            <td style="padding:4px; border:1px solid #ddd;">@item.Periode</td>
+                        </tr>
+                        altRow = !altRow;
+                        num++;
+                    }
+                }
+            </tbody>
+        </table>
+
+        @* ── Totals Row — separate table, same 21 columns as detail grid ── *@
+        <table class="liste-paie-grid liste-paie-totaux" style="width:100%; border-collapse:collapse; font-size:7px; table-layout:fixed; margin-bottom:16px;">
+            <colgroup>
+                <col style="width:3%;" />
+                <col style="width:9%;" />
+                <col style="width:5%;" />
+                <col style="width:5%;" />
+                <col style="width:5%;" />
+                <col style="width:5%;" />
+                
+            </colgroup>
+           
+        </table>
+
+        @* ── Signatures ── *@
+        <div style="margin-top:40px;">
+            <table style="width:100%; font-size:10px;">
+                <tr>
+                    <td style="width:34%; padding:8px;">
+                        <p style="margin:0 0 30px; font-weight:bold;">Siège  le @DateTime.Now.ToString("dd/MM/yyyy")</p>
+                        <p style="margin:4px 0 0; font-size:8px; ">Préparé par </p>
+                        <p style="margin:4px 0 0; font-size:8px; ">Gestionnaire des Ressources Humaines</p>
+                    </td>
+                    <td style="width:33%; padding:8px;">
+                        <p style="margin:0 0 30px; font-weight:bold;">Vérifié par</p>
+                        @* <div style="border-top:1px solid #333; margin-top:10px; width:80%;"></div> *@
+                        <p style="margin:4px 0 0; font-size:8px; ">Directeur Administratif et financier   </p>
+                    </td>
+                    <td style="width:33%; padding:8px;">
+                        <p style="margin:0 0 30px; font-weight:bold;">Autorisé par</p>
+                        @* <div style="border-top:1px solid #333; margin-top:10px; width:80%;"></div> *@
+                        <p style="margin:4px 0 0; font-size:8px;">Directeur Général</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        @* ── Footer ──
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #ccc;
+            padding-top:8px; font-size:8px; color:#888;">
+            Document généré le @DateTime.Now.ToString("dd/MM/yyyy")
+        </div> *@
+
+    </div>
+</div>
+
+
+@* ════════════════════════════════════════════════
+   PRINT SCRIPT
+   ════════════════════════════════════════════════ *@
+<script type="text/javascript">
+    function printComponent(selector) {
+        var el = document.querySelector(selector);
+        if (!el) { alert('Print area not found'); return; }
+
+        var printWindow = window.open('', '_blank', 'width=1200,height=700');
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>List Rec Caisse Solidarite</title>
+                <style>
+                    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+                    .liste-paie-print-root { box-sizing: border-box; width: 100%; max-width: none; }
+                    .liste-paie-grid { width: 100% !important; border-collapse: collapse; table-layout: fixed; }
+                    .liste-paie-grid th,
+                    .liste-paie-grid td { box-sizing: border-box; overflow: hidden; word-wrap: break-word; vertical-align: top; }
+                    /* Landscape gives enough width for 21 columns (A4 ~297mm printable). */
+                    @@page {
+                        size: A4 landscape;
+                        margin: 8mm;
+                    }
+                    @@media print {
+                        body { margin: 0; padding: 0; }
+                        .liste-paie-print-root { padding: 0 !important; max-width: none !important; }
+                        .liste-paie-grid { font-size: 7px !important; }
+                        .liste-paie-grid th,
+                        .liste-paie-grid td { padding: 3px 2px !important; }
+                        .liste-paie-grid:not(.liste-paie-totaux) thead th:nth-child(n+4),
+                        .liste-paie-grid:not(.liste-paie-totaux) tbody td:nth-child(n+4) { text-align: right; }
+                        .liste-paie-totaux td:not(:first-child) { text-align: right; }
+                        table { page-break-inside: auto; }
+                        tr { page-break-inside: avoid; page-break-after: auto; }
+                        thead { display: table-header-group; }
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                </style>
+            </head>
+            <body>
+                ${el.innerHTML}
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.close();
+                    };
+                <\/script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+</script>
+

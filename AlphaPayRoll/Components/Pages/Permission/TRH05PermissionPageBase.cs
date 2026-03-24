@@ -173,8 +173,9 @@ namespace AlphaPayRoll.Components.Pages.Permission
                 oOneAmount.NbrHDemand = 3;
                 oOneAmount.SBranchID = pSubBranchID;
                 oOneAmount.DecisionPrisePar = 0;
-                
-
+                //oOneAmount.H_sorti = "08:00";
+                //oOneAmount.H_retour = "17:00";
+                oOneAmount.CreatBy = int.Parse(osessionService.UserId);
 
 
             }
@@ -190,7 +191,7 @@ namespace AlphaPayRoll.Components.Pages.Permission
                 oOneAmount.SBranchID = osessionService.BranchID.ToString();
                 oOneAmount.DecisionPrisePar= int.Parse(osessionService.UserId);
             }
-           
+
             popup = true;
         }
 
@@ -468,6 +469,7 @@ namespace AlphaPayRoll.Components.Pages.Permission
 
                 oTCl550SubBranchList = oTCl550SubBranchList2;
                 //oContratList = await oContratService.GetContractByMatricule(id);
+                oTCl550UserList = await oTCl550UserService.GetList();
                 oTCl550BranchList = await oTCl550BranchService.GetT550Branch();
                 oTCl550UserList = await oTCl550UserService.GetList();
 

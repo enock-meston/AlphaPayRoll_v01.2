@@ -151,8 +151,9 @@
 
 
                         <th>Matricule </th>
-                        <th>SBranchID </th>
-                        <th>Date </th>
+                        @* <th>SBranchID </th> *@
+                        <th>H. sorti  </th>
+                        <th>H. retour </th>
                         <th>NbrHDemand </th>
                         <th>NbrHAccord </th>
                         <th>Motif Demand </th>
@@ -174,12 +175,11 @@
                         {
                             var item = oTRH05PermissionList[i];
                             <tr class="@getRowColor(i)">
-
-                                <td style="color: crimson; font-size: 18px">@item.ID</td>
-
+                                <td>@(i + 1)</td>
                                 <td>@item.Matricule</td>
-                                <td>@item.SBranchID</td>
-                                <td>@item.Date</td>
+                                @* <td>@item.SBranchID</td> *@
+                                <td>@item.H_sorti</td>
+                                <td>@item.H_retour</td>
                                 <td>@item.NbrHDemand</td>
                                 <td>@item.NbrHAccord</td>
                                 <td>@item.MotifDemand</td>
@@ -221,8 +221,6 @@
                             <div class="col-sm-5">
                                 <h5 style="color:black">@modalTitle</h5>
                             </div>
-
-
 
                             <div class="col-sm-2">
                                 @if (iTypeAction != 0)
@@ -368,6 +366,50 @@
                                     </div>
                                 </div>
 
+                               @* <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Heure de sortie</label>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <input type="time" class="form-control"
+                                               name="oOneAmount.H_sorti"
+                                               value="@oOneAmount.H_sorti" />
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <input type="time" class="form-control"
+                                               name="oOneAmount.H_retour"
+                                               value="@oOneAmount.H_retour" />
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Heure de retour</label>
+                                    </div>
+                                </div> *@
+
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="form-text text-right">Heure de sortie</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                    <input type="time" class="form-control"
+                                           value="@oOneAmount.H_sorti"
+                                           @oninput="@(e => oOneAmount.H_sorti = e.Value?.ToString() ?? "")" />
+                                    </div>
+
+                                        <div class="col-sm-3">
+                                    <input type="time" class="form-control"
+                                           value="@oOneAmount.H_retour"
+                                           @oninput="@(e => oOneAmount.H_retour = e.Value?.ToString() ?? "")" />
+                                        </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-text text-left">Heure de retour</label>
+                                    </div>
+                                </div>
+
+                                @* == *@
 
                                
 
@@ -405,6 +447,7 @@
                                         <label class="form-text text-left">DecisionPrisePar </label>
                                     </div> *@
                                 </div>
+                                
 
 
                                 <div class="row col-sm-12">

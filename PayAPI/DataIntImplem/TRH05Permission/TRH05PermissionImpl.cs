@@ -101,7 +101,6 @@ namespace AlphaBkBlzr.API.DataIntImplem.HumanResource
             DynamicParameters oParameters = new DynamicParameters();
 
             oParameters.Add("@ID", item.ID);
-
             oParameters.Add("@Matricule", item.Matricule);
             //oParameters.Add("@TpCongeID", item.TpCongeID);
             oParameters.Add("@SBranchID", item.SBranchID);
@@ -112,6 +111,8 @@ namespace AlphaBkBlzr.API.DataIntImplem.HumanResource
             oParameters.Add("@MotifDemand", item.MotifDemand);
             oParameters.Add("@Decision", item.Decision);
             oParameters.Add("@DecisionPrisePar", item.DecisionPrisePar);
+            oParameters.Add("@H_sorti", item.H_sorti);
+            oParameters.Add("@H_retour", item.H_retour);
             oParameters.Add("@UserID", item.UserID);
             oParameters.Add("@TpMaj", item.TpMaj);
             return oParameters;

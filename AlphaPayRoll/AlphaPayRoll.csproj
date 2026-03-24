@@ -80,6 +80,8 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Compile Remove="Components\Pages\DataSets\dsetListPay.cs" />
+	<Compile Remove="Components\Pages\DataSets\dsetListPay.Designer.cs" />
 	<Compile Remove="Components\Pages\TSL550TPHSupBasePage.cs" />
 	<Compile Remove="Controllers\ListedePaieController.cs" />
   </ItemGroup>
@@ -87,6 +89,12 @@
   <ItemGroup>
 	<Content Remove="Components\Pages\TRH02Agent\TRH02AgentPage.razor" />
 	<Content Remove="Components\Pages\TSL550TPHSupPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Components\Pages\DataSets\dsetListPay.xsc" />
+    <None Remove="Components\Pages\DataSets\dsetListPay.xsd" />
+    <None Remove="Components\Pages\DataSets\dsetListPay.xss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -103,6 +111,10 @@
   <ItemGroup>
 	<ProjectReference Include="..\PayAPI\PayAPI.csproj" />
 	<ProjectReference Include="..\PayLibrary\PayLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Pages\DataSets\" />
   </ItemGroup>
 
 </Project>

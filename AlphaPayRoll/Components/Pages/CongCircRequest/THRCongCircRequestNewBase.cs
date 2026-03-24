@@ -340,7 +340,7 @@ public class THRCongCircRequestNewBase : ComponentBase
                 }
 
                 // Refresh the list
-                oCongeRequestsList = await oCongeRequestsService.GetAllCongeCircRequests();
+                //oCongeRequestsList = await oCongeRequestsService.GetAllCongeCircRequests();
 
                 // Close popup if successful (check for success message)
                 if (oResult != null && oResult.Result.Contains("success", StringComparison.OrdinalIgnoreCase))
@@ -416,7 +416,7 @@ public class THRCongCircRequestNewBase : ComponentBase
                     if (osessionService.RoleID == 3)
                     {
                         bDisableHR = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.ValidReq == true && a.StatusChefID != "Attente" && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.Matricule == sMatricule && a.ValidReq == true  && (a.StatusHRID == "Attente" || a.StatusHRID != "Attente"))).ToList();
                     }
 
                     if (osessionService.RoleID == 4)
@@ -571,7 +571,14 @@ public class THRCongCircRequestNewBase : ComponentBase
         public bool bDisableHR { get; set; } = true;
         public bool bDisableDG { get; set; } = true;
         public bool bEmployee { get; set; } = false;
-
+        public string ReportLink =>
+            osessionService.RoleID switch
+            {
+                2 => "http://192.168.1.221/ReportServer?%2fHRReporting%2frptCongeCircoEnAttenteChefDirect&rs:Command=Render",
+                3 => "http://192.168.1.221/ReportServer?%2fHRReporting%2frptCongeCircoEnAttenteHR&rs:Command=Render",
+                4 => "http://192.168.1.221/ReportServer?%2fHRReporting%2frptCongeCircoEnAttenteDG&rs:Command=Render",
+                _ => string.Empty
+            };
         protected override async Task OnInitializedAsync()
         {
             osessionService = await osessionStorage.GetItemAsync<ClasSessionStorage>("LogedUser");

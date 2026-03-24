@@ -25,6 +25,7 @@ using AlphaPayRoll.DataServices.Personnel_RIM2;
 using AlphaPayRoll.DataServices.PostModif;
 using AlphaPayRoll.DataServices.Promotion;
 using AlphaPayRoll.DataServices.Qualification;
+using AlphaPayRoll.DataServices.ReportData;
 using AlphaPayRoll.DataServices.RubSalCompte;
 using AlphaPayRoll.DataServices.Salaire;
 using AlphaPayRoll.DataServices.SalProcess;
@@ -91,6 +92,7 @@ using PayLibrary.PlanningConge;
 using PayLibrary.PostModif;
 using PayLibrary.Promotion;
 using PayLibrary.Qualification;
+using PayLibrary.ReportData;
 using PayLibrary.RubSalCompte;
 using PayLibrary.Saction;
 using PayLibrary.Salaire;
@@ -245,6 +247,17 @@ builder.Services.AddHttpClient<ICongConsultStatus, CongConsultStatusService>(t =
 
 builder.Services.AddHttpClient<ITSc551BranchDir, TSc551BranchDirService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<ITSc551SubBranchDir, TSc551SubBranchDirService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListPayByBranch, ListPayByBranchService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListEjoheza, ListEjohezaService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListSanLam, ListSanLamService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListBourse, ListBourseService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListRetCaisSolid, ListRetCaisSolidService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListPrimeLife, ListPrimeLifeService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListePrimeAgentCom, ListePrimeAgentComService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListCaisseEpargne, ListCaisseEpargneService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IListPayRIPPS, ListPayRIPPSService>(t => { t.BaseAddress = new Uri(sUrl); });
+//
+
 
 builder.Services.AddSingleton<UserAccountService>();
 

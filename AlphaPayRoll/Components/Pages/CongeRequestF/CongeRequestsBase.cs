@@ -576,10 +576,26 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     iNumTranche = oTRH02AgentList[0].NextTranche;
 
                     //await JSRuntime.InvokeVoidAsync("alert","Congé: "+ oCongeRequestsList.Count);
+
+                    //show conge to chef na HR
+                    oPlanningCongeList = await oPlanningCongeService.GetPlanningCongeByMatricule(sMatricule);
+
+                    if (oPlanningCongeList != null && oPlanningCongeList.Count > 0)
+                    {
+
+                        iminsiAfiteGusaba = oPlanningCongeList.Sum(p => p.ApprovNbreJour);
+                        //iminsiYasabye = AllPlanning.NbrJourPris;
+                        iminsiYasabye = oPlanningCongeList.Sum(p => p.NbrJourPris);
+                        iminsiYasigaranye = iminsiAfiteGusaba - iminsiYasabye;
+
+                    }
+                    //end conge
+
+
                     if (osessionService.RoleID == 2)
                     {
                         bDisableChefDirect = false;
-                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true && a.Matricule == sMatricule && a.StatusChefID == "Attente")).ToList();
+                        oCongeRequestsList = oCongeRequestsList.Where(a => (a.ValidReq == true && a.Matricule == sMatricule && a.StatusHRID != "Yes")).ToList();
                         bAddDisabled = true;
                     }
 
@@ -740,8 +756,6 @@ namespace AlphaPayRoll.Components.Pages.CongeRequestF
                     oCongeList = (await oDonBaseService.GetDBListName("TRH051TypeConge")).ToList();
 
                     oOneTRH02Agent = new ClassTRH02Agent();
-
-
 
                     //}
                     if (osessionService.RoleID == 1)

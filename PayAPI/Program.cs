@@ -36,6 +36,7 @@ using PayAPI.DataIntImplem.PostModif;
 using PayAPI.DataIntImplem.Promotion;
 using PayAPI.DataIntImplem.Qualification;
 using PayAPI.DataIntImplem.Report;
+using PayAPI.DataIntImplem.ReportData;
 using PayAPI.DataIntImplem.RubSalCompte;
 using PayAPI.DataIntImplem.Salaire;
 using PayAPI.DataIntImplem.SalProcess;
@@ -86,6 +87,7 @@ using PayLibrary.PlanningConge;
 using PayLibrary.PostModif;
 using PayLibrary.Promotion;
 using PayLibrary.Qualification;
+using PayLibrary.ReportData;
 using PayLibrary.RubSalCompte;
 using PayLibrary.Saction;
 using PayLibrary.Salaire;
@@ -226,6 +228,18 @@ builder.Services.AddScoped<ICongConsultStatus, CongConsultStatusImpl>();
 
 builder.Services.AddScoped<ITSc551SubBranchDir, TSc551SubBranchDirImpl>();
 builder.Services.AddScoped<ITSc551BranchDir, TSc551BranchDirImpl>();
+
+//report
+//ListPayByBranchImpl// IListPayByBranch
+builder.Services.AddScoped<IListPayByBranch, ListPayByBranchImpl>();
+builder.Services.AddScoped<IListEjoheza, ListEjohezaImpl>();
+builder.Services.AddScoped<IListSanLam, ListSanLamImpl>();
+builder.Services.AddScoped<IListBourse, ListBourseImpl>();
+builder.Services.AddScoped<IListRetCaisSolid, ListRetCaisSolidImpl>();
+builder.Services.AddScoped<IListPrimeLife, ListPrimeLifeImpl>();
+builder.Services.AddScoped<IListePrimeAgentCom, ListePrimeAgentComImpl>();
+builder.Services.AddScoped<IListCaisseEpargne, ListCaisseEpargneImpl>();
+builder.Services.AddScoped<IListPayRIPPS, ListPayRIPPSImpl>();
 
 
 builder.Services.AddControllers();

@@ -284,6 +284,7 @@
                         osessionService.UserId = oUserLogin.UserId.ToString();
                         osessionService.UserName = oUserLogin.UserName;
 
+
                         osessionService.Branch = oUserLogin.Branch;
                         osessionService.RoleID = oUserLogin.RoleID;
                         osessionService.UserProfile = oUserLogin.Profile;
@@ -304,9 +305,7 @@
 
                         bVerrouillerVerifOTP = false;
 
-
                         await osessionStorage.SetItemAsync("LogedUser", osessionService);
-
 
                         NavManager.NavigateTo(osessionService.sApp + $"/Login/ChangePswPage");
 

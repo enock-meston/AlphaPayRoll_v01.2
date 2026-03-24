@@ -14,8 +14,18 @@ namespace PayAPI.DataIntImplem.CongConsult
         List<CongConsultStatus> oListCongeRequest = new List<CongConsultStatus>();
         ClassTRH02Agent oAgent = new ClassTRH02Agent();
         Resultat oResultat = new Resultat();
-        public async Task<List<CongConsultStatus>> GetAllCongeConsultStatus(string id)
+        public async Task<List<CongConsultStatus>> GetAllCongeConsultStatus(ParamConsultConge param)
         {
+            string sProcedureStock = "";
+
+            if (param.TypeConge=="CongeAnnuel")
+            {
+                sProcedureStock = "Ps_CongConsultStatus";
+            }
+            else
+            {
+                sProcedureStock = "Ps_CongCirconsConsultStatus";
+            }
             oListCongeRequest = new List<CongConsultStatus>();
 
             using (IDbConnection oCon = new SqlConnection(ClassConString.sConnectionString))
@@ -23,7 +33,7 @@ namespace PayAPI.DataIntImplem.CongConsult
                 if (oCon.State == ConnectionState.Closed) oCon.Open();
        
                 var List = await oCon.QueryAsync<CongConsultStatus>(
-                    "Ps_CongConsultStatus", this.RenseignerPrm( id), commandType: CommandType.StoredProcedure);
+                    sProcedureStock, this.RenseignerPrm(param), commandType: CommandType.StoredProcedure);
                    
 
                 if (List != null && List.Any())
@@ -35,10 +45,10 @@ namespace PayAPI.DataIntImplem.CongConsult
         }
 
 
-        private DynamicParameters RenseignerPrm(string id)
+        private DynamicParameters RenseignerPrm(ParamConsultConge param)
         {
             DynamicParameters oParameters = new DynamicParameters();
-            oParameters.Add("@Matricule",id);
+            oParameters.Add("@Matricule",param.Matricule);
 
             return oParameters;
         }

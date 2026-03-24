@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PayLibrary.CongCircRequest
 {
@@ -11,6 +12,10 @@ namespace PayLibrary.CongCircRequest
         public int TpCongeID { set; get; } = 0;
         public DateTime? DateRequest { set; get; } = DateTime.Now;
         public int NbrJour { set; get; } = 0;
+        public DateTime? DateDebutReq { set; get; } = DateTime.Now;
+        public DateTime? DateFinReq { set; get; } = DateTime.Now;
+        public DateTime? DateDebutApprov { set; get; } = DateTime.Now;
+        public DateTime? DateFinApprov { set; get; } = DateTime.Now;
         public  string Observation { set; get; } = "";
         public string StatusHRID { set; get; } = "";
         public string StatusChefID { set; get; } = "";

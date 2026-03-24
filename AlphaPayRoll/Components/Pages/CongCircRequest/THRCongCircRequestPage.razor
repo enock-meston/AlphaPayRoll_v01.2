@@ -26,8 +26,22 @@
 @if (!isLoading && !AgentSelected)
 
 {
-   
+        <div class="row col-sm-12">
+            @if (osessionService.RoleID != 1)
+            {
+                <div class="col-sm-4 mb-2">
+                    <a href="@ReportLink"
+                       target="_blank"
+                       class="btn btn-sm btn-primary "
+                       style="opacity:0.8;">
+                        View Report
+                    </a>
+                </div>
+            }
+        </div>
 
+
+        <br />
 
     <div class="alert " role="alert" style="background-color:#d5d5d8;border-block-color: gray">
             @if (osessionService.RoleID != 1)
@@ -403,6 +417,33 @@
                             </div>
 
                             <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date Début</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <InputDate class="form-control"
+                                               @bind-Value="OneCongeRequest.DateDebutReq" />
+                                </div>
+
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date Fin</label>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <InputDate class="form-control"
+                                               @bind-Value="OneCongeRequest.DateFinReq" />
+                                </div>
+
+
+                            </div>
+
+                            
+
+                            <div class="row col-sm-12">
 
                                 <div class="col-sm-4">
                                     <label class="form-text text-right">Observation </label>
@@ -430,6 +471,33 @@
                                         <option value="No">No</option>
                                     </InputSelect>
                                 </div>
+                            </div>
+
+                            <div class="row col-sm-12">
+
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date Début Approv</label>
+                                </div>
+
+                                <div class="col-sm-6">
+
+                                    <InputDate class="form-control" @bind-Value="OneCongeRequest.DateDebutApprov" disabled="@bDisableChefDirect" />
+                                    <ValidationMessage For="@(() => OneCongeRequest.NbrJour)" />
+                                </div>
+
+                            </div>
+
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label class="form-text text-right">Date Fin Approv</label>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <InputDate class="form-control" @bind-Value="OneCongeRequest.DateFinApprov" disabled="@bDisableChefDirect" />
+                                    <ValidationMessage For="@(() => OneCongeRequest.DateRequest)" />
+                                </div>
+
+
                             </div>
 
                             <hr />

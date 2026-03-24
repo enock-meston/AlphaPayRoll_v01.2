@@ -18,6 +18,13 @@
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="PlanningCongeFct" Style="height 5%;" Class="Menux" id="menu-planning">Planifier un congé</MudNavLink>
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="DemandeCongeFct" Style="height 5%;" Class="Menux" id="menu-demande">Demande de congé</MudNavLink>
 
+    @if (osessionService != null && osessionService.RoleID == 1)
+    {
+        <MudNavLink Match="NavLinkMatch.Prefix" @onclick="StatusDemandeCongeMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé Consult Statut  </MudNavLink>
+        @* <MudNavLink Match="NavLinkMatch.Prefix" @onclick="StatusCircoCongeMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé Cir. Consult Statut  </MudNavLink> *@
+
+    }
+
     @if (osessionService != null && osessionService.RoleID != 1)
     {
         <MudDivider class="my-2"></MudDivider>
@@ -30,6 +37,7 @@
         @if (osessionService.RoleID == 3)
         {
             <MudNavLink Match="NavLinkMatch.Prefix" @onclick="CongeHRMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé HR</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" @onclick="CongeReportMenu" Style="height 5%;" Class="Menux" > Reports</MudNavLink>
 
         }
 
@@ -44,14 +52,15 @@
 
         <MudDivider class="my-2"></MudDivider>
     }
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="CongeCirc" Style="height 5%;" Class="Menux" id="menu-circ">Congé Circ.</MudNavLink>
 
     @if (osessionService != null && osessionService.RoleID == 1)
     {
-        <MudNavLink Match="NavLinkMatch.Prefix" @onclick="StatusDemandeCongeMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé Consult Statut  </MudNavLink>
+        @* <MudNavLink Match="NavLinkMatch.Prefix" @onclick="StatusDemandeCongeMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé Consult Statut  </MudNavLink> *@
+        <MudNavLink Match="NavLinkMatch.Prefix" @onclick="StatusCircoCongeMenu" Style="height 5%;" Class="Menux" id="menu-permission">Congé Cir. Consult Statut  </MudNavLink>
 
     }
 
-    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="CongeCirc" Style="height 5%;" Class="Menux" id="menu-circ">Congé Circ.</MudNavLink>
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="Permission" Style="height 5%;" Class="Menux" id="menu-permission">Demande de Permission</MudNavLink>
 
     @* <MudNavLink Match="NavLinkMatch.Prefix" @onclick="DonBase" Style="height :5%;" Class="Menux">All Transaction </MudNavLink> *@
@@ -186,6 +195,13 @@
         NavManager.NavigateTo(osessionService.sApp + $"/CongConsult/CongConsultStatusPage");
     }
 
+    public void StatusCircoCongeMenu()
+    {
+
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/CongConsult/CongCircoConsultStatusPage");
+    }
+
     public void CongeChefDirMenu()
     {
 
@@ -198,6 +214,13 @@
 
         NavManager.NavigateTo(osessionService.sApp + "/home");
         NavManager.NavigateTo(osessionService.sApp + $"/CongeResponceHR/CongeResponceHRPage");
+    }
+
+    public void CongeReportMenu()
+    {
+
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/Reports/ReportServicePage/1");
     }
 
     public void CongeDGMenu()

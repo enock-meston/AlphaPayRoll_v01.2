@@ -7,6 +7,6 @@ namespace PayLibrary.CongConsult
 {
     public interface ICongConsultStatus
     {
-        Task<List<CongConsultStatus>> GetAllCongeConsultStatus(string id);
+        Task<List<CongConsultStatus>> GetAllCongeConsultStatus(ParamConsultConge oItem);
     }
 }

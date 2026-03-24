@@ -1,4 +1,4 @@
-﻿@using AlphaPayRoll.Data
+@using AlphaPayRoll.Data
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
 @* @inject SessionService osessionService *@
@@ -14,6 +14,12 @@
         font-weight: bold;
         border-left: 4px solid white;
         color: white !important;
+    }
+
+    /* MudNavGroup uses Title= (not Text=). Ensure header matches menu foreground on cadetblue. */
+    .mud-nav-menu .mud-nav-group > .mud-nav-link,
+    .mud-nav-menu .mud-nav-group > .mud-nav-link .mud-nav-link-text {
+        color: inherit !important;
     }
 </style>
 
@@ -34,6 +40,28 @@
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="VirementRemboursFct" Style="height 3%;" Class="Menux" id="menu-rembours">Virement remboursement</MudNavLink>
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="ArchiverSalairesFct" Style="height 3%;" Class="Menux" id="menu-archiver">Archiver salaires</MudNavLink>
 
+    <hr />
+
+    @* <MudNavLink @onclick="ReportTest" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Test PDF</MudNavLink> *@
+    <MudNavGroup Title="Reports" Expanded="false">
+
+        <MudNavLink OnClick="ListPayByBranch" Class="Menux">List Pay By Branch</MudNavLink>
+        <MudNavLink OnClick="ListPayGen" Class="Menux">List Pay Gen </MudNavLink>
+        <MudNavLink OnClick="ListPayConsolid" Class="Menux">List Pay Consolid</MudNavLink>
+        @* ListEjoheza *@
+        <MudNavLink OnClick="ListEjoHeza" Class="Menux">List Ejo heza</MudNavLink>
+        <MudNavLink OnClick="ListSanLam" Class="Menux">List SanLam </MudNavLink>
+        <MudNavLink OnClick="ListBourse" Class="Menux">List Bourse </MudNavLink>
+        <MudNavLink OnClick="ListRetCaisSolid" Class="Menux"> Ret. Caisse Solidarite </MudNavLink>
+        <MudNavLink OnClick="ListPrimeLife" Class="Menux"> List Prime Life </MudNavLink>
+        <MudNavLink OnClick="ListePrimeAgentCom" Class="Menux"> Prime Agent Com. </MudNavLink>
+        <MudNavLink OnClick="ListCaisseEpargne" Class="Menux"> Caisse Epargne </MudNavLink>
+        <MudNavLink OnClick="ListPayRIPPS" Class="Menux"> Pay RIPPS </MudNavLink>
+        
+      
+
+    </MudNavGroup>
+    
     <MudNavLink @onclick="ReportEmbarqFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Print Prime</MudNavLink>
     <MudNavLink @onclick="ReportListPayFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-payroll">Print Payroll</MudNavLink>
     @* <MudNavLink @onclick="ReportListPlanning" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux">Print Congé Plannifier</MudNavLink> *@
@@ -232,6 +260,77 @@
         NavManager.NavigateTo(osessionService.sApp + $"/home");
         NavManager.NavigateTo(osessionService.sApp + $"/AgentComReport/AgentComReportPage");
     }
+    //
+
+    // === REPORT MENU
+    public void ListPayByBranch()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentSalaireReport/ReportTestPage");
+    }
+
+    public void ListPayGen()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/GetListPayGenPage");
+    }
+
+    public void ListPayConsolid()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListPayConsolidPage");
+    }
+
+    public void ListEjoHeza()
+    {
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListEjohezaPage");
+    }
+
+    public void ListSanLam()
+    {
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListSanLamPage");
+    }
+
+    public void ListBourse()
+    {
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListBoursePage");
+    }
+    public void ListRetCaisSolid()
+    {
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListRetCaisSolidPage");
+    }
+
+    public void ListPrimeLife()
+    {
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListPrimeLifePage");
+    }
+    public void ListePrimeAgentCom()
+    {
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListePrimeAgentComPage");
+    }
+    public void ListCaisseEpargne()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListCaisseEpargnePage");
+    }
+    public void ListPayRIPPS()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListPayRIPPSPage");
+    }
+    //
+    // ====
 
     public void ReportListPayFct()
     {

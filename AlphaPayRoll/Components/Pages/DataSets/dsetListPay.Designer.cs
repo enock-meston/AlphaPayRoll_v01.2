@@ -309,7 +309,7 @@ namespace AlphaPayRoll.Pages.DataSets {
             
             private global::System.Data.DataColumn columnAutresAvantage;
             
-            private global::System.Data.DataColumn columnSALAIRE_IMPOSABLE;
+            private global::System.Data.DataColumn columnSALAIRE_ABLE;
             
             private global::System.Data.DataColumn columnCotisation_Patronale;
             
