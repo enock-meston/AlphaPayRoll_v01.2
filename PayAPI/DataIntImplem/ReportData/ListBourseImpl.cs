@@ -27,6 +27,7 @@ namespace PayAPI.DataIntImplem.ReportData
                 {
                     if (oCon.State == ConnectionState.Closed) oCon.Open();
 
+
                     var list = await oCon.QueryAsync<ListBourse>(
                         "Ps_ListBourse",
                         commandType: CommandType.StoredProcedure);

@@ -2,7 +2,7 @@ using AlphaBkBlzr.API.DataIntImplem.HumanResource;
 using PayAPI.DataImplementation.DonBase;
 using PayAPI.DataImplementation.TCl550Deplom;
 using PayAPI.DataImplementation.TCl550MaritStatus;
-using PayAPI.DataImplementation.TRH02Agent;
+using PayAPI.DataImplementation.TRH02AgentNew;
 using PayAPI.DataImplementation.TSL02AgentRet;
 using PayAPI.DataImplementation.TSL03Traitem;
 using PayAPI.DataImplementation.TSL03TraitemAv;
@@ -106,7 +106,7 @@ using PayLibrary.TCl550User;
 using PayLibrary.TCt550TpTransTout;
 using PayLibrary.Training;
 using PayLibrary.TrainingField;
-using PayLibrary.TRH02Agent;
+using PayLibrary.TRH02AgentNew;
 using PayLibrary.TRH550TypeSalaire;
 using PayLibrary.TSL02AgDimAugmSal;
 using PayLibrary.TSL02AgentRet;
@@ -137,6 +137,7 @@ string connectionString = builder.Configuration.GetConnectionString("ApiConnecti
 ClassConString.sConnectionString = connectionString;
 
 builder.Services.AddScoped<ITRH02Agent, TRH02AgentImpl>();
+
 builder.Services.AddScoped<ITSL02AgentRet, TSL02AgentRetImpl>();
 builder.Services.AddScoped<ITSL03Traitem, TSL03TraitemImpl>();
 builder.Services.AddScoped<ITSL03TraitemAv, TSL03TraitemAvImpl>();
@@ -240,20 +241,36 @@ builder.Services.AddScoped<IListPrimeLife, ListPrimeLifeImpl>();
 builder.Services.AddScoped<IListePrimeAgentCom, ListePrimeAgentComImpl>();
 builder.Services.AddScoped<IListCaisseEpargne, ListCaisseEpargneImpl>();
 builder.Services.AddScoped<IListPayRIPPS, ListPayRIPPSImpl>();
+builder.Services.AddScoped<IBulletinReport, BulletinReportImpl>();
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+//swagger 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Same short name in different namespaces (e.g. TRH02Agent vs TRH02AgentNew) must not share one schema id
+    options.CustomSchemaIds(type => (type.FullName ?? type.Name).Replace('+', '.'));
+});
+
+///
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-   app.MapOpenApi();
-   app.MapScalarApiReference();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+        options.RoutePrefix = "swagger";
+    });
 
+    //app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();

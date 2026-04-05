@@ -31,6 +31,12 @@
 
 <MudNavMenu Style="background-color: cadetblue; color: white;">
 
+    <MudNavLink Match="NavLinkMatch.Prefix" @onclick="NewPrepSalaireFct" Style="height 3%;" Class="Menux" id="menu-prep">New Preperation salaires</MudNavLink>
+    
+    @* // divider *@
+    <hr />
+    
+    
     <MudNavLink Match="NavLinkMatch.Prefix" @onclick="PrepSalaireFct" Style="height 3%;" Class="Menux" id="menu-prep">Preperation salaires</MudNavLink>
     @* <MudNavLink Match="NavLinkMatch.Prefix" @onclick="SalaireNvRecrutFct" Style="height 3%;" Class="Menux" id="menu-salaires">Salaire nouveau recru</MudNavLink> *@
    
@@ -43,27 +49,32 @@
     <hr />
 
     @* <MudNavLink @onclick="ReportTest" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Test PDF</MudNavLink> *@
-    <MudNavGroup Title="Reports" Expanded="false">
+    <MudNavGroup Title="Print Prime" Expanded="false">
 
-        <MudNavLink OnClick="ListPayByBranch" Class="Menux">List Pay By Branch</MudNavLink>
-        <MudNavLink OnClick="ListPayGen" Class="Menux">List Pay Gen </MudNavLink>
+        <MudNavLink OnClick="ListPayByBranch" Class="Menux">Liste Paie/Agence</MudNavLink>
+        <MudNavLink OnClick="ListPayGen" Class="Menux">Liste Gen. Prime </MudNavLink>
+       
+        
+    </MudNavGroup>
+
+    <MudNavGroup Title="Print Payroll" Expanded="false">
+        <MudNavLink OnClick="ListBulletin" Class="Menux"> Bulletins de Paie </MudNavLink>
         <MudNavLink OnClick="ListPayConsolid" Class="Menux">List Pay Consolid</MudNavLink>
-        @* ListEjoheza *@
+        <MudNavLink OnClick="ListePrimeAgentCom" Class="Menux"> Prime Agent Com. </MudNavLink>
         <MudNavLink OnClick="ListEjoHeza" Class="Menux">List Ejo heza</MudNavLink>
         <MudNavLink OnClick="ListSanLam" Class="Menux">List SanLam </MudNavLink>
-        <MudNavLink OnClick="ListBourse" Class="Menux">List Bourse </MudNavLink>
         <MudNavLink OnClick="ListRetCaisSolid" Class="Menux"> Ret. Caisse Solidarite </MudNavLink>
         <MudNavLink OnClick="ListPrimeLife" Class="Menux"> List Prime Life </MudNavLink>
-        <MudNavLink OnClick="ListePrimeAgentCom" Class="Menux"> Prime Agent Com. </MudNavLink>
         <MudNavLink OnClick="ListCaisseEpargne" Class="Menux"> Caisse Epargne </MudNavLink>
         <MudNavLink OnClick="ListPayRIPPS" Class="Menux"> Pay RIPPS </MudNavLink>
-        
-      
-
+        <MudNavLink OnClick="ListBourse" Class="Menux">List Bourse </MudNavLink>
     </MudNavGroup>
+
     
-    <MudNavLink @onclick="ReportEmbarqFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Print Prime</MudNavLink>
-    <MudNavLink @onclick="ReportListPayFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-payroll">Print Payroll</MudNavLink>
+    @* <MudNavLink @onclick="ReportEmbarqFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-prime">Print Prime</MudNavLink>
+    <MudNavLink @onclick="ReportListPayFct" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux" id="menu-payroll">Print Payroll</MudNavLink> *@
+
+
     @* <MudNavLink @onclick="ReportListPlanning" Match="NavLinkMatch.Prefix" Style="height 3%;" Class="Menux">Print Congé Plannifier</MudNavLink> *@
 
     <MudNavLink Match="NavLinkMatch.All" @onclick="ChangePassWord" Style="height 3%;" Class="Menux" id="menu-password">Change Password</MudNavLink>
@@ -78,7 +89,7 @@
             item.classList.remove('active');
         });
 
-        // Add active class to clicked menu item
+        // Add active class to clicked menu iteml
         const activeMenu = document.getElementById(menuId);
         if (activeMenu) {
             activeMenu.classList.add('active');
@@ -120,6 +131,12 @@
        
         NavManager.NavigateTo(osessionService.sApp + "/home");
         NavManager.NavigateTo(osessionService.sApp + $"/Salaire/PreparationSalPage/1");
+    }
+    public void NewPrepSalaireFct()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + "/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/TRH02AgentNew/AgentMajSalPage/1");
     }
     public void SalaireNvRecrutFct()
     {
@@ -328,6 +345,13 @@
        
         NavManager.NavigateTo(osessionService.sApp + $"/home");
         NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/ListPayRIPPSPage");
+    }
+
+    public void ListBulletin()
+    {
+       
+        NavManager.NavigateTo(osessionService.sApp + $"/home");
+        NavManager.NavigateTo(osessionService.sApp + $"/AgentPDFReport/BulletinReportPage");
     }
     //
     // ====

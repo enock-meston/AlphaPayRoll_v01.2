@@ -40,7 +40,7 @@ using AlphaPayRoll.DataServices.TCl550NivEtudId;
 using AlphaPayRoll.DataServices.TCl550Sexe;
 using AlphaPayRoll.DataServices.TCl550Status;
 using AlphaPayRoll.DataServices.TCl550Universite;
-using AlphaPayRoll.DataServices.TRH02Agent;
+using AlphaPayRoll.DataServices.TRH02AgentNew;
 using AlphaPayRoll.DataServices.TRH055FAUTE;
 using AlphaPayRoll.DataServices.TSL02AgDimAugmSal;
 using AlphaPayRoll.DataServices.TSL02AgentRet;
@@ -111,7 +111,7 @@ using PayLibrary.TCl550User;
 using PayLibrary.TCt550TpTransTout;
 using PayLibrary.Training;
 using PayLibrary.TrainingField;
-using PayLibrary.TRH02Agent;
+using PayLibrary.TRH02AgentNew;
 using PayLibrary.TRH550TypeSalaire;
 using PayLibrary.TSL02AgDimAugmSal;
 using PayLibrary.TSL02AgentRet;
@@ -256,8 +256,8 @@ builder.Services.AddHttpClient<IListPrimeLife, ListPrimeLifeService>(t => { t.Ba
 builder.Services.AddHttpClient<IListePrimeAgentCom, ListePrimeAgentComService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<IListCaisseEpargne, ListCaisseEpargneService>(t => { t.BaseAddress = new Uri(sUrl); });
 builder.Services.AddHttpClient<IListPayRIPPS, ListPayRIPPSService>(t => { t.BaseAddress = new Uri(sUrl); });
+builder.Services.AddHttpClient<IBulletinReport, BulletinReportService>(t => { t.BaseAddress = new Uri(sUrl); });
 //
-
 
 builder.Services.AddSingleton<UserAccountService>();
 

@@ -190,8 +190,6 @@ namespace PayAPI.DataImplementation.TSL09ImputPay
                 {
                     oConstSalList = vCustomList.ToList();
                 }
-
-
             }
 
             return oConstSalList;

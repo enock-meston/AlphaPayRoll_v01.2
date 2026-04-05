@@ -1,0 +1,468 @@
+﻿@page "/AgentPDFReport/BulletinReportPage"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inherits BulletinReportBase
+
+@* ── Page Title ── *@
+<h3 style="color:#004080; margin-bottom:20px; text-align:center;">Bulletin De Paie du @SalaireList.date1.ToString("yyyy-MM-dd") </h3>
+
+
+
+<div class="row mb-3">
+
+    <!-- Exercice (Year) -->
+    <div class="col-sm-2 m-2">
+        <label>Exercice</label>
+        <select class="form-control" @bind="Exercice">
+            <option value="">-- Select Year --</option>
+            @foreach (var year in Years)
+            {
+                <option value="@year">@year</option>
+            }
+        </select>
+    </div>
+
+    <!-- Mois (Month) -->
+    <div class="col-sm-2 m-2">
+        <label>Mois</label>
+        <select class="form-control" @bind="Mois">
+            <option value="">-- Select Month --</option>
+            @foreach (var month in Months)
+            {
+                <option value="@month.Value">@month.Text</option>
+            }
+        </select>
+    </div>
+
+    <!-- Matricule -->
+    <div class="col-sm-2 m-2">
+        <label>Matricule</label>
+        <input type="text" class="form-control" @bind="Matricule" placeholder="Enter Matricule" />
+    </div>
+
+    <!-- Print Button -->
+    <div class="col-sm-2 m-2 d-flex align-items-end">
+        <button type="button" class="btn btn-primary w-100"
+                @onclick="async () => await SearchButton()">
+            <i class="bi bi-printer me-1"></i> search
+        </button>
+    </div>
+    <!-- Print Button -->
+    <div class="col-sm-2 m-2 d-flex align-items-end">
+        <button type="button" class="btn btn-primary w-100"
+                @onclick="async () => await PrintComponent()">
+            <i class="bi bi-printer me-1"></i> Imprimer
+        </button>
+    </div>
+
+</div>
+
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>No</th>
+                <th>Matricule</th>
+                <th>Nom Agent</th>
+                <th>Poste</th>
+                <th>Salaire Base</th>
+                <th>Indemnités</th>
+                <th>Retenues</th>
+                <th>Net à Payer</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (SalaireList != null)
+            {
+                <tr>
+                    <td>1</td>
+                    <td>@SalaireList.Matricule</td>
+                    <td>@SalaireList.Names</td>
+                    <td>@SalaireList.Fonction</td>
+                    <td class="text-end">@SalaireList.SalBase.ToString("#,##0")</td>
+                    <td class="text-end">@SalaireList.TotalIndem.ToString("#,##0")</td>
+                    <td class="text-end text-danger">@SalaireList.TotalRetenue.ToString("#,##0")</td>
+                    <td class="text-end fw-bold text-primary">@SalaireList.NetAPayer.ToString("#,##0")</td>
+                    <td class="text-end fw-bold text-primary">
+                        <button type="button" class="btn btn-primary w-100"
+                                @onclick="async () => await PrintComponent()">
+                            <i class="bi bi-printer me-1"></i> Imprimer
+                        </button>
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+
+        <tfoot class="table-secondary fw-bold">
+            @if (SalaireList != null)
+            {
+                <tr>
+                    <td colspan="4" class="text-end">TOTAL :</td>
+                    <td class="text-end">@SalaireList.SalBase.ToString("#,##0")</td>
+                    <td class="text-end">@SalaireList.TotalIndem.ToString("#,##0")</td>
+                    <td class="text-end">@SalaireList.TotalRetenue.ToString("#,##0")</td>
+                    <td class="text-end">@SalaireList.NetAPayer.ToString("#,##0")</td>
+                    <td colspan="1" class="text-end"> </td>
+                    
+                </tr>
+            }
+        </tfoot>
+    </table>
+</div>
+
+@* ════════════════════════════════════════════════
+   PRINT AREA — hidden on screen, visible on print
+   ════════════════════════════════════════════════ *@
+<div id="printArea" style="display:none">
+    <div class="bulletin-print-root" style="font-family:Arial,sans-serif; padding:20px; max-width:700px; margin:auto; box-sizing:border-box;">
+
+        @* ── Header ── *@
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            @* Left: Logo / Company info *@
+            <div style="flex:0 0 auto; font-size:9px; line-height:1.5;">
+                <img src="/Images/RIMICON.png" alt="Logo"
+                     style="height:40px; width:auto; display:block; margin-bottom:4px;" />
+                <div style="font-weight:bold; font-size:9px;">RÉSEAU INTERDIOCÉSAIN</div>
+                <div style="font-weight:bold; font-size:9px;">DE MICROFINANCE</div>
+                <div style="font-size:8px;">+250788320675 / 2004951</div>
+            </div>
+
+            @* Center: Title *@
+            <div style="flex:1; text-align:center; padding:0 10px;">
+                <h2 style="margin:0; font-size:16px; font-weight:bold; color:#000;">
+                    Bulletin De Paie du @SalaireList.date1.ToString("yyyy-MM-dd")
+                </h2>
+            </div>
+
+            @* Right: Print date *@
+            <div style="flex:0 0 auto; font-size:9px; text-align:right;">
+                <span>Imprimé le &nbsp;</span>
+                <span>@DateTime.Now.ToString("yyyy-MM-dd")</span>
+            </div>
+        </div>
+
+        @* ── Employee Info ── *@
+        @if (SalaireList != null)
+        {
+            <table style="width:100%; font-size:9px; margin-bottom:8px; border-collapse:collapse;">
+                <tr>
+                    <td style="width:15%; font-style:italic; padding:2px 4px;">Matric./Nom</td>
+                    <td style="width:35%; padding:2px 4px; font-weight:bold;">@SalaireList.Matricule &nbsp; @SalaireList.Names</td>
+                    <td style="width:15%;"></td>
+                    <td style="width:35%;"></td>
+                </tr>
+                <tr>
+                    <td style="font-style:italic; padding:2px 4px;">Guichet</td>
+                    <td style="padding:2px 4px;">@SalaireList.SBranchID</td>
+                    <td style="font-style:italic; padding:2px 4px;">Engagé le</td>
+                    <td style="padding:2px 4px;">@SalaireList.DateRecrutment.ToString("yyyy-MM-dd")</td>
+                </tr>
+                <tr>
+                    <td style="font-style:italic; padding:2px 4px;">Fonction</td>
+                    <td style="padding:2px 4px;">@SalaireList.Fonction</td>
+                    <td style="font-style:italic; padding:2px 4px;">Jours payé</td>
+                    <td style="padding:2px 4px;">@SalaireList.PayDay </td>
+                </tr>
+            </table>
+        }
+
+        @* ── Main Pay Table ── *@
+        <table style="width:100%; border-collapse:collapse; font-size:9px;">
+            <thead>
+                <tr style="background-color:#b0c4de;">
+                    <th style="padding:5px 6px; border:1px solid #999; text-align:left; font-weight:bold;">Intitulé</th>
+                    <th style="padding:5px 6px; border:1px solid #999; text-align:right; font-weight:bold;">Rémunération</th>
+                    <th style="padding:5px 6px; border:1px solid #999; text-align:right; font-weight:bold;">Retenue</th>
+                    <th style="padding:5px 6px; border:1px solid #999; text-align:right; font-weight:bold;">Total/Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (SalaireList != null)
+                {
+                    @* --- Rémunérations --- *@
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">SalBase</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.SalBase)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Indemnité de logement</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.IndemLog)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Indemnité de transport</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.IndemDeplac)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Indemnité de Fonction</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.IndemFct)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+
+                    @* --- Total Indemnités --- *@
+                    <tr style="font-weight:bold;">
+                        <td style="padding:4px 6px; border:1px solid #ccc;">Total Indemnites</td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc; text-align:right;">@FmtAmount0(SalaireList.TotalIndem)</td>
+                    </tr>
+
+                    @* --- Gratification / Primes / Avantages --- *@
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd; font-size:10px;">Gratification</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.Gratifications)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Prime</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.Primes)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Autres avantages</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.AutresAvantage)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+
+                    @* --- Salaire Brut --- *@
+                    <tr style="font-weight:bold;">
+                        <td style="padding:4px 6px; border:1px solid #ccc;">Salaire brut</td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc; text-align:right;">@FmtAmount0(SalaireList.SALAIRE_BRUT)</td>
+                    </tr>
+
+                    @* --- Salaire Imposable --- *@
+                    <tr style="font-weight:bold;">
+                        <td style="padding:4px 6px; border:1px solid #ccc;">Salaire imposable</td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc; text-align:right;">@FmtAmount0(SalaireList.SALAIRE_IMPOSABLE)</td>
+                    </tr>
+
+                    @* --- Retenues Statutaires --- *@
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Cotisation Caisse Sociale</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.Cotisation_Caisse_Social)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">RSSB Employé</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RSSB_EMPLOYEE)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Mutuelle de santé</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.MutSante)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">TPR</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.TPR)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+
+                    @* --- TOTAL DU --- *@
+                    <tr style="font-weight:bold;">
+                        <td style="padding:4px 6px; border:1px solid #ccc;">TOTAL DU:</td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc; text-align:right;">@FmtAmount0(0)</td>
+                    </tr>
+
+                    @* --- Retenues Non Statutaires --- *@
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Ejo Heza</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RetEjoHeza)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Remboursement crédit</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RembCredit)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Autres retenues</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.AutRetenues)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Prime Life</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.Primes)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">RSSB Pension</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RSSBPens)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Retenue Caisse Epargne</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RetCaisEp)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Retenue Caisse Solidalite</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RetCaisseSolid)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Retenue SanLam</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RetSanLam)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+
+                    @* --- Total Retenues --- *@
+                    <tr style="font-weight:bold;">
+                        <td style="padding:4px 6px; border:1px solid #ccc;">Total Retenues</td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:4px 6px; border:1px solid #ccc; text-align:right;">@FmtAmount0(SalaireList.TotalRetenue)</td>
+                        <td style="padding:4px 6px; border:1px solid #ccc;"></td>
+                    </tr>
+
+                    @* --- Net à Payer --- *@
+                    <tr style="font-weight:bold; font-size:10px;">
+                        <td style="padding:5px 6px; border:1px solid #ccc;">Net à payer</td>
+                        <td style="padding:5px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:5px 6px; border:1px solid #ccc;"></td>
+                        <td style="padding:5px 6px; border:1px solid #ccc; text-align:right;">@FmtAmount0(SalaireList.NetAPayer)</td>
+                    </tr>
+
+                    @* --- Cotisations Patronales --- *@
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">Cotisation patronale</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.Cotisation_Patronale)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px; border:1px solid #ddd;">RSSB Employeur</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                        <td style="padding:3px 6px; border:1px solid #ddd; text-align:right;">@FmtAmount0(SalaireList.RSSB_EMPLOYEUR)</td>
+                        <td style="padding:3px 6px; border:1px solid #ddd;"></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* ── Signatures ── *@
+        <div style="margin-top:30px;">
+            <table style="width:100%; font-size:10px;">
+                <tr>
+                    <td style="width:40%; padding:8px; text-align:center;">
+                        <span style="margin-right:10px;">Pour Signature</span>
+                    </td>
+                    <td style="width:30%; padding:8px; text-align:center;">
+                        <div style="background-color:#87ceeb; border:1px solid #aaa; padding:6px 20px; display:inline-block; min-width:80px;">
+                            Employé
+                        </div>
+                    </td>
+                    <td style="width:30%; padding:8px; text-align:center;">
+                        <div style="background-color:#87ceeb; border:1px solid #aaa; padding:6px 20px; display:inline-block; min-width:80px;">
+                            Employeur
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+@* ════════════════════════════════════════════════
+   PRINT SCRIPT
+   ════════════════════════════════════════════════ *@
+
+<script type="text/javascript">
+    function printComponent(selector) {
+        var el = document.querySelector(selector);
+        if (!el) { alert('Print area not found'); return; }
+
+        var printWindow = window.open('', '_blank', 'width=900,height=700');
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Bulletin De Paie</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: Arial, sans-serif;
+                        font-size: 9px;
+                        color: #000;
+                    }
+                    .bulletin-print-root {
+                        width: 100%;
+                        max-width: none;
+                        padding: 15mm 12mm;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    th, td {
+                        overflow: hidden;
+                        word-wrap: break-word;
+                        vertical-align: middle;
+                    }
+
+                    @@page {
+                        size: A4 portrait;
+                        margin: 0;
+                    }
+
+                    @@media print {
+                        body { margin: 0; padding: 0; }
+                        .bulletin-print-root { padding: 10mm 12mm !important; }
+                        table { page-break-inside: auto; }
+                        tr { page-break-inside: avoid; page-break-after: auto; }
+                        thead { display: table-header-group; }
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                </style>
+            </head>
+            <body>
+                ${el.innerHTML}
+                <script>
+                    window.onload = function () {
+                        window.print();
+                        window.close();
+                    };
+                <\/script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+</script>
+

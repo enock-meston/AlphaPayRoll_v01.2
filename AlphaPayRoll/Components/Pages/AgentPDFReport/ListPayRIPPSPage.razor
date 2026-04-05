@@ -74,9 +74,9 @@
 
                 @* Title + Date *@
                 <div style="flex:1; text-align:center;">
-                    <h3 style="color:#004080; margin:0 0 4px;">List Pay RIPPS</h3>
+                    <h3 style="color:#000000; margin:0 0 4px;">List Pay RIPPS </h3>
                     <p style="margin:0; font-size:10px; color:#555;">
-                        Date : @DateTime.Now.ToString("dd/MM/yyyy")
+                        Mois : @(SalaireList != null && SalaireList.Count > 0 ? SalaireList[0].Periode : "")
                     </p>
                 </div>
 
@@ -89,23 +89,23 @@
         @* ── Detail Table ── *@
         <table class="liste-paie-grid" style="width:100%; border-collapse:collapse; font-size:7px; table-layout:fixed;">
             <colgroup>
-                <col style="width:3%;" />   @* N° *@
-                <col style="width:5%;" />   @* Matricule *@
-                <col style="width:14%;" />   @* Noms — wider for full names *@
-                <col style="width:5%;" />
-                <col style="width:5%;" />
-                <col style="width:5%;" />
+                <col style="width:1%;" />
+                <col style="width:4%;" />
+                <col style="width:2%;" />
+                <col style="width:2%;" />
+                <col style="width:2%;" />
+                <col style="width:2%;" />
                 
             </colgroup>
             
             <thead>
-                <tr style="background-color:#004080; color:white;">
-                    <th style="padding:5px; border:1px solid #ccc;">N°</th>
-                    <th style="padding:5px; border:1px solid #ccc;">Matricule</th>
-                    <th style="padding:5px; border:1px solid #ccc;">Branch</th>
-                    <th style="padding:5px; border:1px solid #ccc;">Noms</th>
-                    <th style="padding:5px; border:1px solid #ccc;">Net A Payer</th>
-                    <th style="padding:5px; border:1px solid #ccc;">Periode</th>
+                <tr style="background-color:#004080; color:white; color:#000000">
+                    <th style="padding:3px; border:1px solid #ccc;">N°</th>
+                    <th style="padding:3px; border:1px solid #ccc;">Noms</th>
+                    <th style="padding:3px; border:1px solid #ccc;">Matricule</th>
+                    <th style="padding:3px; border:1px solid #ccc;">Branch</th>
+                    <th style="padding:3px; border:1px solid #ccc;">Net A Payer</th>
+                    <th style="padding:3px; border:1px solid #ccc;">Periode</th>
                 </tr>
             </thead>
             <tbody>
@@ -116,29 +116,36 @@
                     foreach (var item in SalaireList)
                     {
                         <tr style="background-color:@(altRow ? "#f0f4ff" : "white")">
-                            <td style="padding:4px; border:1px solid #ddd; text-align:center;">@num</td>
-                            <td style="padding:4px; border:1px solid #ddd;">@item.Matricule</td>
-                            <td style="padding:4px; border:1px solid #ddd;">@item.Branch</td>
-                            <td style="padding:4px; border:1px solid #ddd;">@item.NomPrenom</td>
-                            <td style="padding:4px; border:1px solid #ddd;">@item.NetAPayer</td>
-                            <td style="padding:4px; border:1px solid #ddd;">@item.Periode</td>
+                            <td style="padding:3px; border:1px solid #ddd; text-align:center;">@num</td>
+                            <td style="padding:3px; border:1px solid #ddd;">@item.NomPrenom</td>
+                            <td style="padding:3px; border:1px solid #ddd;">@item.Matricule</td>
+                            <td style="padding:3px; border:1px solid #ddd;">@item.Branch</td>
+                            <td style="padding:3px; border:1px solid #ddd;">@item.NetAPayer</td>
+                            <td style="padding:3px; border:1px solid #ddd;">@item.Periode</td>
                         </tr>
                         altRow = !altRow;
                         num++;
                     }
                 }
             </tbody>
+            <tfoot class="table-secondary fw-bold">
+                <tr style="background-color:#004080; color:white; color:#000000">
+                    <td colspan="4" class="text-end">TOTAL :</td>
+                    <td style="padding:5px 6px; border:1px solid #ccc; text-align:right; color:#000000;">@FmtAmount0(@SalaireList?.Sum(x => x.NetAPayer) ?? 0)</td>
+                    <td colspan="1"></td>
+                </tr>
+            </tfoot>
         </table>
 
         @* ── Totals Row — separate table, same 21 columns as detail grid ── *@
-        <table class="liste-paie-grid liste-paie-totaux" style="width:100%; border-collapse:collapse; font-size:7px; table-layout:fixed; margin-bottom:16px;">
+        <table class="liste-paie-grid liste-paie-totaux" style="width:70%; border-collapse:collapse; font-size:7px; table-layout:fixed; margin-bottom:16px;">
             <colgroup>
-                <col style="width:3%;" />
-                <col style="width:5%;" />
-                <col style="width:14%;" />
-                <col style="width:5%;" />
-                <col style="width:5%;" />
-                <col style="width:5%;" />
+                <col style="width:1%;" />
+                <col style="width:4%;" />
+                <col style="width:2%;" />
+                <col style="width:2%;" />
+                <col style="width:2%;" />
+                <col style="width:2%;" />
                 
             </colgroup>
            
@@ -146,7 +153,7 @@
 
         @* ── Signatures ── *@
         <div style="margin-top:40px;">
-            <table style="width:100%; font-size:10px;">
+            <table style="width:70%; font-size:10px;">
                 <tr>
                     <td style="width:34%; padding:8px;">
                         <p style="margin:0 0 30px; font-weight:bold;">Siège  le @DateTime.Now.ToString("dd/MM/yyyy")</p>
@@ -185,7 +192,7 @@
         var el = document.querySelector(selector);
         if (!el) { alert('Print area not found'); return; }
 
-        var printWindow = window.open('', '_blank', 'width=1200,height=700');
+        var printWindow = window.open('', '_blank', 'width=600,height=700');
         printWindow.document.open();
         printWindow.document.write(`
             <html>
@@ -193,7 +200,7 @@
                 <title>List Pay RIPPS</title>
                 <style>
                     body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
-                    .liste-paie-print-root { box-sizing: border-box; width: 100%; max-width: none; }
+                    .liste-paie-print-root { box-sizing: border-box; width: 70%; max-width: none; }
                     .liste-paie-grid { width: 100% !important; border-collapse: collapse; table-layout: fixed; }
                     .liste-paie-grid th,
                     .liste-paie-grid td { box-sizing: border-box; overflow: hidden; word-wrap: break-word; vertical-align: top; }
@@ -233,4 +240,5 @@
         printWindow.document.close();
     }
 </script>
+
 

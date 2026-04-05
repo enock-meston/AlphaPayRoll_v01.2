@@ -68,8 +68,8 @@
                 <td colspan="5" class="text-end">TOTAL :</td>
                 <td class="text-end">@SalaireList?.Sum(x => x.SalBase).ToString("#,##0")</td>
                 <td class="text-end">@SalaireList?.Sum(x => x.TotalIndem).ToString("#,##0")</td>
-                <td class="text-end text-danger">@SalaireList?.Sum(x => x.TotalRetenue).ToString("#,##0")</td>
-                <td class="text-end text-primary">@SalaireList?.Sum(x => x.NetAPayer).ToString("#,##0")</td>
+                <td class="text-end">@SalaireList?.Sum(x => x.TotalRetenue).ToString("#,##0")</td>
+                <td class="text-end">@SalaireList?.Sum(x => x.NetAPayer).ToString("#,##0")</td>
                 <td colspan="2"></td>
             </tr>
         </tfoot>
@@ -106,8 +106,6 @@
             </div>
 
         </div>
-
-       
 
         @* ── Detail Table ── *@
         <table class="liste-paie-grid" style="width:100%; border-collapse:collapse; font-size:7px; table-layout:fixed;">

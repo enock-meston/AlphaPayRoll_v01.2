@@ -18,7 +18,6 @@ namespace PayAPI.Controllers.TCl550Fonction
             oItem = xxx;
         }
 
-
         [HttpGet]
         public async Task<List<ClassTCl550Fonction>> GetTCl550Fonction()
         {

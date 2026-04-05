@@ -10,7 +10,7 @@ namespace PayLibrary.ReportData
         public string Matricule { get; set; }
         public string Branch { get; set; }
         public string NomPrenom { get; set; }
-        public string NetAPayer { get; set; }
+        public decimal NetAPayer { get; set; }
         public string Periode { get; set; }
 
     }
